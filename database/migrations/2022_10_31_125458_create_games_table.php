@@ -12,10 +12,10 @@ return new class extends Migration {
      */
     public function up() {
         Schema::create('games', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id');
             $table->timestamps();
 //          The reference to the Users Table indicating the winner of the current game.
-            $table->foreignUuid('winner');
+            $table->foreignUuid('winner')->default('');
 //          A boolean indicating if the game is graded.
 //          ( Winner will have his total points increased and losers will have theirs decreased).
             $table->boolean('graded');

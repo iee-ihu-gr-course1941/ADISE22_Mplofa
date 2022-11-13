@@ -1,0 +1,29 @@
+.cardContainer {
+    box-shadow: 2px 2px 2px 2px #00000077;
+    border-radius: 5px;
+    /*background-color: lightgreen;*/
+    width: 120px;
+    height:auto;
+    font-size:160px;
+    text-align: center;
+    vertical-align:baseline;
+    cursor: pointer;
+    user-select: none;
+    line-height: 1.1;
+    display:inline-block;
+    letter-spacing: -5px;
+    text-indent: -5px;
+    padding-bottom: 15px;
+}
+
+i::before{
+    content: "\1F0B1";
+    font-style: normal;
+    color: white;
+    display: block;
+    line-height: 0.8;
+    font-size: 150px;
+    background: green;
+
+
+}

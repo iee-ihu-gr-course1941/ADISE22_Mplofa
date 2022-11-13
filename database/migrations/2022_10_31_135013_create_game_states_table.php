@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::create('game_states', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id');
             $table->timestamps();
 //          A number indicating the number of the current state in the game;
             $table->foreignUuid('game_id');
@@ -26,12 +26,16 @@ return new class extends Migration {
 //          A JSON Object looking like {cards_down:[with references to the Cards Table]}.
 //          It is a hidden table column, the values of the cards themselves are not sent to the client, only the count.
             $table->json('cards_down');
-//          A JSON Object looking like {cards_played:[with references to the Cards Table], as:'cards_count cards_('supposed')values'}.
+//          A JSON Object looking like {cards_played:[with references to the Cards Table], as:'[count:cards_count, symbols:cards_('supposed')values]'}.
 //          It is a hidden table column, the ('Real') values of the cards themselves are not sent to the client, only the 'as' part.
-            $table->json('cards_played');
-//          A JSON Object looking like {previous:player_id,next:player_id}.
-            $table->json('player_turns');
-//          The status of the game state ['Game Over','Abandoned'], where 'Game Over' means there is a winner,
+            $table->json('cards_played')->nullable();
+//          A JSON Object looking like {player1_cards:{card1,card2,etc..},player2_cards:{card1,card2,etc...}}.
+//          It is a hidden table column, the values of the cards themselves are not sent to the client.
+            $table->json('player_cards');
+//          The id of the next player.
+            $table->foreignUuid('next_player');
+//          The status of the game state ['Game Over','Abandoned','Active'], 'Active' means the game is ongoing,
+//          'Game Over' means there is a winner,
 //          and 'Abandoned' means that someone has left the game.
             $table->string('status');
         });

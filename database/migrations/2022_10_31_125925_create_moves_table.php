@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::create('moves', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id');
 //          A reference to the Users Table, indicating the user who made the move.
             $table->foreignUuid('user_id');
 //          A number indicating the number of the current state in the game;
