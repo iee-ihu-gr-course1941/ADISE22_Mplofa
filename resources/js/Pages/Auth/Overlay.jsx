@@ -5,13 +5,13 @@ export default function Overlay({setVisibility}) {
             <div className="overlay">
                 <div className="overlay-panel overlay-left">
                     <h1>Welcome Back!</h1>
-                    <p>To keep connected with us please login with your personal info.</p>
-                    <button className="ghost" id="signIn" onClick={()=>{setVisibility('Login')}}>Sign In</button>
+                    <h6 className='p-3'>Sign in to your account.</h6>
+                    <button className="btn btn-info" id="signIn" onClick={()=>{setVisibility('Login')}}>Sign In</button>
                 </div>
                 <div className="overlay-panel overlay-right">
                     <h1>Hello, Friend!</h1>
-                    <p>Enter your personal details and start journey with us.</p>
-                    <button className="ghost" id="signUp" onClick={()=>{setVisibility('Register')}}>Sign Up</button>
+                    <h6 className='p-3'>Create an account, Start bluffing right away.</h6>
+                    <button className="btn btn-info" id="signUp" onClick={()=>{setVisibility('Register')}}>Create Account</button>
                 </div>
             </div>
         </div>

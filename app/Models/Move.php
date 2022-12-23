@@ -34,7 +34,7 @@ class Move extends Model {
     }
 
     public function cards() {
-        return is_null($this->cards_played) ?: ['cards_played'=>[],'as'=>['count'=>0,'symbols'=>[]]];
+        return $this->cards_played;
     }
 //    Status = [1:'Played',2:'Called Bluff',3:'Pass'].
 }

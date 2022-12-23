@@ -1,9 +1,8 @@
-import Guest from "../Layouts/GuestLayout";
 
-export function Home() {
+export function Home(props) {
     return (
-        <Guest>
+        <div className='container-fluid'>
 
-        </Guest>
+        </div>
     )
 }

@@ -11,10 +11,14 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('lobbies', function (Blueprint $table) {
+    public function up() {
+        Schema::create('rooms', function (Blueprint $table) {
             $table->uuid('id');
+            $table->foreignUuid('Player1')->nullable();
+            $table->foreignUuid('Player2')->nullable();
+            $table->boolean('Player1Ready')->default(false);
+            $table->boolean('Player2Ready')->default(false);
+            $table->boolean('GameActive')->default(false);
             $table->timestamps();
         });
     }

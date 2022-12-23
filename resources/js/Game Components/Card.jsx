@@ -1,38 +1,43 @@
 import '../../css/GameCss/CardCss.css';
-import {useState} from "react";
+import { useContext, useState } from "react";
+import {SelectedCardsContext} from "../Contexts/SelectedCardsContext";
 
-export default function Card(props) {
-    const isEnemy = props.Enemy;
-    const isStacked = props.Stacked;
-    const id=props.cardId,[selected,setSelected] = !isEnemy && !isStacked ? useState(props.selectedCards.includes(id)):'';
-    const color = isEnemy ? 'black' : props.color,
-    handleClick = props.handleClick;
+export default function Card({cardObject,Enemy,Stacked,color,isPagination,card}) {
+    const cardObj = cardObject,
+    isEnemy = Enemy,
+    isStacked = Stacked,
+    { selectedCards,setSelectedCards } = !isEnemy && useContext(SelectedCardsContext),
+    [selected,setSelected] = (!isEnemy && !isStacked) ? useState(selectedCards.includes(cardObj)) : '',
+    cardColor = isEnemy ? 'black' : color,
+    handleClickCard = setSelectedCards;
+
     function addToSelected() {
-        if(!selected){
-            handleClick(prevSelected => {
-                return [...prevSelected,id];
-            })
+        if(!selected) {
+            handleClickCard(prevSelected => {
+                return [...prevSelected,cardObj];
+            });
         }
         else {
-            handleClick(prevSelected => {
-                return prevSelected.filter((prevItem) => prevItem !== id);
-            })
+            handleClickCard(prevSelected => {
+                return prevSelected.filter((prevItem) => prevItem !== cardObj);
+            });
         }
         setSelected(!selected);
     }
     const select = ()=>{
-        !isEnemy ? addToSelected() : '';
-    }, isPagination = props.isPagination,
-    card = isPagination ? <div className={'cardContainer'} style={{backgroundColor:"white"}} onClick={handleClick}>
-        {props.card}
-    </div> : <div id={id ? id: 'moreCards'} className={'cardContainer'}
-          style={(selected && !isStacked) ? {backgroundColor:'lightgreen',color:color} : {backgroundColor:"white" ,color:color}}
+        !isEnemy && addToSelected();
+    },
+    isPaginationBool = isPagination,
+    Card = isPaginationBool ? <div className={'cardContainer'} style={{backgroundColor:"white"}} onClick={handleClickCard}>
+        {card}
+    </div> : <div className={'cardContainer'}
+          style={selected ? {backgroundColor:'lightgreen',color:cardColor} : {backgroundColor:"white" ,color:cardColor}}
           onClick={select}>
-        {props.card}
+        {card}
     </div>;
     return (
         <>
-            {card}
+            {Card}
         </>
     )
 }

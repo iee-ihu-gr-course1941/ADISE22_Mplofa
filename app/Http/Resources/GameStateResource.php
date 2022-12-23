@@ -38,9 +38,9 @@ class GameStateResource extends JsonResource {
             }
             else {
                 $enemy_user_id = $player->id;
-                $enemy_user_cards = $player->count;
+                $enemy_user_cards = count((array)$player->cards);
             }
         }
-        return ['player1'=>['id'=>$player_id,'cards'=>$current_user_cards], 'player2'=>['id'=>$enemy_user_id,'count'=>$enemy_user_cards]];
+        return ['player1'=>['id'=>$player_id,'cards'=>(array)$current_user_cards], 'player2'=>['id'=>$enemy_user_id,'count'=>$enemy_user_cards]];
     }
 }

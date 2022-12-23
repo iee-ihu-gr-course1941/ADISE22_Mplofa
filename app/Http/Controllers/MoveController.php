@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\GameStateResource;
+use App\Models\Card;
 use App\Models\Game;
 use App\Models\GameState;
 use App\Models\Move;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use JetBrains\PhpStorm\ArrayShape;
 
 class MoveController extends Controller {
@@ -32,7 +34,7 @@ class MoveController extends Controller {
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Inertia\Response
      */
     public function store(Request $request) {
         $input = $request->only('user_id','game_id','status','cards_played');
@@ -40,7 +42,7 @@ class MoveController extends Controller {
 //      Create and save the new Move into the database.
         $New_Move = new Move;
 
-        $New_Move->user_id = $request->user();
+        $New_Move->user_id = $request->user()->id;
         $New_Move->game_id = $input['game_id'];
         $New_Move->status = $input['status'];
         $New_Move->cards_played = json_encode($input['cards_played']);
@@ -93,12 +95,12 @@ class MoveController extends Controller {
     protected function checkVictory($cards1, $cards2, $bluff_called) {
         return !$bluff_called && (count($cards1)===0 || count($cards2)===0);
     }
-    protected function checkBluff($cards,$status) {
-        $as = $cards->as[0];
+    protected function checkBluff($cards) {
+        $as = $cards->as;
         $number = $as->number;
 
         foreach ($cards->cards_played as $card) {
-            if(!strcmp($card->number,$number))
+            if($card->number !== $number)
                 return true;
         }
         return false;
@@ -139,63 +141,81 @@ class MoveController extends Controller {
         $player_cards = json_decode($Last_State->player_cards);
         $player1_cards = $player_cards->player1->cards;
         $player2_cards = $player_cards->player2->cards;
-        $cards_played = json_decode($Last_State->cards_played());
+        $cards_played = json_decode($move->cards());
+        $previous_cards_played = json_decode($Last_State->cards_played());
         $cards_down = json_decode($Last_State->cards_down);
         switch ($move->status()) {
 //      Played
             case '1': {
 //      Check if a player meets the conditions to win.
-                if($this->checkVictory($player1_cards,$player2_cards,$move->status()))
-                    return response()->json(['status' => '1']);
-//                $player_cards =  $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove');
-            return new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
-                $this->checkBluff($cards_played,$move->status()),$move->cards(),$this->nextTurn($GamePlayers,$move->user()),3
-                ,['cards_down'=>$this->getCardsDown($Last_State->cards_down->cards_down,$cards_played)],$player_cards));
+                if($this->checkVictory($player1_cards,$player2_cards,$move->status())) {
+                    $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
+                        $this->checkBluff($cards_played),$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'2'
+                        ,['cards_down'=>[]],
+                        $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')));
+                }
+                else {
+                    $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
+                        $this->checkBluff($cards_played),$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'1'
+                        ,['cards_down'=>$this->getCardsDown($cards_down->cards_down,$cards_played)],
+                        $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')));
+                }
+                break;
             }
+
 //      Called Bluff
             case '2': {
 //      Check if the current player called a bluff and if the last player did actually bluff.
-                if($this->checkBluff($cards_played,$move->status()) && $move->status() === "2") {
-                    $player_cards = $this->assignCards($player_cards,$this->nextTurn($GamePlayers,$move->user()),$cards_down->cards_down,'add');
-                    return new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
-                        true,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),3,['cards_down'=>[]],$player_cards));
+                if($Last_State->is_bluffed() && $move->status() === "2") {
+                    $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
+                        true,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'1',['cards_down'=>[]],
+                        $this->assignCards($player_cards,$this->nextTurn($GamePlayers,$move->user()),$cards_down->cards_down,'add')));
+                }
+                else {
+                    $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
+                        false,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'1',['cards_down'=>[]],
+                        $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')));
                 }
                 break;
             }
 //      Pass
             case '3': {
-                if($this->checkVictory($player1_cards,$player2_cards,$move->status()))
-                    return response()->json(['status' => '1']);
-                return new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
-                    $this->checkBluff($cards_played,$move->status()),$move->cards(),$this->nextTurn($GamePlayers,$move->user()),3,['cards_down'=>[]],$player_cards));
+                if($this->checkVictory($player1_cards,$player2_cards,$move->status())){
+                    $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
+                        $this->checkBluff($cards_played),$move->cards(),$this->nextTurn($GamePlayers,
+                            $move->user()),'2',['cards_down'=>[]],$player_cards));
+                }
+                else {
+                    $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
+                        $this->checkBluff($cards_played),$move->cards(),$this->nextTurn($GamePlayers,
+                            $move->user()),'1',$cards_down,$player_cards));
+                }
+                break;
             }
         }
-        return response()->json($this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove'));
+        return Inertia::render('Game/GameCanvas',['Game' => $State,
+            'Players'=>['Player1'=>$move->user(),'Player2'=>$this->nextTurn($GamePlayers,
+                $move->user())]]);
     }
 
-    protected function assignCards($player_cards,$player_id,$cards,$case)
-    {
+    protected function assignCards($player_cards,$player_id,$cards,$case) {
         foreach ($player_cards as $player) {
             if ($player->id === $player_id) {
-                if(is_null($player->cards))
                 switch ($case) {
-                    case 'add':
-                    {
+                    case 'add': {
                         $player->cards = array_merge($player->cards, $cards);
                     }
-                    case 'remove' :
-                    {
-                        $player->cards = array_udiff($player->cards, $cards, function ($card_A, $card_B) {
+                    case 'remove' : {
+                        $player->cards = array_udiff((array)$player->cards, (array)$cards, function ($card_A, $card_B) {
                             return strcmp($card_A->id, $card_B->id);
                         });
-//                        return [$cards->player1->cards,$cards->player1->cards];
                     }
                 }
-                return $player_cards;
             }
         }
+        return $player_cards;
     }
     protected function getCardsDown($last_state_cards,$cards_played) {
-            return array_merge($last_state_cards,$cards_played);
+            return array_merge($last_state_cards,$cards_played->cards_played);
         }
 }

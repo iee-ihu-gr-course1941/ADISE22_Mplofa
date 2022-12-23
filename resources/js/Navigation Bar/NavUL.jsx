@@ -10,7 +10,7 @@ export function NavUL(props) {
     }
 
     const LoggedOptions = <>
-            <NavLI  link='http://127.0.0.1:8000/' name='Home'></NavLI>
+            <NavLI  link='http://127.0.0.1:8000/' name='Play'></NavLI>
             <NavLI link={route('dashboard')} name='Dashboard'></NavLI>
             <NavButton handleClick={handleLogout} name='Logout'></NavButton>
         </>,

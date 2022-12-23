@@ -3,6 +3,7 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/inertia-react';
 import TextInput from "@/Components/TextInput";
 import InputError from "@/Components/InputError";
+import {FormFloatingTextInput} from "../../Components/FormFloatingTextInput";
 
 export default function Login({ status, canResetPassword}) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -29,15 +30,9 @@ export default function Login({ status, canResetPassword}) {
 
     return (
         <div className="form-container sign-in-container">
-            <form onSubmit={submit}>
-                <h1>Sign in</h1>
-                <div className="social-container">
-                    <button className="social"><i className="fab fa-facebook-f"></i></button>
-                    <button type='button' className="social"><i className="fab fa-google-plus-g"></i></button>
-                    <a href="resources/js/Pages/Auth/Login#" className="social"><i className="fab fa-linkedin-in"></i></a>
-                </div>
-                <span>or use your account</span>
-                    <TextInput
+            <form onSubmit={submit} className=' p-4'>
+                <h1  className='my-3'>Sign in</h1>
+                    <FormFloatingTextInput
                         type="email"
                         name="email"
                         value={data.email}
@@ -45,7 +40,7 @@ export default function Login({ status, canResetPassword}) {
                         isFocused={true}
                         required={true}
                         placeHolder={"Email"}/>
-                    <TextInput
+                    <FormFloatingTextInput
                         type="password"
                         name="password"
                         value={data.password}
@@ -58,8 +53,8 @@ export default function Login({ status, canResetPassword}) {
                     <InputError message={errors.email} className="mt-2" />
                     <InputError message={errors.password} className="mt-2" />
                 </div>
-                <a href={route('password.request')}>Forgot your password?</a>
-                <button>Sign In</button>
+                <a className={'link-info text-decoration-none my-2'} href={route('password.request')}>Forgot your password?</a>
+                <button className='btn btn-outline-success border-3'>Sign In</button>
             </form>
         </div>
     );

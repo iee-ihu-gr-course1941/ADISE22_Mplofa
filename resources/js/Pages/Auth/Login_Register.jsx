@@ -10,7 +10,7 @@ export default function Login_Register(Data) {
 
     const [IsVisible, setIsVisible] = useState(Data.Active);
     let container = $("#container");
-    const cssclass = IsVisible  === 'Register' ?  'container right-panel-active' : 'container';
+    const active = IsVisible  === 'Register' ?  'container right-panel-active' : 'container';
     useEffect(()=> {
         if (IsVisible === 'Register')
             container.addClass("right-panel-active");
@@ -19,15 +19,15 @@ export default function Login_Register(Data) {
     },[IsVisible]);
 
     return (
-        // <Guest>
-            <div className={cssclass} id="container">
-                <div className='row'>
-                    <div className='col-md-6'><Register></Register></div>
-                    <div className='col-md-6'><Login></Login></div>
-                    <Overlay setVisibility={setIsVisible}></Overlay>
-                </div>
+        <div className={active + 'container'} id="container" >
+            {/*<div className='row'><h1>Hi</h1></div>*/}
+            <div className='row'>
+                <div className='col-md-6'><Register></Register></div>
+                <div className='col-md-6'><Login></Login></div>
+                <Overlay setVisibility={setIsVisible}></Overlay>
             </div>
-        // </Guest>
+            {/*<div className='row'></div>*/}
+        </div>
     );
 
 }

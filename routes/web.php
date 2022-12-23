@@ -4,10 +4,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MoveController;
-use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,4 +31,5 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::group(['prefix'=>'Move','middleware' => 'auth'], function () {
     Route::post('/Make',[MoveController::class,'store'])->name('Make_Move');
 });
+Route::get('Game/checkEnemyMove',[GameController::class, 'checkEnemyMove'])->name('Check_Enemy_Move');
 require __DIR__.'/auth.php';

@@ -26,12 +26,14 @@ class CardSeeder extends Seeder {
         ,'U+1F0D6','U+1F0D7','U+1F0D8','U+1F0D9','U+1F0DA','U+1F0DB','U+1F0DD','U+1F0DE'];
 
         $index = 0;
-        foreach ($symbols as $symbol){
+        foreach ($symbols as $symbol) {
+            $color = ($symbol === 'Hearts' || $symbol === 'Diamonds') ? 'Red' : 'Black';
             foreach ($numbers as $number) {
                 Card::factory(1)->create([
                     'number' => $number,
                     'symbol' => $symbol,
                     'unicode' =>$unicodes[$index],
+                    'color' => $color,
                 ]);
                 $index++;
             }

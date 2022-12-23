@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/inertia-react';
 import TextInput from "@/Components/TextInput";
+import {FormFloatingTextInput} from "../../Components/FormFloatingTextInput";
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -28,15 +29,15 @@ export default function Register() {
     return (
             <div className="form-container sign-up-container">
                 <form onSubmit={submit}>
-                    <h1>Create Account</h1>
-                    <div className="social-container">
-                        <a href="resources/js/Pages/Auth/Register#" className="social"><i className="fab fa-facebook-f"></i></a>
-                        <a href="resources/js/Pages/Auth/Register#" className="social"><i className="fab fa-google-plus-g"></i></a>
-                        <a href="resources/js/Pages/Auth/Register#" className="social"><i className="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <span>or use your email for registration</span>
+                    <h1 className='my-3'>Create Account</h1>
+                    {/*<div className="social-container">*/}
+                    {/*    <a href="resources/js/Pages/Auth/Register#" className="social"><i className="fab fa-facebook-f"></i></a>*/}
+                    {/*    <a href="resources/js/Pages/Auth/Register#" className="social"><i className="fab fa-google-plus-g"></i></a>*/}
+                    {/*    <a href="resources/js/Pages/Auth/Register#" className="social"><i className="fab fa-linkedin-in"></i></a>*/}
+                    {/*</div>*/}
+                    {/*<span>or use your email for registration</span>*/}
                     {/*<input type="text" placeholder="Name"/>*/}
-                    <TextInput
+                    <FormFloatingTextInput
                         type="text"
                         name="name"
                         value={data.name}
@@ -45,9 +46,10 @@ export default function Register() {
                         handleChange={onHandleChange}
                         required={true}
                         placeHolder={'Name'}
+                        className={''}
                     />
                     {errors.name}
-                    <TextInput
+                    <FormFloatingTextInput
                         type="email"
                         name="email"
                         value={data.email}
@@ -57,7 +59,7 @@ export default function Register() {
                         placeHolder={'Email'}
                     />
                     {errors.email}
-                    <TextInput
+                    <FormFloatingTextInput
                         type="password"
                         name="password"
                         value={data.password}
@@ -67,7 +69,7 @@ export default function Register() {
                         placeHolder={'Password'}
                     />
                     {errors.password}
-                    <TextInput
+                    <FormFloatingTextInput
                         type="password"
                         name="password_confirmation"
                         value={data.password_confirmation}
@@ -76,7 +78,7 @@ export default function Register() {
                         placeHolder={'Confirm Password'}
                     />
                     {errors.password_confirmation}
-                    <button>Sign Up</button>
+                    <button className='btn btn-outline-success border-3'>Sign Up</button>
                 </form>
             </div>
     );
