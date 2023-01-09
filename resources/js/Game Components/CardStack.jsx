@@ -14,7 +14,6 @@ export default function CardStack(props) {
         return <Card card={Cards.get(1)}></Card>
     }), {nextPlayer,setNextPlayer} = useContext(NextPlayerContext),
     Room = useContext(RoomContext),cardsPlayed = useContext(CardsPlayedContext);
-    console.log('Next Player ',nextPlayer);
     return (
         <div className={'row text-center justify-content-center h-50 align-items-center'}>
             <div className='col-4 align-self-center'>

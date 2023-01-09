@@ -12,7 +12,6 @@ import {Inertia} from "@inertiajs/inertia";
 import {CardsPlayedContext} from "../../Contexts/CardsPlayedContext";
 
 export default function GameCanvas(props) {
-    console.log('Props',props);
     const User = props.auth.user,
         Room = props.Room,
     [Players,setPlayers] = useState(props.Players),
@@ -43,7 +42,6 @@ export default function GameCanvas(props) {
     useEffect(() => {
         const interval = !myTurn && setInterval(() => {
             if(!myTurn ) {
-                console.log("Checking for new Enemy Move");
                 Inertia.get(route('Check_Enemy_Move'),{GameId:props.Game.game_id,Example:'Example'},{
                     preserveScroll:true,
                     onSuccess:
@@ -51,7 +49,6 @@ export default function GameCanvas(props) {
                             res.props.Game && setNewState(res.props.Game);
                             res.props.Game && clearInterval(interval);
                             res.props.Game && setMyTurn(true);
-                            // console.log("Response",res);
                         }
                 });
             }
@@ -67,7 +64,7 @@ export default function GameCanvas(props) {
         if(asSelected)
             Inertia.post(route('Make_Move'),data,
          {only:['Game'],preserveScroll:true,
-                onSuccess:(res)=>{setNewState(res.props.Game);console.log("Response from move",res);}});
+                onSuccess:(res)=>{setNewState(res.props.Game);}});
     }
 
     function handleBluff() {
@@ -76,7 +73,7 @@ export default function GameCanvas(props) {
         data.cards_played = [];
         Inertia.post(route('Make_Move'),data,
             {only:['Game'],preserveScroll:true,
-                onSuccess:(res)=>{setNewState(res.props.Game);console.log("Response from move",res);}});
+                onSuccess:(res)=>{setNewState(res.props.Game);}});
     }
 
     function handlePass() {
@@ -85,7 +82,7 @@ export default function GameCanvas(props) {
         data.cards_played = [];
         Inertia.post(route('Make_Move'),data,
             {only:['Game'],preserveScroll:true,
-                onSuccess:(res)=>{setNewState(res.props.Game);console.log("Response from move",res);}});
+                onSuccess:(res)=>{setNewState(res.props.Game);}});
     }
 
     function setNewState(NewState) {
@@ -95,7 +92,6 @@ export default function GameCanvas(props) {
         setMyCards(NewState.player_cards.player1.cards);
         setEnemyCards(Array(NewState.player_cards.player2.count).fill('Empty'));
         setMyTurn(false);
-        console.log("My turn",myTurn);
         setNextPlayer(NewState.next_player.id === Players.Player1.id ?  Players.Player1 : Players.Player2);
         setCards(NewState.player_cards);
         reset('cards_played','status');

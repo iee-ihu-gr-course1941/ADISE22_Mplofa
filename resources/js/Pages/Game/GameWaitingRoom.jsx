@@ -15,16 +15,12 @@ export default function GameWaitingRoom(props) {
     //     }, 7500);
     //     return () => clearTimeout(timer);
     // },[])
-    console.log(Room)
     useEffect(() => {
         const timer = (!userLeft && !Room.Game_Active) && setTimeout(() => {
-            console.log('Checking if another player has joined!');
-            userLeft && console.log(User.name,' has left the Room!');
             if(!userLeft) {
                 Inertia.get(route('Check_For_New_Player'),{RoomId:Room.id},
                     {onSuccess:(res)=> {
                             setRoom(res.props.Room);
-                            console.log('res',res.props.Room);
                             if(res.props.Room.OwnerReady && res.props.Room.PlayerReady) {
                             // if(res.props.Room.Game_Active) {
                                 console.log("Activating Room, Initiating Game");
@@ -32,7 +28,7 @@ export default function GameWaitingRoom(props) {
                                     preserveScroll:true,
                                     onSuccess:
                                         (res)=> {
-                                            console.log('First Game State has been instantiated, game will commence soon',res.props.Game);
+                                            // console.log('First Game State has been instantiated, game will commence soon',res.props.Game);
                                         }
                                 });
                             }
@@ -108,9 +104,6 @@ export default function GameWaitingRoom(props) {
                     </div>
                 </div>
             </div>
-            {/*<div>*/}
-
-            {/*</div>*/}
         </div>
     )
 }

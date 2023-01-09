@@ -18,8 +18,6 @@ export default function Dashboard(props) {
         );
     },[roomDoesntExistErrorVisible,setRoomDoesntExistErrorVisible] = useState(!!props.errors.Room_Doesnt_Exist);
 
-    console.log(roomDoesntExistErrorVisible);
-
     useEffect(()=> {
         const AlertVisible = roomDoesntExistErrorVisible && setTimeout(() => {
             setRoomDoesntExistErrorVisible(false);

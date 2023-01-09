@@ -121,7 +121,7 @@ class RoomController extends Controller {
             $Room->PlayerReady = true;
             $Room->save();
         }
-        return Redirect::route('Check_For_New_Player',['RoomId'=>$Room->id]);
+//        return Redirect::route('Check_For_New_Player',['RoomId'=>$Room->id]);
     }
 
     public function Join(Request $request) {

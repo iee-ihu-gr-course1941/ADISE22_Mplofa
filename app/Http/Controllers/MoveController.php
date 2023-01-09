@@ -8,6 +8,7 @@ use App\Models\Game;
 use App\Models\GameState;
 use App\Models\Move;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use JetBrains\PhpStorm\ArrayShape;
 
@@ -161,6 +162,8 @@ class MoveController extends Controller {
                         $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')));
                     $Game->winner = $this->findWinner($player_cards);
                     $Game->save();
+                    Redirect::route('Winner',['GameId'=>$Game->id]);
+                    break;
                 }
                 else {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
@@ -187,6 +190,8 @@ class MoveController extends Controller {
                         $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
                             false,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'2',['cards_down'=>[]],
                             $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')));
+                        Redirect::route('Winner',['GameId'=>$Game->id]);
+                        break;
                     }
                     else {
                         $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
@@ -204,6 +209,8 @@ class MoveController extends Controller {
                             $move->user()),'2',['cards_down'=>[]],$player_cards));
                     $Game->winner = $this->findWinner($player_cards);
                     $Game->save();
+                    Redirect::route('Winner',['GameId'=>$Game->id]);
+                    break;
                 }
                 else {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,

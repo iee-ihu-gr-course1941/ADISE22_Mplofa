@@ -8,9 +8,11 @@ use App\Models\Card;
 use App\Models\Game;
 use App\Models\GameState;
 use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 //        $Game->graded = $input['graded']; Production
@@ -98,7 +100,15 @@ class GameController extends Controller {
      */
 
     public function showWinner(Request $request) {
-        return Inertia::render('Game/WinningScreen');
+        $input = $request->only('GameId');
+        $Game = Game::find($input['GameId']);
+        $Player1 = User::find($Game->players()->player1);
+        $Player2 = User::find($Game->players()->player2);
+        if($Game->winner) {
+            $Winner = User::find($Game->winner);
+            return Inertia::render('Game/WinningScreen',
+                ['Game'=>$Game,'Winner'=>$Winner,'Player1'=>$Player1,'Player2'=>$Player2]);
+        }
     }
 
     /**
@@ -160,6 +170,9 @@ class GameController extends Controller {
     public function checkEnemyMove(Request $request) {
         $input = $request->only('GameId');
         $Game = Game::find($input['GameId']);
+        if($Game->winner){
+            return Redirect::route('Winner',['GameId'=>$Game->id]);
+        }
         $State = GameState::where('game_id',$input['GameId'])->orderByDesc('sequence_number')->first();
         if($State->next_player() === $request->user()->id) {
             return Inertia::render('Game/GameCanvas',['Game'=>new GameStateResource($State),
