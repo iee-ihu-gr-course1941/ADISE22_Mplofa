@@ -1,66 +1,156 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Ανάπτυξη του γνωστού παιχνιδιού Μπλόφα σε Laravel.php και React.js 
+Μπλόφα είναι ένα παιχνίδι που παίζεται με τράπουλαΣκοπός είναι να λες μπλόφες (ψέματα) για τα φύλλα που ρίχνεις ώστε να νικήσεις. Όταν παίζει κάποιος δεν χρειάζεται να ρίχνει τα φύλλα με τον ίδιο αριθμό αλλά να λέει ότι το έκανε ώστε να ξεφορτωθεί όλα του τα φύλλα και να κερδίσει την παρτίδα. Συνήθως συμμετέχουν 2 ως 10 άτομα. Άλλες ονομασίες που αναφέρονται στο ίδιο παιχνίδι είναι : 
+#### Cheat, Bluff, Bullshit, I Doubt It και Liar.
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Περιεχόμενα
+- [Εργαλεία και τεχνολογίες](#εργαλεία-και-τεχνολογίες-που-χρησιμοποιήθηκαν)
+    - [Back End](#back-end)
+    - [Front End](#front-end)
+    - [Άλλα Εργαλεία](#άλλες-τεχνολογίες-που-χρησιμοποιήθηκαν)
+- [API](#api) 
+    - [Room](#room)
+        - [New](#new)
+        - [Join](#join)
+        - [Leave](#leave)  
+        - [Ready](#ready)
+        - [Activate](#activate)
+        - [Initialize](#initialize)
+        - [Poll_Room](#poll_room)
+    - [Game](#game)
+       - [Play](#play)
+       - [Play/Make_Move](#play_make_move)
+       - [Play/checkEnemyMove](#play_checkenemymove)
+       - [Winner](#winner)
+## Εργαλεία ( Βιβλιοθήκες, framework ) που χρησιμοποιήθηκαν
+--------------------------------------------------------------------------------------------------------------------
+### Back End
+    Η ανάπτυξη του Back-End (API) έγινε με την χρήση του γνωστού framework της PHP την Laravel ( Έκδοση 9.19 ).
+    
+Μπορείτε να διαβάσετε περισσότερα για την [Laravel](https://laravel.com/) εδώ.
 
-## About Laravel
+--------------------------------------------------------------------------------------------------------------------
+### Front End 
+    Η ανάπτυξη του Front-End (GUI) έγινε με την χρήση της επίσης γνωστής βιβλιοθήκης της Javascript, της React ( Έκδοση 18.2.0 ).
+Μπορείτε να διαβάσετε περισσότερα για την [React](https://reactjs.org/) εδώ.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+--------------------------------------------------------------------------------------------------------------------
+### Άλλες Τεχνολογίες που χρησιμοποιήθηκαν
+    H Inertia.js χρησιμοποιήθηκε για την "γεφύρωση" του Server με τον Client ( Έκδοση 0.6.3 ).
+Μπορείτε να διαβάσετε περισσότερα για την [Inertia.js](https://inertiajs.com/) εδώ.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+--------------------------------------------------------------------------------------------------------------------
+# API
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Room
 
-## Learning Laravel
+### New
+    POST 
+    Δημιουργεί ένα καινούργιο δωμάτιο με Owner τον χρήστη έκανε το αίτημα για την δημιουργία του. Μετά την δημιουργία του, ανακατευθύνει τον χρήστη στο δωμάτιο αυτό.
+    Έπειτα καλεί το /Room/Initialize_Game για να δημιουργήσει το παιχνίδι που θα λάβει μέρος σε αυτό το δωμάτιο.
+#### Παράμετροι : 
+- *Name, 
+- *Capacity, 
+- ?Password
+--------------------------------------------------------------------------------------------------------------------
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Join
+    POST 
+    Ο χρήστης "εγγράφεται ώς ο δεύτερος παίκτης στο συγκεκριμένο δωμάτιο και έπειτα ανακατευθύνεται και αυτός σε αυτό το δωμάτιο.
+#### Παράμετροι : 
+- *RoomId, 
+- *UserName ( λαμβάνεται αυτόματα από το Request )
+--------------------------------------------------------------------------------------------------------------------
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Leave
+    POST 
+    Ο χρήστης που κάνει το αίτημα "διαγράφεται' από το δωμάτιο.
+    -   Στην περίπτωση που δεν υπάρχει κάποιος άλλος χρήστης στο δωμάτιο, το δωμάτιο διαγράφεται.
+    -   Στην περίπτωση που υπάρχουν 2 χρήστες στο δωμάτιο : 
+        -   Αν ο χρήστης που φύγει είναι ο ιδιοκτήτης, τότε η ιδιοκτησία μεταφέρεται στον άλλο χρήστη ο οποίος είναι ακόμη μέσα.
+        -   Σε αντίθετη περίπτωση απλά φεύγει ο χρήστης που έκανε το αίτημα.
+        -   Αν ο χρήστης που παραμείνει στο δωμάτιο έχει δηλώσει έτοιμος, το status του μεταφέρεται μαζί με την ιδιοκτησία.
+    Ο χρήστης που έφυγε, έπειτα ανακατευθύνεται στο dashboard του.
+    
+#### Παράμετροι : 
+- *RoomId, 
+- *UserName ( λαμβάνεται αυτόματα από το Request )
+--------------------------------------------------------------------------------------------------------------------
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Ready
+    POST 
+    Ο χρήστης που κάνει το αίτημα δηλώνει πώς είναι έτοιμος να ξεκινήσει το παιχνίδι.
+    Από την στιγμή που ο χρήστης έχει δηλώσει έτοιμος, ο μόνος τρόπος να μήν ξεκινήσει το παιχνίδι, πρίν πατήσει και ο άλλος χρήστης έτοιμος,
+    είναι να αποχωρήσει από το δωμάτιο.
+    Σε αντίθετη περίπτωση, μόλις και οι 2 χρήστες δηλώσουν έτοιμοι, το παιχνίδι θα ξεκινήσει μετά από μικρό χρονικό διάστημα.
+    
+#### Παράμετροι : 
+- *RoomId, 
+- *UserName ( λαμβάνεται αυτόματα από το Request )
+--------------------------------------------------------------------------------------------------------------------
 
-## Laravel Sponsors
+### Activate
+    POST 
+    Μόλις και οι 2 χρήστες του δωματίου δηλώσουν πώς είναι έτοιμοι να ξεκινήσει το παιχνίδι, και οι 2 χρήστες στέλνουν το αίτημα Play,
+    για να αρχικοποιήσει ο Owner το πρώτο State του παιχνιδιού και να γίνει το μοίρασμα και η ανάθεση των καρτών και ο άλλος χρήστης για να μεταφερθεί στο GameRoom.
+    Μετά την αρχικοποίηση του πρώτου State του παιχνιδιού, μεταφέρεται και ο Owner αντίστοιχα στο GameRoom.
+    
+#### Παράμετροι : 
+- *RoomId
+--------------------------------------------------------------------------------------------------------------------
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Initialize
+    GET
+    Μόλις ολοκληρωθεί η διαδικασία δημιουργίας ενός δωματίου, ανακατευθύνεται σε αυτό του Route για την δημιουργία του παιχνιδιού που θα λάβει μέρος στο δωμάτιο αυτό.
+    
+#### Παράμετροι : 
+- *RoomId
+--------------------------------------------------------------------------------------------------------------------
 
-### Premium Partners
+### Poll_Room
+    GET
+    Εκτελείται κάθε 5 δευτερόλεπτα ( από κάθε χρήστη ), ξεκινώντας από την στιγμή που ο χρήστης θα μπεί σε κάποιο δωμάτιο.
+    Επιστρέφει συνεχώς το δωμάτιο, έτσι ώστε να ενημερώνεται το GUI για τυχόν αλλαγές όπως πχ ( μπήκε ή έφυγε κάποιος χρήστης, κάποιος έχει δηλώσει έτοιμος ).
+    
+#### Παράμετροι : 
+- *RoomId
+--------------------------------------------------------------------------------------------------------------------
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Game
 
-## Code of Conduct
+### Play
+    GET
+    Όταν και οι 2 χρήστες έχουν δηλώσει έτοιμοι, το καλείται αυτό το Route και το πρώτο State του παιχνιδιού αρχικοποιείται.
+    Γίνεται η μοιρασιά και η ανάθεση των καρτών, καθώς και η ανακατεύθυνση των παικτών στο GameRoom.
+    
+#### Παράμετροι : 
+- *RoomId
+--------------------------------------------------------------------------------------------------------------------
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Play_Make_Move
+    POST
+    Όταν ο χρήστης κάνει μία κίνηση ( παίξει κάποιες κάρτες, πάει πάσο ή δηλώσει ότι ο αντίπαλος έκανε μπλόφα ) γίνεται ένα αίτημα Make_Move.
+    Η κίνηση του χρήστη καταγράφεται, δημιουργείται καινούργιο GameState και επίσης γίνονται οι απαραίτητοι έλεγχοι για να τηρούνται οι κανόνες του παιχνιδιού.
+    Στην περίπτωση που 
+    
+#### Παράμετροι : 
+- *RoomId
+--------------------------------------------------------------------------------------------------------------------
 
-## Security Vulnerabilities
+### Play_checkEnemyMove
+    GET
+    Εκτελείται κάθε 5 δευτερόλεπτα, ξεκινώντας από την στιγμή που ο χρήστης έχει κάνει μία κίνηση ( οπότε είναι η σειρά του άλλου παίκτη ).
+    Επιστρέφει αν βρεθεί πώς ο αντίπαλός παίκτης έχει κάνει κάποια κίνηση, το GameState με την κίνηση αυτή.
+    
+#### Παράμετροι : 
+- *RoomId
+--------------------------------------------------------------------------------------------------------------------
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Winner
+    GET
+    Όταν το παιχνίδι λήξει ( δηλαδή κάποιος παίκτης κερδίσει ), εκτελείται αυτό το Route και ανακατευθύνει τους παίκτες στο WinningScreen.
+    
+#### Παράμετροι : 
+- *RoomId
+--------------------------------------------------------------------------------------------------------------------
