@@ -170,9 +170,9 @@ class GameController extends Controller {
     public function checkEnemyMove(Request $request) {
         $input = $request->only('GameId');
         $Game = Game::find($input['GameId']);
-        if($Game->winner){
-            return Redirect::route('Winner',['GameId'=>$Game->id]);
-        }
+//        if($Game->winner){
+//            return Redirect::route('Winner',['GameId'=>$Game->id]);
+//        }
         $State = GameState::where('game_id',$input['GameId'])->orderByDesc('sequence_number')->first();
         if($State->next_player() === $request->user()->id) {
             return Inertia::render('Game/GameCanvas',['Game'=>new GameStateResource($State),
