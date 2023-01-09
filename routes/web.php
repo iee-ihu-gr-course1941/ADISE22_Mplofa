@@ -27,17 +27,18 @@ Auth::routes();
 Auth::routes();
 Route::get('/Game/Play', [GameController::class, 'store'])->middleware(['auth'])->name('Play');
 Route::get('/Game/Winner', [GameController::class, 'showWinner'])->middleware(['auth'])->name('Winner');
+
+Route::post('Room/New',[RoomController::class,'store'])->name('New_Room');
 Route::post('Room/Join',[RoomController::class,'Join'])->name('Join_Room');
 Route::post('Room/Leave',[RoomController::class,'Leave'])->name('Leave_Room');
 Route::post('Room/Ready',[RoomController::class,'Ready'])->name('Ready');
-Route::get('Room/Initialize_Game',[GameController::class,'create'])->name('Initialize_Game');
-Route::get('Room/Check_New_Player',[RoomController::class,'pollRoom'])->name('Check_For_New_Player');
 Route::post('Room/Activate',[RoomController::class,'Activate'])->name('Activate_Room');
+Route::post('Room/Initialize_Game',[GameController::class,'create'])->name('Initialize_Game');
+Route::get('Room/Check_New_Player',[RoomController::class,'pollRoom'])->name('Check_For_New_Player');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::post('Game/Play/Make_Move',[MoveController::class,'store'])->middleware(['auth'])->name('Make_Move');
 Route::get('Game/Play/Make_Move',function (){});
 Route::get('Game/Play/checkEnemyMove',[GameController::class, 'checkEnemyMove'])->name('Check_Enemy_Move');
-Route::post('Rooms/New',[RoomController::class,'store'])->name('New_Room');
 require __DIR__.'/auth.php';
