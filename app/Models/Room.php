@@ -2,33 +2,49 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model {
-    use HasFactory;
+    use HasFactory,HasUuids;
 
     protected $fillable = [
-        'Player1',
-        'Player2',
-        'Player1Ready',
-        'Player2Ready',
+        'Name',
+        'Password',
+        'Capacity',
+        'OwnerId',
+        'PlayerId',
+        'OwnerReady',
+        'PlayerReady',
         'Game_Active'
     ];
-
-    public function Player1() {
-        return $this->Player1;
+    protected $hidden =[
+      'Password'
+    ];
+    public function Name() {
+        return $this->Name;
     }
-    public function Player2() {
-        return $this->Player2;
+    public function Capacity() {
+        return $this->Capacity;
     }
-    public function Player1Ready() {
-        return $this->Player1Ready;
+    public function Owner() {
+        return User::find($this->OwnerId);
     }
-    public function Player2Ready() {
-        return $this->Player2Ready;
+    public function Player() {
+        $Player = $this->PlayerId !==null ? User::find($this->PlayerId) : null;
+        return $Player;
+    }
+    public function OwnerReadyBool() {
+        return $this->OwnerReady;
+    }
+    public function PlayerReadyBool() {
+        return $this->PlayerReady;
     }
     public function Active() {
-        return $this->Game_Active;
+        return $this->GameActive;
+    }
+    public function Game() {
+        return $this->hasOne(Game::class,'GamedId');
     }
 }

@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/inertia-react';
-import TextInput from "@/Components/TextInput";
 import InputError from "@/Components/InputError";
 import {FormFloatingTextInput} from "../../Components/FormFloatingTextInput";
 

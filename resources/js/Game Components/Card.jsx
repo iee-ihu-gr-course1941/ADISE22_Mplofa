@@ -2,7 +2,7 @@ import '../../css/GameCss/CardCss.css';
 import { useContext, useState } from "react";
 import {SelectedCardsContext} from "../Contexts/SelectedCardsContext";
 
-export default function Card({cardObject,Enemy,Stacked,color,isPagination,card}) {
+export default function Card({cardObject,Enemy,Stacked,color,isPagination,card,handleClick}) {
     const cardObj = cardObject,
     isEnemy = Enemy,
     isStacked = Stacked,
@@ -23,15 +23,16 @@ export default function Card({cardObject,Enemy,Stacked,color,isPagination,card})
             });
         }
         setSelected(!selected);
+        console.log(selectedCards);
     }
     const select = ()=>{
-        !isEnemy && addToSelected();
+        !isEnemy && !isStacked && addToSelected();
     },
     isPaginationBool = isPagination,
-    Card = isPaginationBool ? <div className={'cardContainer'} style={{backgroundColor:"white"}} onClick={handleClickCard}>
+    Card = isPaginationBool ? <div className={'cardContainer'} style={{backgroundColor:"white"}} onClick={handleClick}>
         {card}
     </div> : <div className={'cardContainer'}
-          style={selected ? {backgroundColor:'lightgreen',color:cardColor} : {backgroundColor:"white" ,color:cardColor}}
+          style={selected ? {backgroundColor:'lightblue',color:cardColor} : {backgroundColor:"white" ,color:cardColor}}
           onClick={select}>
         {card}
     </div>;

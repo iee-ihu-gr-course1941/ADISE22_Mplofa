@@ -14,11 +14,24 @@ class Card extends Model {
         'updated_at',
     ];
 
+    public static function cardsToBeDiscarded(): array {
+        $codes = [];
+        do {
+            $code = random_int(1, 52);
+            if(!in_array($code,$codes))
+                $codes[]=$code;
+        } while (sizeof($codes)<12);
 
-    public static function split_cards() {
+        return $codes;
+    }
+
+    public static function split_cards(): \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection {
+        $codes = self::cardsToBeDiscarded();
         $cards = Card::all()->except(['created_at','updated_at']);
-        $shuffled = $cards->shuffle();
+        $shuffled = $cards->reject(function ($value) use ($codes) {
+            return in_array($value->id,$codes);
+        });
 
-        return $shuffled->splitIn(2);
+        return $shuffled->shuffle()->splitIn(2);
     }
 }

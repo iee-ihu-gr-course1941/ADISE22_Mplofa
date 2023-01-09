@@ -13,26 +13,41 @@ class GameStateResource extends JsonResource {
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request) {
+        if($this->bluff_called()) {
+            $Cards_played = 'Bluff_Called';
+        }
+        else {
+            if($this->cards_played === []) {
+                $Cards_played = 'Passed';
+            }
+            else {
+                if(is_string(json_decode($this->cards_played)))
+                    $Cards_played = (object)json_decode(json_decode($this->cards_played))->as;
+                else
+                    $Cards_played = json_decode($this->cards_played)->as;
+
+            }
+        }
         $User = $request->user()->id;
         $cards_down = json_decode($this->cards_down);
         $cards_down_count = count($cards_down->cards_down);
         $Game = Game::find($this->game_id);
         $Players = $Game->players();
         $Player_Cards = $this->getPlayerCards(json_decode($this->player_cards),$User);
-
         return [
             'game_id' => $this->game_id,
             'sequence_number' => $this->sequence_number,
             'next_player' => $this->next_player,
             'cards_down' => $cards_down_count,
             'status' => $this->status,
-            'player_cards' => $Player_Cards
+            'player_cards' => $Player_Cards,
+            'cards_played' => $Cards_played,
         ];
     }
 
     protected function getPlayerCards($players,$player_id) {
         $current_user_cards = $enemy_user_cards = $enemy_user_id =  null;
-        foreach ($players as $player) {
+        foreach (is_string($players) ? json_decode($players) : $players as $player) {
             if($player->id === $player_id) {
                 $current_user_cards = $player->cards;
             }

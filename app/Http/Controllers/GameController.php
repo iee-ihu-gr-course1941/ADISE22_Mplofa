@@ -3,18 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\GameStateResource;
+use App\Http\Resources\RoomResource;
 use App\Models\Card;
 use App\Models\Game;
 use App\Models\GameState;
-use App\Models\User;
+use App\Models\Room;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Inertia\Inertia;
+
+//        $Game->graded = $input['graded']; Production
+//        $Game->graded = 1;
+//        $Game->players = json_encode(['player1' => $input['player1'],'player2' => $input['player2']]); Production
 
 class GameController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index() {
         //
@@ -23,38 +30,70 @@ class GameController extends Controller {
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
-    public function create() {
-        //
+    public function create(Request $request) {
+        $Room = $request->session()->get('Room');
+        $Game = new Game;
+        $Game->save();
+        $Room->GameId = $Game->id;
+        $Room->save();
+
+        return Inertia::render('Game/GameWaitingRoom',['Room' => new RoomResource($Room)]);
+    }
+
+    protected function otherPlayer($players,$last) {
+        return $last === $players['player1'] ? $players['player2'] : $players['player1'];
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse|\Inertia\Response
+     * @param Request $request
+     * @return JsonResponse|\Inertia\Response
      */
     public function store(Request $request) {
-//        $input = $request->only('graded','player1','player2');
-        $Game = new Game;
-//        $Game->graded = $input['graded']; Production
-        $Game->graded = 1;
-//        $Game->players = json_encode(['player1' => $input['player1'],'player2' => $input['player2']]); Production
-        $Game->players = json_encode(['player1' => $request->user()->id,'player2' => '97c6682b-c8aa-4908-bdaf-9e566551279a']);
-        $Game->save();
-        $Player1 = $request->user();
-        $Player2 = User::find('97c6682b-c8aa-4908-bdaf-9e566551279a');
-//        return response()->json(['Initial State'=>$this->initialize($Game),'Game'=>$Game]);
-        return Inertia::render('Game/GameCanvas',['Game'=>$this->initialize($Game),
-            'Players'=>['Player1'=>$Player1,'Player2'=>$Player2]]);
+        $Room = $request->session()->get('Room');
+        if(!is_null($Room)){
+            $User = $request->user();
+            $Active_Game = Game::find($Room->GameId);
+            $First_State = GameState::where('game_id',$Active_Game->id)->where('sequence_number',0)->get();
+
+            if($First_State->isEmpty()) {
+                $Active_Game->players = json_encode(['player1' => $Room->Owner()->id,'player2' => $Room->Player()->id]);
+                $Active_Game->save();
+                $GameState = $this->initiate($Active_Game);
+            }
+            else
+                $GameState = new GameStateResource($First_State[0]);
+
+            $Player1 = $Room->Owner();
+            $Player2 = $Room->Player();
+
+            return Inertia::render('Game/GameCanvas',
+                [
+                    'Room' => new RoomResource($Room),
+                    'Game'=> $GameState,
+                    'Players'=>['Player1'=>$Player1,'Player2'=>$Player2]
+                ]);
+        }
     }
 
+    public function startGameForPlayer(Request $request) {
+        $input = $request->only('RoomId');
+        $Room = Room::find($input['RoomId']);
+        $Active_Game = Game::find($Room->GameId);
+        $Player1 = $request->user();
+        $Player2 = $Room->Owner();
+
+        return Inertia::render('Game/GameCanvas',['Room'=>new RoomResource($Room),'Game'=>$Active_Game,
+            'Players'=>['Player1'=>$Player1,'Player2'=>$Player2]]);
+    }
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
+     * @param Game $game
+     * @return Response
      */
 
     public function show(Game $game) {
@@ -64,8 +103,8 @@ class GameController extends Controller {
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
+     * @param Game $game
+     * @return Response
      */
     public function edit(Game $game) {
 
@@ -74,9 +113,9 @@ class GameController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Game $game
+     * @return Response
      */
     public function update(Request $request, Game $game) {
         //
@@ -85,14 +124,14 @@ class GameController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
+     * @param Game $game
+     * @return Response
      */
     public function destroy(Game $game) {
         //
     }
 
-    public function initialize(Game $game) {
+    public function initiate(Game $game) {
         $players = $game->players();
         $player1 = $players->player1;
         $player2 = $players->player2;
@@ -118,12 +157,31 @@ class GameController extends Controller {
     }
 
     public function checkEnemyMove(Request $request) {
-        $input = $request->only('game_id');
-        $Gameid = $input['game_id'];
-        $State = GameState::where('game_id',$Gameid)->orderByDesc('sequence_number')->first()->get();
-//        return Inertia::render('Game/GameCanvas',['Game' => $State,
-//            'Players'=>['Player1'=>$move->user(),'Player2'=>$this->nextTurn($GamePlayers,
-//                $move->user())]]);
-            return $State[0]->next_player()===$request->user()->id;
+        $input = $request->only('GameId');
+        $Game = Game::find($input['GameId']);
+        $State = GameState::where('game_id',$input['GameId'])->orderByDesc('sequence_number')->first();
+        if($State->next_player() === $request->user()->id) {
+            return Inertia::render('Game/GameCanvas',['Game'=>new GameStateResource($State),
+                'Players'=>['Player1'=>$request->user()->id,'Player2'=>$State->next_player]]);
+        }
+//            return $State[0]->next_player()===$request->user()->id;
     }
 }
+
+
+//useEffect(() => {
+//    const timer = !myTurn && setTimeout(() => {
+//        console.log("Checking for new Enemy Move");
+//        Inertia.post(route('Check_Enemy_Move'),{GameId:props.Game.game_id,Example:'Example'},{
+//            preserveScroll:true,
+//                    onSuccess:
+//                        (res)=> {
+//                res.props.Game && setNewState(res.props.Game);
+//                res.props.Game && setMyTurn(true);
+//                // console.log("Response",res);
+//            }
+//                });
+//        }, 1000);
+//
+//        return () => clearTimeout(timer); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+//    }, [Game]);

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
+use App\Models\Room;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class DashboardController extends Controller {
 
-    public function Dashboard(): \Inertia\Response {
-        return Inertia::render('Dashboard',['User'=>Auth::user()]);
+    public function Dashboard(): Response {
+        return Inertia::render('Dashboard');
     }
 }

@@ -39,7 +39,7 @@ class GameState extends Model {
         return $this->is_bluffed === 1;
     }
     public function bluff_called() {
-        return $this->bluff_has_been_called === 1;
+        return $this->bluff_has_been_called;
     }
     public function cards_down() {
         return json_decode($this->cards_down);

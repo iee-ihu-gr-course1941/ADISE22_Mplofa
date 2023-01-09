@@ -18,11 +18,11 @@ return new class extends Migration {
             $table->foreignUuid('winner')->default('');
 //          A boolean indicating if the game is graded.
 //          ( Winner will have his total points increased and losers will have theirs decreased).
-            $table->boolean('graded');
+            $table->boolean('graded')->default(false);
 //          A JSON Object containing all the players currently playing, looking like {
 //          Player1:{id:user_id,turn_no:random(1-total_players_count) : unique},
 //          Player2{id:user_id,turn_no:random(1-total_players_count) : unique},etc...}.
-            $table->json('players');
+            $table->json('players')->nullable();
         });
     }
 

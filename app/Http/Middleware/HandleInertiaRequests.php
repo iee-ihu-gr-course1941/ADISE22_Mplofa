@@ -43,6 +43,7 @@ class HandleInertiaRequests extends Middleware {
                     'location' => $request->url(),
                 ]);
             },
+//            'flash' => ['Data'=>fn () => $request->session()->get('Data')]
         ]);
     }
 }

@@ -127,7 +127,7 @@ class MoveController extends Controller {
         $New_State->status = $status;
         $New_State->cards_down = json_encode($cards_down);
         $New_State->next_player = $next_player;
-        $New_State->player_cards = json_encode($players_cards);
+        $New_State->player_cards = is_string($players_cards) ? $players_cards : json_encode($players_cards);
         $New_State->save();
         return $New_State;
     }
@@ -169,7 +169,8 @@ class MoveController extends Controller {
                 if($Last_State->is_bluffed() && $move->status() === "2") {
                     $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
                         true,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'1',['cards_down'=>[]],
-                        $this->assignCards($player_cards,$this->nextTurn($GamePlayers,$move->user()),$cards_down->cards_down,'add')));
+                        $this->assignCards($player_cards,$this->nextTurn($GamePlayers,$move->user()),
+                            $cards_down->cards_down,'add')));
                 }
                 else {
                     $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
@@ -182,38 +183,41 @@ class MoveController extends Controller {
             case '3': {
                 if($this->checkVictory($player1_cards,$player2_cards,$move->status())){
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
-                        $this->checkBluff($cards_played),$move->cards(),$this->nextTurn($GamePlayers,
+                        false,$move->cards(),$this->nextTurn($GamePlayers,
                             $move->user()),'2',['cards_down'=>[]],$player_cards));
                 }
                 else {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
-                        $this->checkBluff($cards_played),$move->cards(),$this->nextTurn($GamePlayers,
+                        false,$move->cards(),$this->nextTurn($GamePlayers,
                             $move->user()),'1',$cards_down,$player_cards));
                 }
                 break;
             }
         }
-        return Inertia::render('Game/GameCanvas',['Game' => $State,
-            'Players'=>['Player1'=>$move->user(),'Player2'=>$this->nextTurn($GamePlayers,
-                $move->user())]]);
+        return Inertia::render('Game/GameCanvas',['Game' => Inertia::lazy(fn()=>$State),
+            'Players'=>Inertia::lazy(fn ()=>['Player1'=>$move->user(),'Player2'=>$this->nextTurn($GamePlayers,
+            $move->user())])]);
     }
 
     protected function assignCards($player_cards,$player_id,$cards,$case) {
+        $new_player_cards = $player_cards;
         foreach ($player_cards as $player) {
             if ($player->id === $player_id) {
                 switch ($case) {
                     case 'add': {
-                        $player->cards = array_merge($player->cards, $cards);
+                        $player->cards = array_merge((array)$player->cards,$cards);
+                        break;
                     }
                     case 'remove' : {
                         $player->cards = array_udiff((array)$player->cards, (array)$cards, function ($card_A, $card_B) {
                             return strcmp($card_A->id, $card_B->id);
                         });
+                        break;
                     }
                 }
             }
         }
-        return $player_cards;
+        return (object)$player_cards;
     }
     protected function getCardsDown($last_state_cards,$cards_played) {
             return array_merge($last_state_cards,$cards_played->cards_played);

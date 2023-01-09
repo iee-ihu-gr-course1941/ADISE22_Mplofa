@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Game;
-use App\Models\Lobby;
+use App\Http\Resources\RoomResource;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
 
 class RoomController extends Controller {
     /**
@@ -31,10 +32,17 @@ class RoomController extends Controller {
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse|\Inertia\Response
      */
     public function store(Request $request) {
-        //
+        $input = $request->only(['Name','Capacity','Password']);
+        $Room = new Room;
+        $Room->OwnerId = $request->user()->id;
+        $Room->Name = $input['Name'];
+        $Room->Capacity = $input['Capacity'];
+        $Room->Password = $input['Password'] === '' ? null : $input['Password'];
+        $Room->save();
+        return Redirect::route('Initialize_Game',['RoomId'=>$Room->id])->with('Room',$Room);
     }
 
     /**
@@ -74,8 +82,16 @@ class RoomController extends Controller {
      * @param Room $room
      * @return Response
      */
-    public function destroy(Room $room) {
-        //
+    public function destroy(Request $request) {
+        $input = $request->only(['room_id']);
+        Room::destroy($input['room_id']);
+    }
+
+    public function pollRoom(Request $request) {
+        $input = $request->only('RoomId');
+        $Room = Room::find($input['RoomId']);
+//        ,'NRoom'=>Inertia::lazy(fn()=>new RoomResource(Room::find($Room->id)))
+        return Inertia::render('Game/GameWaitingRoom',['Room'=>new RoomResource($Room)]);
     }
 
     public function setReady(Request $request, Room $room) {
@@ -92,5 +108,36 @@ class RoomController extends Controller {
 //           }
        }
        return false;
+    }
+
+    public function Ready(Request $request) {
+        $input = $request->only(['RoomId']);
+        $Room = Room::find($input['RoomId']);
+        if($request->user()->id === $Room->Owner()->id) {
+            $Room->OwnerReady = true;
+            $Room->save();
+        }
+        else if ($request->user()->id === $Room->Player()->id) {
+            $Room->PlayerReady = true;
+            $Room->save();
+        }
+    }
+
+    public function Join(Request $request) {
+        $input = $request->only(['RoomId']);
+        $Room = Room::find($input['RoomId']);
+        $Room->PlayerId = $request->user()->id;
+        $Room->save();
+        return Inertia::render('Game/GameWaitingRoom',['Room'=>new RoomResource($Room)]);
+    }
+
+    public function Activate(Request $request) {
+        $input = $request->only(['RoomId']);
+        $Room = Room::find($input['RoomId']);
+        if(!$Room->Active()) {
+            $Room->GameActive = true;
+            $Room->save();
+        }
+        return Redirect::route('Play')->with('Room',$Room);
     }
 }

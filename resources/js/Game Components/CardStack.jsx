@@ -2,16 +2,19 @@ import Card from "./Card";
 import {AsCardBar} from "./AsCardBar";
 import uuid from "react-uuid";
 import {useContext} from "react";
-import {TurnContext} from "../Contexts/TurnContext";
 import {NextPlayerContext} from "../Contexts/NextPlayerContext";
+import {RoomContext} from "../Contexts/RoomContext";
+import {CardsPlayedContext} from "../Contexts/CardsPlayedContext";
+import {next} from "lodash/seq";
 
 export default function CardStack(props) {
     const Cards = new Map([[1, "🂠"]]),
         selectedCards = props.selected;
     const cardStack = props.cardStack.map((card) => {
         return <Card card={Cards.get(1)}></Card>
-    }), {nextPlayer,setNextPlayer} = useContext(NextPlayerContext);
-
+    }), {nextPlayer,setNextPlayer} = useContext(NextPlayerContext),
+    Room = useContext(RoomContext),cardsPlayed = useContext(CardsPlayedContext);
+    console.log('Next Player ',nextPlayer);
     return (
         <div className={'row text-center justify-content-center h-50 align-items-center'}>
             <div className='col-4 align-self-center'>
@@ -25,8 +28,37 @@ export default function CardStack(props) {
                 {cardStack.length!==0 ? 'Cards in the Stack : ' + cardStack.length : ''}
             </div>
             <div className='col-4 align-self-center'>
-                <h4 className={'my-3'} style={{color:"black "}}>Currently Playing</h4>
+                <h4 className={'my-3'} style={{color:"black "}}>Playing</h4>
                 <h3 className={'mb-4'}>{nextPlayer.name}</h3>
+                {cardsPlayed.count &&
+                    <div>
+                        <div>
+                            <h4 className={'me-1'}>
+                                {cardsPlayed.count}
+                            </h4>
+                        </div>
+                        {
+                            cardsPlayed.count === 1 ?
+                            <div className={'ms-3'}>
+                                <h4>
+                                    {cardsPlayed.number}
+                                    <h4 className={'me-1'}>
+                                        was Played.
+                                    </h4>
+
+                                </h4>
+                            </div>
+                            :
+                            <div className={'ms-3'}>
+                                <h4>
+                                    {cardsPlayed.number + "'s"}
+                                    <h4 className={'me-1'}>
+                                        were Played.
+                                    </h4>
+                                </h4>
+                            </div>
+                        }
+                    </div>}
             </div>
         </div>
     )
