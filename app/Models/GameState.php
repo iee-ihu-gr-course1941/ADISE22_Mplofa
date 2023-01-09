@@ -36,7 +36,7 @@ class GameState extends Model {
         return $this->sequence_number;
     }
     public function is_bluffed() {
-        return $this->is_bluffed === 1;
+        return $this->is_bluffed;
     }
     public function bluff_called() {
         return $this->bluff_has_been_called;

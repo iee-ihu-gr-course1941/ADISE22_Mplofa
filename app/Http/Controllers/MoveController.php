@@ -91,9 +91,15 @@ class MoveController extends Controller {
     public function destroy(Move $move) {
         //
     }
-
-    protected function checkVictory($cards1, $cards2, $bluff_called) {
-        return !$bluff_called && (count($cards1)===0 || count($cards2)===0);
+    protected function findWinner($player_cards) {
+        foreach ($player_cards as $player) {
+            if(count((array)$player->cards)===0) {
+                return $player->id;
+            }
+        }
+    }
+    protected function checkVictory($cards1, $cards2, $bluff_called,$is_bluffed) {
+        return !$bluff_called && !$is_bluffed && (count((array)$cards1)===0 || count((array)$cards2)===0);
     }
     protected function checkBluff($cards) {
         $as = $cards->as;
@@ -135,7 +141,7 @@ class MoveController extends Controller {
     protected function handleMove(Move $move) {
 //      Game Variables
         $GamePlayers = $this->getGamePlayers($move->game());
-
+        $Game = Game::find($move->game());
         $Last_State = GameState::where('game_id',$move->game())
             ->orderBy('sequence_number', 'desc')->first();
         $player_cards = json_decode($Last_State->player_cards);
@@ -148,11 +154,13 @@ class MoveController extends Controller {
 //      Played
             case '1': {
 //      Check if a player meets the conditions to win.
-                if($this->checkVictory($player1_cards,$player2_cards,$move->status())) {
+                if($this->checkVictory($player1_cards,$player2_cards,false,$this->checkBluff($cards_played))) {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
                         $this->checkBluff($cards_played),$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'2'
                         ,['cards_down'=>[]],
                         $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')));
+                    $Game->winner = $this->findWinner($player_cards);
+                    $Game->save();
                 }
                 else {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
@@ -166,25 +174,36 @@ class MoveController extends Controller {
 //      Called Bluff
             case '2': {
 //      Check if the current player called a bluff and if the last player did actually bluff.
-                if($Last_State->is_bluffed() && $move->status() === "2") {
+                if($Last_State->is_bluffed) {
                     $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
                         true,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'1',['cards_down'=>[]],
                         $this->assignCards($player_cards,$this->nextTurn($GamePlayers,$move->user()),
                             $cards_down->cards_down,'add')));
                 }
                 else {
-                    $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
-                        false,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'1',['cards_down'=>[]],
-                        $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')));
+                    if($this->checkVictory($player1_cards,$player2_cards,false,$Last_State->is_bluffed)){
+                        $Game->winner = $this->findWinner($player_cards);
+                        $Game->save();
+                        $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
+                            false,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'2',['cards_down'=>[]],
+                            $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')));
+                    }
+                    else {
+                        $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
+                            false,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'1',['cards_down'=>[]],
+                            $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')));
+                    }
                 }
                 break;
             }
 //      Pass
             case '3': {
-                if($this->checkVictory($player1_cards,$player2_cards,$move->status())){
+                if($this->checkVictory($player1_cards,$player2_cards,false,false)){
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
                         false,$move->cards(),$this->nextTurn($GamePlayers,
                             $move->user()),'2',['cards_down'=>[]],$player_cards));
+                    $Game->winner = $this->findWinner($player_cards);
+                    $Game->save();
                 }
                 else {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,

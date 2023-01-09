@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Game;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GameStateResource extends JsonResource {
@@ -13,7 +14,7 @@ class GameStateResource extends JsonResource {
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request) {
-        if($this->bluff_called()) {
+        if($this->bluff_has_been_called) {
             $Cards_played = 'Bluff_Called';
         }
         else {
@@ -22,7 +23,13 @@ class GameStateResource extends JsonResource {
             }
             else {
                 if(is_string(json_decode($this->cards_played)))
-                    $Cards_played = (object)json_decode(json_decode($this->cards_played))->as;
+                    if(is_array(json_decode(json_decode($this->cards_played)))){
+                        if(json_decode(json_decode($this->cards_played))===[])
+                            $Cards_played = 'Passed';
+                    }else{
+                        $Cards_played = (object)json_decode(json_decode($this->cards_played))->as;
+                    }
+
                 else
                     $Cards_played = json_decode($this->cards_played)->as;
 
@@ -37,7 +44,7 @@ class GameStateResource extends JsonResource {
         return [
             'game_id' => $this->game_id,
             'sequence_number' => $this->sequence_number,
-            'next_player' => $this->next_player,
+            'next_player' => is_string($this->next_player) ? User::find($this->next_player) : $this->next_player,
             'cards_down' => $cards_down_count,
             'status' => $this->status,
             'player_cards' => $Player_Cards,

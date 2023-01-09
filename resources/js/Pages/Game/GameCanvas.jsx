@@ -19,14 +19,14 @@ export default function GameCanvas(props) {
     [Game,setGame] = useState(props.Game ? props.Game : null),
     [Cards,setCards] = useState(props.Game ? props.Game.player_cards : []),
     [nextPlayer,setNextPlayer] = useState(props.Game &&
-        (props.Game.next_player === props.Players.Player1.id ?  props.Players.Player1 : props.Players.Player2)),
+        (props.Game.next_player.id === props.Players.Player1.id ?  props.Players.Player1 : props.Players.Player2)),
     [myCards,setMyCards] = useState(props.Game.player_cards.player1.cards),
     [enemyCards,setEnemyCards] = useState(Array(props.Game.player_cards.player2.count).fill('Empty')),
     [cardsInStack,setCardsInStack] = useState(props.Game ? Array(props.Game.cards_down).fill('Empty') : []),
     [selectedCards,setSelectedCards] = useState([]),
     [moveStatus,setMoveStatus] = useState(0),
     [GameOver,setGameOver] = useState(),
-    [myTurn,setMyTurn]=useState(props.Game ? props.Game.next_player === User.id : false),
+    [myTurn,setMyTurn]=useState(props.Game ? props.Game.next_player.id === User.id : false),
     [asSelected,setAsSelected] = useState(false),
     [cardsPlayed,setCardsPlayed] = useState(props.Game.cards_played);
     let selectedError = '';
@@ -96,7 +96,7 @@ export default function GameCanvas(props) {
         setEnemyCards(Array(NewState.player_cards.player2.count).fill('Empty'));
         setMyTurn(false);
         console.log("My turn",myTurn);
-        setNextPlayer(NewState.next_player === Players.Player1.id ?  Players.Player1 : Players.Player2);
+        setNextPlayer(NewState.next_player.id === Players.Player1.id ?  Players.Player1 : Players.Player2);
         setCards(NewState.player_cards);
         reset('cards_played','status');
     }

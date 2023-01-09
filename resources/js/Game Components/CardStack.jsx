@@ -28,8 +28,6 @@ export default function CardStack(props) {
                 {cardStack.length!==0 ? 'Cards in the Stack : ' + cardStack.length : ''}
             </div>
             <div className='col-4 align-self-center'>
-                <h4 className={'my-3'} style={{color:"black "}}>Playing</h4>
-                <h3 className={'mb-4'}>{nextPlayer.name}</h3>
                 {cardsPlayed.count &&
                     <div>
                         <div>
@@ -40,21 +38,16 @@ export default function CardStack(props) {
                         {
                             cardsPlayed.count === 1 ?
                             <div className={'ms-3'}>
-                                <h4>
-                                    {cardsPlayed.number}
-                                    <h4 className={'me-1'}>
-                                        was Played.
-                                    </h4>
-
+                                <h4>{cardsPlayed.number}</h4>
+                                <h4 className={'me-1'}>
+                                    was Played.
                                 </h4>
                             </div>
                             :
                             <div className={'ms-3'}>
-                                <h4>
-                                    {cardsPlayed.number + "'s"}
-                                    <h4 className={'me-1'}>
-                                        were Played.
-                                    </h4>
+                                <h4>{cardsPlayed.number + "'s"}</h4>
+                                <h4 className={'me-1'}>
+                                    were Played.
                                 </h4>
                             </div>
                         }

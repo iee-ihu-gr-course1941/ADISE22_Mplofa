@@ -13,7 +13,6 @@ export function Rooms({rooms,onSubmit,Data,children}) {
 
     const onHandleChange = (event) => {
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
-        console.log(event.target.value);
     };
     return (
         <div className='card border-0 p-1 shadow h-100' style={{background:"#AFBEC1"}}>

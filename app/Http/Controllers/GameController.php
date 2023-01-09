@@ -53,26 +53,27 @@ class GameController extends Controller {
      * @return JsonResponse|\Inertia\Response
      */
     public function store(Request $request) {
-        $Room = $request->session()->get('Room');
+        $Room = Room::find($request->only(['Room']));
+//            ->session()->get('Room');
         if(!is_null($Room)){
             $User = $request->user();
-            $Active_Game = Game::find($Room->GameId);
+            $Active_Game = Game::find($Room[0]->GameId);
             $First_State = GameState::where('game_id',$Active_Game->id)->where('sequence_number',0)->get();
 
             if($First_State->isEmpty()) {
-                $Active_Game->players = json_encode(['player1' => $Room->Owner()->id,'player2' => $Room->Player()->id]);
+                $Active_Game->players = json_encode(['player1' => $Room[0]->Owner()->id,'player2' => $Room[0]->Player()->id]);
                 $Active_Game->save();
                 $GameState = $this->initiate($Active_Game);
             }
             else
                 $GameState = new GameStateResource($First_State[0]);
 
-            $Player1 = $Room->Owner();
-            $Player2 = $Room->Player();
+            $Player1 = $Room[0]->Owner();
+            $Player2 = $Room[0]->Player();
 
             return Inertia::render('Game/GameCanvas',
                 [
-                    'Room' => new RoomResource($Room),
+                    'Room' => new RoomResource($Room[0]),
                     'Game'=> $GameState,
                     'Players'=>['Player1'=>$Player1,'Player2'=>$Player2]
                 ]);
@@ -93,11 +94,11 @@ class GameController extends Controller {
      * Display the specified resource.
      *
      * @param Game $game
-     * @return Response
+     * @return \Inertia\Response
      */
 
-    public function show(Game $game) {
-        //
+    public function showWinner(Request $request) {
+        return Inertia::render('Game/WinningScreen');
     }
 
     /**
@@ -162,7 +163,7 @@ class GameController extends Controller {
         $State = GameState::where('game_id',$input['GameId'])->orderByDesc('sequence_number')->first();
         if($State->next_player() === $request->user()->id) {
             return Inertia::render('Game/GameCanvas',['Game'=>new GameStateResource($State),
-                'Players'=>['Player1'=>$request->user()->id,'Player2'=>$State->next_player]]);
+                'Players'=>['Player1'=>$request->user()->id,'Player2'=>$State->next_player],'GameObject'=>$Game]);
         }
 //            return $State[0]->next_player()===$request->user()->id;
     }

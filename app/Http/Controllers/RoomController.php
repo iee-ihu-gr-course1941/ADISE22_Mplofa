@@ -121,23 +121,62 @@ class RoomController extends Controller {
             $Room->PlayerReady = true;
             $Room->save();
         }
+        return Redirect::route('Check_For_New_Player',['RoomId'=>$Room->id]);
     }
 
     public function Join(Request $request) {
         $input = $request->only(['RoomId']);
         $Room = Room::find($input['RoomId']);
+        if(is_null($Room))
+            return Redirect::route('home')->withErrors(['Room_Doesnt_Exist'=>true]);
         $Room->PlayerId = $request->user()->id;
         $Room->save();
         return Inertia::render('Game/GameWaitingRoom',['Room'=>new RoomResource($Room)]);
     }
 
+    public function Leave(Request $request) {
+        $input = $request->only(['RoomId']);
+        $Room = Room::find($input['RoomId']);
+        if($request->user()->id === $Room->Owner()->id) {
+            $Room->OwnerId = null;
+            if($Room->OwnerReadyBool())
+                $Room->OwnerReady = false;
+            if(!is_null($Room->Player())) {
+                $Room->OwnerId = $Room->Player()->id;
+                $Room->PlayerId = null;
+                if($Room->PlayerReadyBool()) {
+                    $Room->OwnerReady = true;
+                    $Room->PlayerReady = false;
+                }
+                $Room->save();
+                return Redirect::route('home');
+            }
+            if(is_null($Room->Owner()) && is_null($Room->Player()))
+                $Room->delete();
+            else
+                $Room->save();
+            return Redirect::route('home');
+        }
+        else if($request->user()->id === $Room->Player()->id) {
+            $Room->PlayerId = null;
+            if($Room->PlayerReadyBool())
+                $Room->PlayerReady = false;
+            if(is_null($Room->Owner()) && is_null($Room->Player()))
+                $Room->delete();
+            else
+                $Room->save();
+        }
+        return Redirect::route('home');
+    }
+
     public function Activate(Request $request) {
         $input = $request->only(['RoomId']);
         $Room = Room::find($input['RoomId']);
-        if(!$Room->Active()) {
-            $Room->GameActive = true;
-            $Room->save();
-        }
-        return Redirect::route('Play')->with('Room',$Room);
+            if(!$Room->Active() && $request->user()->id === $Room->Owner()->id) {
+                $Room->GameActive = true;
+                $Room->save();
+            }
+        return Redirect::route('Play',['Room'=>$Room->id]);
+//            ->with('Room',$Room);
     }
 }

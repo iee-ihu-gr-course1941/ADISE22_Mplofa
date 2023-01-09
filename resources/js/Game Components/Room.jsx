@@ -18,7 +18,7 @@ export function Room({Room}) {
                                 <img className={'me-2'} src={"/Images/UserIcon.png"} width={25} alt={"Players"}></img>
                             </div>}
                             <div className={'col-9 text-center mx-auto mt-3'}>
-                                <h5>{Room.Owner.name}</h5><div><h5>{Room.Player && Room.Player.name}</h5></div>
+                                <h5>{Room.Owner && Room.Owner.name}</h5><div><h5>{Room.Player && Room.Player.name}</h5></div>
                             </div>
                         </div>
                         <div className="row justify-content-center">

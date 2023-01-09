@@ -5,6 +5,7 @@ import {Link} from "@inertiajs/inertia-react";
 export default function GameWaitingRoom(props) {
     const [Room,setRoom] = useState(props.Room),
         User = props.auth.user,
+        [userLeft,setUserLeft] = useState(false),
         // [cantClickReady,setCantClickReady] = useState(true),
     MINUTE_MS = 5000;
 
@@ -14,17 +15,20 @@ export default function GameWaitingRoom(props) {
     //     }, 7500);
     //     return () => clearTimeout(timer);
     // },[])
-
+    console.log(Room)
     useEffect(() => {
-        const timer = !Room.Game_Active && setTimeout(() => {
+        const timer = (!userLeft && !Room.Game_Active) && setTimeout(() => {
             console.log('Checking if another player has joined!');
+            userLeft && console.log(User.name,' has left the Room!');
+            if(!userLeft) {
                 Inertia.get(route('Check_For_New_Player'),{RoomId:Room.id},
                     {onSuccess:(res)=> {
                             setRoom(res.props.Room);
                             console.log('res',res.props.Room);
                             if(res.props.Room.OwnerReady && res.props.Room.PlayerReady) {
+                            // if(res.props.Room.Game_Active) {
                                 console.log("Activating Room, Initiating Game");
-                                Inertia.post(route('Activate_Room'),{RoomId:props.Room.id,GameId:props.Room.GameId},{
+                                Inertia.post(route('Activate_Room'),{RoomId:res.props.Room.id,GameId:res.props.Room.GameId},{
                                     preserveScroll:true,
                                     onSuccess:
                                         (res)=> {
@@ -33,10 +37,11 @@ export default function GameWaitingRoom(props) {
                                 });
                             }
                         }});
+            }
         }, MINUTE_MS);
 
         return () => clearTimeout(timer);
-    }, [Room]);
+    }, [Room,userLeft]);
 
     return (
         <div className='container-fluid vh-100 vw-100 position-relative p-5' style={{background:"#EEEEEE"}}>
@@ -79,6 +84,10 @@ export default function GameWaitingRoom(props) {
                             )
                         }
                     </div>
+                    <Link href={route('Leave_Room')} method={'post'} data={{RoomId:Room.id}} as={'button'}
+                          className="btn btn-outline-danger w-25 mt-4" type="button" onClick={()=>{setUserLeft(true)}} disabled={Room.Game_Active}>
+                        Leave Room
+                    </Link>
                 </div>
                 <div className='col-4 px-0 text-center h-100 py-5 align-items-center my-5'>
                     <div className='card border-1 p-2 h-50 shadow-lg mt-5' style={{background:"#e6e6e6"}}>
