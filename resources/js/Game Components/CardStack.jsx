@@ -5,15 +5,16 @@ import {useContext} from "react";
 import {NextPlayerContext} from "../Contexts/NextPlayerContext";
 import {RoomContext} from "../Contexts/RoomContext";
 import {CardsPlayedContext} from "../Contexts/CardsPlayedContext";
-import {next} from "lodash/seq";
+import {UserContext} from "../Contexts/UserContext";
 
 export default function CardStack(props) {
     const Cards = new Map([[1, "🂠"]]),
         selectedCards = props.selected;
     const cardStack = props.cardStack.map((card) => {
         return <Card card={Cards.get(1)}></Card>
-    }), {nextPlayer,setNextPlayer} = useContext(NextPlayerContext),
-    Room = useContext(RoomContext),cardsPlayed = useContext(CardsPlayedContext);
+    }), nextPlayer = useContext(NextPlayerContext),
+    Room = useContext(RoomContext),cardsPlayed = useContext(CardsPlayedContext),
+    User = useContext(UserContext);
     return (
         <div className={'row text-center justify-content-center h-50 align-items-center'}>
             <div className='col-4 align-self-center'>
@@ -27,7 +28,9 @@ export default function CardStack(props) {
                 {cardStack.length!==0 ? 'Cards in the Stack : ' + cardStack.length : ''}
             </div>
             <div className='col-4 align-self-center'>
-                {cardsPlayed.count &&
+                {
+                    //  The other player has played some cards
+                    cardsPlayed && cardsPlayed.count ?
                     <div>
                         <div>
                             <h4 className={'me-1'}>
@@ -39,18 +42,38 @@ export default function CardStack(props) {
                             <div className={'ms-3'}>
                                 <h4>{cardsPlayed.number}</h4>
                                 <h4 className={'me-1'}>
-                                    was Played.
+                                    {'was Played by' + (User.id !== nextPlayer.id ? 'You.' : nextPlayer.name)}
                                 </h4>
                             </div>
                             :
                             <div className={'ms-3'}>
                                 <h4>{cardsPlayed.number + "'s"}</h4>
                                 <h4 className={'me-1'}>
-                                    were Played.
+                                    {'were played by ' + (User.id !== nextPlayer.id ? 'You.' : nextPlayer.name)}
                                 </h4>
                             </div>
                         }
-                    </div>}
+                    </div>
+                    :
+                    //    The other player has either passed or called a bluff.
+                    <div>
+                        <div>
+                            {/*<h4 className={'me-1'}>*/}
+                            {/*    {cardsPlayed.count}*/}
+                            {/*</h4>*/}
+                        </div>
+                        {
+                            cardsPlayed === 'Passed' ?
+                                <div className={'ms-3'}>
+                                    <h4>{(User.id !== nextPlayer.id ? 'You' : nextPlayer.name) + ' passed'}</h4>
+                                </div>
+                                : cardsPlayed === 'Bluff_Called' &&
+                                <div className={'ms-3'}>
+                                    <h4>{(User.id !== nextPlayer.id ? 'You' : nextPlayer.name) + ' called a Bluff'}</h4>
+                                </div>
+                        }
+                    </div>
+                }
             </div>
         </div>
     )

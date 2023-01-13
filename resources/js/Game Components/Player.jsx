@@ -13,10 +13,9 @@ export default function Player({Position,Enemy,onSubmit,handlePlay,handlePass,ha
     const { myCards , setMyCards } = useContext(CardsContext),
     { enemyCards , setEnemyCards } = useContext(CardsContext),
     { myTurn,setMyTurn } = useContext(TurnContext),
-    { cardStackLength } = !isEnemy && useContext(StackContext),
+    cardStackLength  = !isEnemy && useContext(StackContext),
     User = useContext(UserContext);
     const { selectedCards,onSelectCard} = !isEnemy &&  useContext(SelectedCardsContext);
-    // console.log(Room)
     return (
         <div className={'row text-center text align-items-center justify-content-center ' + position}>
             <strong style={{fontSize:20}}>Cards Remaining : {myCards ? myCards.length : enemyCards.length}</strong>
@@ -26,7 +25,7 @@ export default function Player({Position,Enemy,onSubmit,handlePlay,handlePass,ha
                         {children}
                     </form>}
                 </div>}
-            <CardContainer size={size} Enemy={isEnemy}>
+            <CardContainer Enemy={isEnemy}>
 
             </CardContainer>
         </div>

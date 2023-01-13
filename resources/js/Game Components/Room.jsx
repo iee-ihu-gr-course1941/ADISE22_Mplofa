@@ -1,6 +1,9 @@
 import {Link} from "@inertiajs/inertia-react";
+import {UserContext} from "../Contexts/UserContext";
+import {useContext} from "react";
 
-export function Room({Room}) {
+export function Room({Room,auth}) {
+    const User = useContext(UserContext);
     return (
         <div className="carousel-item active p-4 w-100">
             <div className='card border-0 p-3 shadow h-100 my-3 w-50 mx-auto'>
@@ -23,7 +26,10 @@ export function Room({Room}) {
                         </div>
                         <div className="row justify-content-center">
                             <Link href={route('Join_Room')} method={'post'} data={{RoomId:Room.id}} as={'button'}
-                                  className="btn btn-success text-center mt-4 w-50 ms-5" type="button" disabled={Room.Owner && Room.Player}>
+                                  className="btn btn-success text-center mt-4 w-50 ms-5" type="button"
+                                  disabled={(Room.Owner && Room.Player) ||
+                                      ((Room.Owner && Room.Owner.id === User.id) ||
+                                          (Room.Player && Room.Player.id === User.id))}>
                                 Join
                             </Link>
                         </div>

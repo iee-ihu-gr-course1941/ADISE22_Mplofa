@@ -5,9 +5,9 @@ import {Rooms} from "../Profile/Rooms";
 import {Inertia} from "@inertiajs/inertia";
 import {useEffect, useState} from "react";
 import {Room} from "../Game Components/Room";
+import {UserContext} from "../Contexts/UserContext";
 
 export default function Dashboard(props) {
-    console.log(props);
     const  { data, setData, post, processing, errors, reset } = useForm({
         Name: "",
         Password: "",
@@ -38,12 +38,14 @@ export default function Dashboard(props) {
                         {/*    </PersonalInfo>*/}
                         {/*</div>*/}
                         <div className={'col-12'}>
-                            <Rooms rooms={RoomsList} onSubmit={submit} Data={{data, setData,errors}}>
-                                <Link href={route('home')} data={{RoomId:Room.id}} as={'button'}
-                                      className="btn btn-outline-dark text-center mt-4" type="button" only={['Rooms']}>
-                                    Reload
-                                </Link>
-                            </Rooms>
+                            <UserContext.Provider value={props.auth.user}>
+                                <Rooms rooms={RoomsList} onSubmit={submit} Data={{data, setData, errors}}>
+                                    <Link href={route('home')} data={{RoomId:Room.id}} as={'button'}
+                                          className="btn btn-outline-dark text-center mt-4" type="button" only={['Rooms']}>
+                                        Reload
+                                    </Link>
+                                </Rooms>
+                            </UserContext.Provider>
                             {
                                 roomDoesntExistErrorVisible &&
                                 <div className="alert alert-danger text-center" role="alert">

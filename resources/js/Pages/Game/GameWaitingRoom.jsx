@@ -8,7 +8,6 @@ export default function GameWaitingRoom(props) {
         [userLeft,setUserLeft] = useState(false),
         // [cantClickReady,setCantClickReady] = useState(true),
     MINUTE_MS = 5000;
-
     // useEffect(()=> {
     //     const timer = setTimeout(() => {
     //         setCantClickReady(false);
@@ -23,7 +22,6 @@ export default function GameWaitingRoom(props) {
                             setRoom(res.props.Room);
                             if(res.props.Room.OwnerReady && res.props.Room.PlayerReady) {
                             // if(res.props.Room.Game_Active) {
-                                console.log("Activating Room, Initiating Game");
                                 Inertia.post(route('Activate_Room'),{RoomId:res.props.Room.id,GameId:res.props.Room.GameId},{
                                     preserveScroll:true,
                                     onSuccess:
@@ -35,7 +33,6 @@ export default function GameWaitingRoom(props) {
                         }});
             }
         }, MINUTE_MS);
-
         return () => clearTimeout(timer);
     }, [Room,userLeft]);
 

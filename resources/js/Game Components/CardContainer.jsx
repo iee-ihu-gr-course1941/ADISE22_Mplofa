@@ -5,6 +5,7 @@ import {Pagination} from "../Components/Pagination";
 import uuid from "react-uuid";
 import {CardsContext} from "../Contexts/CardsContext";
 import {SelectedCardsContext} from "../Contexts/SelectedCardsContext";
+import {StackContext} from "../Contexts/StackContext";
 
 export const Hand = styled.div`
   justify-items:center;
@@ -39,7 +40,8 @@ export default function CardContainer(props) {
         currentPage={currentPage}
         totalCount={totalCount}
         pageSize={PageSize}
-        onPageChange={page => setCurrentPage(page)}/>;
+        onPageChange={page => setCurrentPage(page)}/>,
+    stackSize = useContext(StackContext);
 
     useEffect(()=> {
         setChanged(!changed);

@@ -10,6 +10,7 @@ import {StackContext} from "../../Contexts/StackContext";
 import {Button} from "react-bootstrap";
 import {Inertia} from "@inertiajs/inertia";
 import {CardsPlayedContext} from "../../Contexts/CardsPlayedContext";
+import {UserContext} from "../../Contexts/UserContext";
 
 export default function GameCanvas(props) {
     const User = props.auth.user,
@@ -17,8 +18,7 @@ export default function GameCanvas(props) {
     [Players,setPlayers] = useState(props.Players),
     [Game,setGame] = useState(props.Game ? props.Game : null),
     [Cards,setCards] = useState(props.Game ? props.Game.player_cards : []),
-    [nextPlayer,setNextPlayer] = useState(props.Game &&
-        (props.Game.next_player.id === props.Players.Player1.id ?  props.Players.Player1 : props.Players.Player2)),
+    [nextPlayer,setNextPlayer] = useState(props.Game.next_player),
     [myCards,setMyCards] = useState(props.Game.player_cards.player1.cards),
     [enemyCards,setEnemyCards] = useState(Array(props.Game.player_cards.player2.count).fill('Empty')),
     [cardsInStack,setCardsInStack] = useState(props.Game ? Array(props.Game.cards_down).fill('Empty') : []),
@@ -46,9 +46,16 @@ export default function GameCanvas(props) {
                     preserveScroll:true,
                     onSuccess:
                         (res)=> {
-                            res.props.Game && setNewState(res.props.Game);
-                            res.props.Game && clearInterval(interval);
-                            res.props.Game && setMyTurn(true);
+                            console.log(res.props.GameObject.winner);
+                            if(!res.props.GameObject.winner){
+                                res.props.Game && setNewState(res.props.Game);
+                                res.props.Game && clearInterval(interval);
+                                res.props.Game && setMyTurn(true);
+                            }
+                            else {
+                                console.log('Game has ended, there is a winner');
+                                Inertia.post(route('Winner'),data);
+                            }
                         }
                 });
             }
@@ -63,8 +70,18 @@ export default function GameCanvas(props) {
         data.status=1;
         if(asSelected)
             Inertia.post(route('Make_Move'),data,
-         {only:['Game'],preserveScroll:true,
-                onSuccess:(res)=>{setNewState(res.props.Game);}});
+         {only:['Game','GameObject'],preserveScroll:true,
+                onSuccess:(res)=> {
+             console.log(res.props)
+                    if(!res.props.GameObject.winner) {
+                        setNewState(res.props.Game);
+                        reset('cards_played','status');
+                    }
+                    else {
+                        console.log('Game has ended, there is a winner');
+                        Inertia.post(route('Winner'),data);
+                    }
+                }});
     }
 
     function handleBluff() {
@@ -72,8 +89,18 @@ export default function GameCanvas(props) {
         setSelectedCards([]);
         data.cards_played = [];
         Inertia.post(route('Make_Move'),data,
-            {only:['Game'],preserveScroll:true,
-                onSuccess:(res)=>{setNewState(res.props.Game);}});
+            {only:['Game','GameObject'],preserveScroll:true,
+                onSuccess:(res)=>   {
+                console.log(res.props)
+                    if(!res.props.GameObject.winner) {
+                        setNewState(res.props.Game);
+                        reset('cards_played','status');
+                    }
+                    else {
+                        console.log('Game has ended, there is a winner');
+                        Inertia.post(route('Winner'),data);
+                    }
+            }});
     }
 
     function handlePass() {
@@ -81,8 +108,17 @@ export default function GameCanvas(props) {
         setSelectedCards([]);
         data.cards_played = [];
         Inertia.post(route('Make_Move'),data,
-            {only:['Game'],preserveScroll:true,
-                onSuccess:(res)=>{setNewState(res.props.Game);}});
+            {only:['Game','GameObject'],preserveScroll:true,
+                onSuccess:(res)=>   {
+                    if(!res.props.GameObject.winner){
+                        setNewState(res.props.Game);
+                        reset('cards_played','status');
+                    }
+                    else {
+                        console.log('Game has ended, there is a winner');
+                        Inertia.post(route('Winner'),data);
+                    }
+            }});
     }
 
     function setNewState(NewState) {
@@ -92,9 +128,9 @@ export default function GameCanvas(props) {
         setMyCards(NewState.player_cards.player1.cards);
         setEnemyCards(Array(NewState.player_cards.player2.count).fill('Empty'));
         setMyTurn(false);
-        setNextPlayer(NewState.next_player.id === Players.Player1.id ?  Players.Player1 : Players.Player2);
+        setNextPlayer(NewState.next_player);
         setCards(NewState.player_cards);
-        reset('cards_played','status');
+        setCardsPlayed(NewState.cards_played);
     }
     function handleAs(e) {
             data.cards_played.cards_played = selectedCards;
@@ -119,9 +155,11 @@ export default function GameCanvas(props) {
                                         <CardsContext.Provider value={{enemyCards,setEnemyCards}}>
                                                 <Player Position='Top' Enemy={true}></Player>
                                         </CardsContext.Provider>
-                                        <NextPlayerContext.Provider value={{nextPlayer,setNextPlayer}}>
+                                        <NextPlayerContext.Provider value={nextPlayer}>
                                             <CardsPlayedContext.Provider value={cardsPlayed}>
-                                                <CardStack cardStack={cardsInStack} selected={selectedCards} handleAs={handleAs}></CardStack>
+                                                <UserContext.Provider value={User}>
+                                                    <CardStack cardStack={cardsInStack} selected={selectedCards} handleAs={handleAs}></CardStack>
+                                                </UserContext.Provider>
                                             </CardsPlayedContext.Provider>
                                         </NextPlayerContext.Provider>
                                         <CardsContext.Provider value={{myCards,setMyCards}}>
@@ -134,8 +172,10 @@ export default function GameCanvas(props) {
                                                             <Button className={'btn btn-info w-auto mx-3 my-1'} onClick={handlePlay}>{selectedCards.length  > 1 ? 'Play cards' : 'Play Card'}</Button>
                                                             <></>
                                                         </>
-                                                        : <>
-                                                            <button className={'btn btn-danger w-100'}  onClick={handlePass}>Pass</button>
+                                                        :
+                                                        <>
+                                                            {cardsInStack.length === 0 && <h6>Play at least 1 card.</h6>}
+                                                            <button className={'btn btn-danger w-100'}  onClick={handlePass} disabled={cardsInStack.length === 0}>Pass</button>
                                                             <button className='btn btn-warning w-auto mt-2' onClick={handleBluff} disabled={cardsInStack.length === 0}>Call Bluff</button>
                                                         </>}
                                                 </Player>

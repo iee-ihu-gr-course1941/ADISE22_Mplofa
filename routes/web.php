@@ -26,9 +26,9 @@ Auth::routes();
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/Game/Play', [GameController::class, 'store'])->middleware(['auth'])->name('Play');
-Route::get('/Game/Winner', [GameController::class, 'showWinner'])->middleware(['auth'])->name('Winner');
+Route::post('/Game/Winner', [GameController::class, 'showWinner'])->middleware(['auth'])->name('Winner');
 Route::post('Game/Play/Make_Move',[MoveController::class,'store'])->middleware(['auth'])->name('Make_Move');
 Route::get('Game/Play/checkEnemyMove',[GameController::class, 'checkEnemyMove'])->name('Check_Enemy_Move');
 Route::post('Room/New',[RoomController::class,'store'])->name('New_Room');
