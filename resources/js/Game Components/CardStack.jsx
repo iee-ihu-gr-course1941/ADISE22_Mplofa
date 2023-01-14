@@ -1,11 +1,12 @@
 import Card from "./Card";
 import {AsCardBar} from "./AsCardBar";
 import uuid from "react-uuid";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {NextPlayerContext} from "../Contexts/NextPlayerContext";
 import {RoomContext} from "../Contexts/RoomContext";
 import {CardsPlayedContext} from "../Contexts/CardsPlayedContext";
 import {UserContext} from "../Contexts/UserContext";
+import {HeightContext} from "../Contexts/HeightContext";
 
 export default function CardStack(props) {
     const Cards = new Map([[1, "🂠"]]),
@@ -14,14 +15,17 @@ export default function CardStack(props) {
         return <Card card={Cards.get(1)}></Card>
     }), nextPlayer = useContext(NextPlayerContext),
     Room = useContext(RoomContext),cardsPlayed = useContext(CardsPlayedContext),
-    User = useContext(UserContext);
+    User = useContext(UserContext),viewport_height = useContext(HeightContext);
+    console.log('Stack',viewport_height)
+    const height = (viewport_height < 500) ? ' h-25' : ' h-50',
+    margin = (viewport_height < 500) ? ' my-4' : '';
     return (
-        <div className={'row text-center justify-content-center h-50 align-items-center'}>
+        <div className={'row text-center justify-content-center align-items-center' + height + margin}>
             <div className='col-4 align-self-center'>
                 {selectedCards.length>0 ? <AsCardBar key={uuid()} handleAs={props.handleAs} selected={selectedCards}></AsCardBar>:''}
             </div>
             <div className='col-2 display-1 align-self-center'>
-                {cardStack.length!==0 ? <Card card={Cards.get(1)} Stacked={true} ></Card>
+                {(cardStack.length!==0 ) ? <Card card={Cards.get(1)} Stacked={true} ></Card>
                     : ''}
             </div>
             <div className='col-2 h4 align-self-center'>
@@ -42,14 +46,14 @@ export default function CardStack(props) {
                             <div className={'ms-3'}>
                                 <h4>{cardsPlayed.number}</h4>
                                 <h4 className={'me-1'}>
-                                    {'was Played by' + (User.id !== nextPlayer.id ? 'You.' : nextPlayer.name)}
+                                    {'was Played by' + (User.id !== nextPlayer.id ? ' You.' : nextPlayer.name)}
                                 </h4>
                             </div>
                             :
                             <div className={'ms-3'}>
                                 <h4>{cardsPlayed.number + "'s"}</h4>
                                 <h4 className={'me-1'}>
-                                    {'were played by ' + (User.id !== nextPlayer.id ? 'You.' : nextPlayer.name)}
+                                    {'were played by ' + (User.id !== nextPlayer.id ? ' You.' : nextPlayer.name)}
                                 </h4>
                             </div>
                         }

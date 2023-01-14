@@ -31,7 +31,7 @@ export default function Dashboard(props) {
         <Authenticated>
             <Head title="Dashboard" ><title>Dashboard</title></Head>
                 <div className='container p-3'>
-                    <div className={'row'}>
+                    <div className={'row gx-0'}>
                         {/*<div className={'col-6'}>*/}
                         {/*    <PersonalInfo User={props.auth.user}>*/}
 

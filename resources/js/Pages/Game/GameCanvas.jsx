@@ -11,6 +11,7 @@ import {Button} from "react-bootstrap";
 import {Inertia} from "@inertiajs/inertia";
 import {CardsPlayedContext} from "../../Contexts/CardsPlayedContext";
 import {UserContext} from "../../Contexts/UserContext";
+import {HeightContext} from "../../Contexts/HeightContext";
 
 export default function GameCanvas(props) {
     const User = props.auth.user,
@@ -27,8 +28,13 @@ export default function GameCanvas(props) {
     [GameOver,setGameOver] = useState(),
     [myTurn,setMyTurn]=useState(props.Game ? props.Game.next_player.id === User.id : false),
     [asSelected,setAsSelected] = useState(false),
-    [cardsPlayed,setCardsPlayed] = useState(props.Game.cards_played);
-    let selectedError = '';
+    [cardsPlayed,setCardsPlayed] = useState(props.Game.cards_played),
+    [viewport_height,setViewport_Height] = useState(window.innerHeight),
+    buttonSize = (viewport_height < 500) ? 'btn-sm' : '',
+    buttonWidth = (viewport_height < 500) ? 'w-auto' : 'w-100',
+    passMargin = (viewport_height < 500) ? 'ms-1' : ' my-4';
+    console.log('Canvas',viewport_height);
+
     const { data, setData, post,get, processing, errors, reset } = useForm({
         user_id: User.id,
         game_id: Game ? Game.game_id : null,
@@ -38,6 +44,14 @@ export default function GameCanvas(props) {
 
     const MINUTE_MS = 4000;
 
+    useEffect(() => {
+        function handleResize() {
+            // console.log('resized to: ', window.innerWidth, 'x', window.innerHeight);
+            setViewport_Height(window.innerHeight);
+        }
+
+        window.addEventListener('resize', handleResize)
+    });
 
     useEffect(() => {
         const interval = !myTurn && setInterval(() => {
@@ -54,7 +68,7 @@ export default function GameCanvas(props) {
                             }
                             else {
                                 console.log('Game has ended, there is a winner');
-                                Inertia.post(route('Winner'),data);
+                                Inertia.get(route('Winner'),data);
                             }
                         }
                 });
@@ -79,7 +93,7 @@ export default function GameCanvas(props) {
                     }
                     else {
                         console.log('Game has ended, there is a winner');
-                        Inertia.post(route('Winner'),data);
+                        Inertia.get(route('Winner'),data);
                     }
                 }});
     }
@@ -98,7 +112,7 @@ export default function GameCanvas(props) {
                     }
                     else {
                         console.log('Game has ended, there is a winner');
-                        Inertia.post(route('Winner'),data);
+                        Inertia.get(route('Winner'),data);
                     }
             }});
     }
@@ -116,7 +130,7 @@ export default function GameCanvas(props) {
                     }
                     else {
                         console.log('Game has ended, there is a winner');
-                        Inertia.post(route('Winner'),data);
+                        Inertia.get(route('Winner'),data);
                     }
             }});
     }
@@ -144,10 +158,10 @@ export default function GameCanvas(props) {
     }
 
     return (
-        // <RoomContext.Provider value={Room}>
-            <div className='container-fluid vh-100 vw-100 position-relative p-2'>
+        <HeightContext.Provider value={viewport_height}>
+            <div className='container-fluid vh-100 w-100 position-relative p-2'>
                 <div className='row h-100 p-0 mx-0'>
-                    <div className='col-11 px-0'>
+                    <div className='col-12 px-0'>
                         <div className='card h-100'>
                             <div className='card-body h-100 text-center' style={{background:"#295f48"}}>
                                 <SelectedCardsContext.Provider value={{selectedCards,setSelectedCards}}>
@@ -169,14 +183,13 @@ export default function GameCanvas(props) {
                                                         handlePlay={handlePlay} onSubmit={submit} reset={reset}>
                                                     { selectedCards.length!==0 ?
                                                         <>
-                                                            <Button className={'btn btn-info w-auto mx-3 my-1'} onClick={handlePlay}>{selectedCards.length  > 1 ? 'Play cards' : 'Play Card'}</Button>
-                                                            <></>
+                                                            <Button className={'btn btn-info w-auto mx-3 my-1'} onClick={handlePlay}>{selectedCards.length  > 1 ? 'Play Cards' : 'Play Card'}</Button>
                                                         </>
                                                         :
                                                         <>
-                                                            {cardsInStack.length === 0 && <h6>Play at least 1 card.</h6>}
-                                                            <button className={'btn btn-danger w-100'}  onClick={handlePass} disabled={cardsInStack.length === 0}>Pass</button>
-                                                            <button className='btn btn-warning w-auto mt-2' onClick={handleBluff} disabled={cardsInStack.length === 0}>Call Bluff</button>
+                                                            {cardsInStack.length === 0 && viewport_height > 500 && <h6>Play at least 1 card.</h6>}
+                                                            <button className={'btn btn-danger ' + buttonSize + buttonWidth}  onClick={handlePass} disabled={cardsInStack.length === 0}>Pass</button>
+                                                            <button className={'btn btn-warning ' + buttonSize + buttonWidth + passMargin} onClick={handleBluff} disabled={cardsInStack.length === 0}>Call Bluff</button>
                                                         </>}
                                                 </Player>
                                             </StackContext.Provider>
@@ -186,19 +199,19 @@ export default function GameCanvas(props) {
                             </div>
                         </div>
                     </div>
-                    <div className='col-1 p-5' style={{background:"ghostwhite"}}>
-                        <button className="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
-                            Toggle
-                        </button>
-                        {/*{*/}
-                        {/*    Room.Game_Active &&*/}
-                        {/*<ScoreBoard Players={Players}>*/}
+                    {/*<div className='col-1 p-5' style={{background:"ghostwhite"}}>*/}
+                    {/*    <button className="btn btn-primary" type="button" data-bs-toggle="offcanvas"*/}
+                    {/*            data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">*/}
+                    {/*        Toggle*/}
+                    {/*    </button>*/}
+                    {/*    /!*{*!/*/}
+                    {/*    /!*    Room.Game_Active &&*!/*/}
+                    {/*    /!*<ScoreBoard Players={Players}>*!/*/}
 
-                        {/*</ScoreBoard>}*/}
-                    </div>
+                    {/*    /!*</ScoreBoard>}*!/*/}
+                    {/*</div>*/}
                 </div>
             </div>
-        // </RoomContext.Provider>
+        </HeightContext.Provider>
     )
 }

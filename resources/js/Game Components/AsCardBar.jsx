@@ -1,12 +1,14 @@
 import uuid from "react-uuid";
-import React, {Fragment} from 'react'
+import React, {Fragment, useContext, useState} from 'react'
+import {HeightContext} from "../Contexts/HeightContext";
 
 export function AsCardBar(props) {
-    const selected = props.selected;
+    const selected = props.selected,viewport_height = useContext(HeightContext);
+    console.log('AsBar',viewport_height);
     const CardMap1 = [
-        ['A', "Ace"], ['1', "One"],['2', "Two"], ['3', "Three"],['4', "Four"],
-        ['5', "Five"],['6', "Six"]],
-        CardMap2 = [['7', "Seven"],['8', "Eight"], ['9', "Nine"],
+        ['A', "Ace"],['2', "Two"], ['3', "Three"],['4', "Four"],
+        ['5', "Five"],['6', "Six"],['7', "Seven"]],
+        CardMap2 = [['8', "Eight"], ['9', "Nine"],
             ['10', "Ten"],['J', "Jack"], ['Q', "Queen"],['K', "King"]];
         const Buttons1 = CardMap1.map((card) => {
             return (
@@ -30,12 +32,28 @@ export function AsCardBar(props) {
     return (
         <>
             <div className="btn-group" role="group" aria-label="Basic example">
-                <div className="btn-group-vertical me-2" role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
-                    {Buttons1}
-                </div>
-                <div className="btn-group-vertical me-2" role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
-                    {Buttons2}
-                </div>
+                {
+                    (viewport_height < 500)
+                        ?
+                        <div className={'col'}>
+                            <div className={(viewport_height < 500) ? "btn-group me-2" : "btn-group-vertical me-2"} role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
+                                {Buttons1}
+                            </div>
+                            <div className={(viewport_height < 500) ? "btn-group me-2" : "btn-group-vertical me-2"} role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
+                                {Buttons2}
+                            </div>
+                        </div>
+                        :
+                        <>
+                            <div className={(viewport_height < 500) ? "btn-group me-2" : "btn-group-vertical me-2"} role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
+                                {Buttons1}
+                            </div>
+                            <div className={(viewport_height < 500) ? "btn-group me-2" : "btn-group-vertical me-2"} role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
+                                {Buttons2}
+                            </div>
+                        </>
+
+                }
             </div>
         </>
     )
