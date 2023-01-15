@@ -5,11 +5,13 @@ import {Pagination} from "../Components/Pagination";
 import uuid from "react-uuid";
 import {CardsContext} from "../Contexts/CardsContext";
 import {SelectedCardsContext} from "../Contexts/SelectedCardsContext";
+import {StackContext} from "../Contexts/StackContext";
+import {HeightContext} from "../Contexts/HeightContext";
 
 export const Hand = styled.div`
   justify-items:center;
   display:  grid;
-  grid-gap: 0.5rem;
+  // grid-gap: 0.5rem;
   grid-template-columns: repeat(10, 45px);
   transition: grid-template-columns 0.5s;
   position:relative;
@@ -19,6 +21,17 @@ export const Hand = styled.div`
   // color:red;
 `;
 
+export const MobileHand = styled.div`
+  justify-items:center;
+  display:  grid;
+  // grid-gap: 0.5rem;
+  grid-template-columns: repeat(7, 45px);
+  transition: grid-template-columns 0.5s;
+  position:relative;
+  grid-column-start:4;
+  padding-left:25px;
+`;
+
 export default function CardContainer(props) {
     const { compare } = Intl.Collator('en-US');
     const { myCards , setMyCards } = useContext(CardsContext);
@@ -26,20 +39,25 @@ export default function CardContainer(props) {
     const { selectedCards, onSelectCard } = !props.Enemy && useContext(SelectedCardsContext);
     const sortedCards = myCards ? myCards.sort((a, b) => compare(a.id, b.id)) : enemyCards.sort((a, b) => compare(a.id, b.id));
     const [changed,setChanged] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1),
-        PageSize=10,
+    const height = useContext(HeightContext),
+        [currentPage, setCurrentPage] = useState(1),
+        [pageSize,setPageSize] = useState((height > 500) ? 10 : 7),
         [totalCount, setTotalCount] = useState(myCards ? myCards.length : enemyCards.length),
          currentTableData = useMemo(() => {
-        const firstPageIndex = (currentPage - 1) * PageSize;
-        const lastPageIndex = firstPageIndex + PageSize;
+        const firstPageIndex = (currentPage - 1) * pageSize;
+        const lastPageIndex = firstPageIndex + pageSize;
         return sortedCards.slice(firstPageIndex, lastPageIndex);
     }, [currentPage]),
     pagination = props.Enemy ? '' :  <Pagination
         className="pagination-bar"
         currentPage={currentPage}
         totalCount={totalCount}
-        pageSize={PageSize}
-        onPageChange={page => setCurrentPage(page)}/>;
+        pageSize={pageSize}
+        onPageChange={page => setCurrentPage(page)}/>,
+    stackSize = useContext(StackContext),
+    IsEnemy = props.Enemy,
+    mobileEnemyCardsPadding = IsEnemy ? ' me-5 pe-5 ' : '',
+    paginationPadding = (height < 500) ? ' col-2 ms-1 ' : ' col-1 ';
 
     useEffect(()=> {
         setChanged(!changed);
@@ -49,6 +67,14 @@ export default function CardContainer(props) {
     useEffect(()=> {
         setCurrentPage(1);
     },[changed]);
+
+    useEffect(() => {
+        function handleResize() {
+            setPageSize((height > 500) ? 10 : 7);
+        }
+
+        window.addEventListener('resize', handleResize)
+    });
 
     const CardMap = new Map([
         // Spades
@@ -71,19 +97,29 @@ export default function CardContainer(props) {
             return <Card key={uuid()} card={CardMap.get(53)} size={'1'} Enemy={props.Enemy}
                          color={card.color} cardId={card.id}></Card>;
         else
-            return <Card cardObject={card} key={card.id} card={props.Enemy ? CardMap.get(53): CardMap.get(card.id)} size={'1'} Enemy={props.Enemy}
+            return <Card cardObject={card} key={card.id} card={IsEnemy ? CardMap.get(53): CardMap.get(card.id)} size={'1'} Enemy={props.Enemy}
             color={card.color} cardId={card.id} handleClick={props.onSelectCard} selectedCards={selectedCards}></Card>;
     });
     return (
         <>
-            <div className={'col col-' + (props.Enemy ? 4 : 5)}>
-                <Hand>
-                    {Cards}
-                </Hand>
+            <div className={'col col-' + (IsEnemy ? 4 : 5) + mobileEnemyCardsPadding} style={{fontSize:'125'}}>
+                {
+                    ( height > 500 )
+                        ?
+                    <Hand>
+                        {Cards}
+                    </Hand>
+                        :
+                    <MobileHand>
+                        {Cards}
+                    </MobileHand>
+                }
             </div>
-            <div className='col col-2 text-center'>
-                {pagination}
-            </div>
+            {
+                !IsEnemy &&  <div className={'col text-center ' + paginationPadding}>
+                    {pagination}
+                </div>
+            }
         </>
     )
 }

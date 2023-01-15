@@ -100,11 +100,11 @@ class GameController extends Controller {
      */
 
     public function showWinner(Request $request) {
-        $input = $request->only('GameId');
-        $Game = Game::find($input['GameId']);
+        $input = $request->only('game_id');
+        $Game = Game::find($input['game_id']);
         $Player1 = User::find($Game->players()->player1);
         $Player2 = User::find($Game->players()->player2);
-        if($Game->winner) {
+        if(!is_null($Game->winner)) {
             $Winner = User::find($Game->winner);
             return Inertia::render('Game/WinningScreen',
                 ['Game'=>$Game,'Winner'=>$Winner,'Player1'=>$Player1,'Player2'=>$Player2]);
@@ -143,6 +143,9 @@ class GameController extends Controller {
     }
 
     public function initiate(Game $game) {
+        if($game->hasEnded())
+            Redirect::route('Winner',['game_id'=>$game->id]);
+
         $players = $game->players();
         $player1 = $players->player1;
         $player2 = $players->player2;
@@ -170,15 +173,14 @@ class GameController extends Controller {
     public function checkEnemyMove(Request $request) {
         $input = $request->only('GameId');
         $Game = Game::find($input['GameId']);
-//        if($Game->winner){
-//            return Redirect::route('Winner',['GameId'=>$Game->id]);
-//        }
+
+        if($Game->hasEnded())
+            Redirect::route('Winner',['game_id'=>$Game->id]);
+
         $State = GameState::where('game_id',$input['GameId'])->orderByDesc('sequence_number')->first();
-        if($State->next_player() === $request->user()->id) {
-            return Inertia::render('Game/GameCanvas',['Game'=>new GameStateResource($State),
-                'Players'=>['Player1'=>$request->user()->id,'Player2'=>$State->next_player],'GameObject'=>$Game]);
-        }
-//            return $State[0]->next_player()===$request->user()->id;
+
+        return Inertia::render('Game/GameCanvas',['Game'=>new GameStateResource($State),
+            'Players'=>['Player1'=>$request->user()->id,'Player2'=>$State->next_player],'GameObject'=>$Game]);
     }
 }
 

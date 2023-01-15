@@ -5,8 +5,8 @@ import {FormFloatingTextInput} from "../../Components/FormFloatingTextInput";
 
 export default function Login({ status, canResetPassword}) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        email: 'geontsou52@gmail.com',
-        password: 'Test@laravel2022',
+        email: '',
+        password: '',
         remember: '',
     });
 

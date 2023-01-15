@@ -12,6 +12,7 @@ class RoomResource extends JsonResource {
      * @param  Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
+
     public function toArray($request): array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable {
         return [
             'id' => $this->id,

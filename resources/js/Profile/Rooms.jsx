@@ -15,51 +15,43 @@ export function Rooms({rooms,onSubmit,Data,children}) {
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
     return (
-        <div className='card border-0 p-1 shadow h-100' style={{background:"#AFBEC1"}}>
+        <div className='card border-0 p-1 shadow h-100 gx-0' style={{background:"#AFBEC1"}}>
             <div className='card-title p-1 text-center'><h2>Rooms</h2>
                 {children}
             </div>
             <div className='card-body p-2'>
-                <div className="row">
-                    {/*<ul className="list-group list-group-flush">*/}
-                    {/*    {Rooms.length > 0 ? Rooms :*/}
-                    {/*        <>*/}
-                    {/*            <div className={"row"}>*/}
-                    {/*                <div className="text-center">No Rooms Active</div>*/}
-                    {/*            </div>*/}
-
-                    {/*    </>*/}
-                    {/*    }*/}
-                    {/*</ul>*/}
+                <div className="row gx-0 justify-content-center">
                     <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="false">
-                        <div className="carousel-indicators">
-                            {rooms.map((room,index)=>{
-                                return <button key={index} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={index}
-                                              className="active" aria-current="true" aria-label={index}></button>
-                            })}
-                        </div>
                         <div className="carousel-inner justify-items-center">
                             {Rooms.length === 0 ? <div className={'text-center my-4'}><h4>There are no active Rooms!</h4></div> : Rooms}
+                            <div className="carousel-indicators">
+                                {rooms.map((room,index)=>{
+                                    return <button key={index} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={index}
+                                                   className="active" aria-current="true" aria-label={index}></button>
+                                })}
+                            </div>
                         </div>
-                        <button className="carousel-control-prev" type="button"
-                                data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Previous</span>
-                        </button>
-                        <button className="carousel-control-next" type="button"
-                                data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                    <div className={"row m-2 text-center"}>
-                        <div className={'col-12 text-center'}>
-                            <button className="btn btn-outline-primary w-25 text-center" type="button" data-bs-toggle="offcanvas"
-                                    data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                                Create
+                        <div>
+                            <button className="carousel-control-prev me-1" type="button"
+                                    data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span className="visually-hidden">Previous</span>
+                            </button>
+                        </div>
+                        <div>
+                            <button className="carousel-control-next" type="button"
+                                    data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span className="visually-hidden">Next</span>
                             </button>
                         </div>
                     </div>
+                    {/*<div className={"row m-2 text-center justify-content-center gx-0"}>*/}
+                        <button className="btn btn-outline-primary w-25 text-center" type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                            Create
+                        </button>
+                    {/*</div>*/}
                 </div>
                 <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasExample"
                      aria-labelledby="offcanvasExampleLabel">
