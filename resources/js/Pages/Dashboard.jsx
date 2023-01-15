@@ -37,7 +37,8 @@ export default function Dashboard(props) {
 
                         {/*    </PersonalInfo>*/}
                         {/*</div>*/}
-                        <div className={'col-12'}>
+                        <div className={'col-12 text-center'}>
+                            {/*<h4 className={'text-danger'}>This is a Notification with a Priority of 1</h4>*/}
                             <UserContext.Provider value={props.auth.user}>
                                 <Rooms rooms={RoomsList} onSubmit={submit} Data={{data, setData, errors}}>
                                     <Link href={route('home')} data={{RoomId:Room.id}} as={'button'}
