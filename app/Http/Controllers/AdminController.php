@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Resources\ReviewResource;
+use App\Http\Resources\UserResource;
+use App\Models\Review;
+use App\Models\User;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class AdminController extends Controller {
 
     public function show() {
-        return Inertia::render('AdminPanel');
+        $Users = UserResource::collection(User::all());
+        $Reviews = ReviewResource::collection(Review::all());
+        return Inertia::render('AdminPanel',['Users'=>$Users,'Reviews'=>$Reviews]);
     }
 }
