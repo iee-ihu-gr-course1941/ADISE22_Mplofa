@@ -57,7 +57,7 @@ class GameController extends Controller {
     public function store(Request $request) {
         $Room = Room::find($request->only(['Room']));
 //            ->session()->get('Room');
-        if(!is_null($Room)){
+        if(!is_null($Room)) {
             $User = $request->user();
             $Active_Game = Game::find($Room[0]->GameId);
             $First_State = GameState::where('game_id',$Active_Game->id)->where('sequence_number',0)->get();
@@ -82,16 +82,6 @@ class GameController extends Controller {
         }
     }
 
-    public function startGameForPlayer(Request $request) {
-        $input = $request->only('RoomId');
-        $Room = Room::find($input['RoomId']);
-        $Active_Game = Game::find($Room->GameId);
-        $Player1 = $request->user();
-        $Player2 = $Room->Owner();
-
-        return Inertia::render('Game/GameCanvas',['Room'=>new RoomResource($Room),'Game'=>$Active_Game,
-            'Players'=>['Player1'=>$Player1,'Player2'=>$Player2]]);
-    }
     /**
      * Display the specified resource.
      *

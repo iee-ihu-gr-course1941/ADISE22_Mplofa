@@ -56,5 +56,5 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
 
-    Route::get('/AdminPanel',[AdminController::class,'show'])->middleware(['admin']);
+    Route::get('/AdminPanel',[AdminController::class,'show'])->middleware(['admin'])->name('AdminPanel');
 });

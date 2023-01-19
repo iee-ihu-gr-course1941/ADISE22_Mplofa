@@ -7,6 +7,7 @@ use App\Models\Card;
 use App\Models\Game;
 use App\Models\GameState;
 use App\Models\Move;
+use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -157,6 +158,7 @@ class MoveController extends Controller {
         $cards_played = json_decode($move->cards());
         $previous_cards_played = json_decode($Last_State->cards_played());
         $cards_down = json_decode($Last_State->cards_down);
+        $Room = Room::where('GameId',$Game->id)->get();
         switch ($move->status()) {
 //      Played
             case '1': {
@@ -168,7 +170,7 @@ class MoveController extends Controller {
                         $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')));
                     $Game->winner = $this->findWinner($player_cards);
                     $Game->save();
-//                    Redirect::route('Winner',['GameId'=>$Game->id]);
+                    $Room[0]->delete();
                 }
                 else {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
@@ -195,7 +197,7 @@ class MoveController extends Controller {
                         $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
                             false,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'2',['cards_down'=>[]],
                             $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')));
-//                        Redirect::route('Winner',['GameId'=>$Game->id]);
+                        $Room[0]->delete();
                     }
                     else {
                         $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
@@ -213,7 +215,7 @@ class MoveController extends Controller {
                             $move->user()),'2',['cards_down'=>[]],$player_cards));
                     $Game->winner = $this->findWinner($player_cards);
                     $Game->save();
-//                    Redirect::route('Winner',['GameId'=>$Game->id]);
+                    $Room[0]->delete();
                 }
                 else {
                     if($Last_Move->status() === 3) {

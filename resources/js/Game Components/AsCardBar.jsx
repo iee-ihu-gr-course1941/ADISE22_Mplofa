@@ -14,7 +14,7 @@ export function AsCardBar(props) {
             return (
                 <Fragment key={card[1]}>
                     <input type="radio" className="btn-check" name='as' id={card[1]} value={card[1]}/>
-                    <label className="btn btn-outline-primary" htmlFor={card[1]}>
+                    <label className="btn btn-outline-primary btn-sm" htmlFor={card[1]}>
                         {selected.length>1 ? card[0] + "'s" : card[0]}
                     </label>
                 </Fragment>
@@ -23,7 +23,7 @@ export function AsCardBar(props) {
             return (
                 <Fragment key={card[1]}>
                     <input type="radio" className="btn-check" name='as' id={card[1]} value={card[1]}/>
-                    <label className="btn btn-outline-primary" htmlFor={card[1]}>
+                    <label className="btn btn-outline-primary btn-sm" htmlFor={card[1]}>
                         {selected.length>1 ? card[0] + "'s" : card[0]}
                     </label>
                 </Fragment>

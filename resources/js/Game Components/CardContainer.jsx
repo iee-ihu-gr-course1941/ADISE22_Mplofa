@@ -7,6 +7,7 @@ import {CardsContext} from "../Contexts/CardsContext";
 import {SelectedCardsContext} from "../Contexts/SelectedCardsContext";
 import {StackContext} from "../Contexts/StackContext";
 import {HeightContext} from "../Contexts/HeightContext";
+import {WidthContext} from "../Contexts/WidthContext";
 
 export const Hand = styled.div`
   justify-items:center;
@@ -40,6 +41,7 @@ export default function CardContainer(props) {
     const sortedCards = myCards ? myCards.sort((a, b) => compare(a.id, b.id)) : enemyCards.sort((a, b) => compare(a.id, b.id));
     const [changed,setChanged] = useState(false);
     const height = useContext(HeightContext),
+        width = useContext(WidthContext),
         [currentPage, setCurrentPage] = useState(1),
         [pageSize,setPageSize] = useState((height > 500) ? 10 : 7),
         [totalCount, setTotalCount] = useState(myCards ? myCards.length : enemyCards.length),
@@ -57,7 +59,18 @@ export default function CardContainer(props) {
     stackSize = useContext(StackContext),
     IsEnemy = props.Enemy,
     mobileEnemyCardsPadding = IsEnemy ? ' me-5 pe-5 ' : '',
-    paginationPadding = (height < 500) ? ' col-2 ms-1 ' : ' col-1 ';
+    paginationPadding = (height < 500) ? ' col-2 ms-5 ms-md-1' : ' col-1 ms-5 ms-md-1';
+    let cardsPadding;
+    if (window.innerWidth>1000 && window.innerWidth <1100)  {
+        cardsPadding =  120;
+    }
+    else if (window.innerWidth > 1100) {
+        cardsPadding =  150;
+    }
+    else {
+        cardsPadding =  0;
+    }
+
 
     useEffect(()=> {
         setChanged(!changed);
@@ -102,11 +115,11 @@ export default function CardContainer(props) {
     });
     return (
         <>
-            <div className={'col col-' + (IsEnemy ? 4 : 5) + mobileEnemyCardsPadding} style={{fontSize:'125'}}>
+            <div className={'col ' + (IsEnemy ? 'col-5 col-md-5 col-lg-7 col-xxl-5 ps-xxl-5' : 'col-6 col-lg-8 col-xxl-5') + mobileEnemyCardsPadding} style={{fontSize:'125'}}>
                 {
-                    ( height > 500 )
+                    ( height > 500)
                         ?
-                    <Hand>
+                    <Hand style={{paddingLeft: cardsPadding}}>
                         {Cards}
                     </Hand>
                         :

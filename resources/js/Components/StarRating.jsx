@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Link} from "@inertiajs/inertia-react";
 
-export default function StarRating({className,readOnly,numberOfStars,onSetRating,User,Rating}) {
+export default function StarRating({className,readOnly,numberOfStars,onSetRating,User,Rating,Placeholder}) {
     const [rating, setRating] = useState(Rating ? Rating : 0),
     [hover, setHover] = useState(0),
     NoOfStars = numberOfStars ? numberOfStars : 5,
@@ -13,9 +13,11 @@ export default function StarRating({className,readOnly,numberOfStars,onSetRating
         text:"",
         rating:0,
     },
+        placeholder = Placeholder ? Placeholder : 'How did your game go? Did you face any problems?',
     [submitted,setSubmitted] = useState(false),
         [viewport_height,setViewport_Height] = useState(window.innerHeight),
-        buttonSize = (viewport_height < 800) ? ' w-100' : ' w-25';
+        [viewport_width,setViewport_Width] = useState(window.innerWidth),
+        buttonSize = (viewport_height < 1000 || viewport_width < 1000) ? ' w-100' : ' w-25';
     console.log(viewport_height)
     useEffect(() => {
         function handleResize() {
@@ -73,12 +75,12 @@ export default function StarRating({className,readOnly,numberOfStars,onSetRating
                     !readOnly && (
                         <div className={'row w-75 mx-auto my-3 text-center justify-content-center'}>
                 <textarea className={'border-2 text-center'}
-                          placeholder={'What do you think, would make the game better?'}
+                          placeholder={placeholder}
                           style={{resize:'none',backgroundColor:'#eeeeee'}} onChange={(event)=>
                 {data.text = event.target.value;console.log(data)}}>
                 </textarea>
                             <Link href={route('Submit_Review')} method={'post'} as={'button'} data={data}
-                                  className={"btn btn-outline-primary mt-4" + buttonSize} type="button" onSuccess={()=>{setSubmitted(true)}}>
+                                  className={"btn btn-outline-primary mt-4 " + buttonSize} type="button" onSuccess={()=>{setSubmitted(true)}}>
                                 Submit
                             </Link>
                         </div>
