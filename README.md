@@ -3,7 +3,6 @@
 #### Cheat, Bluff, Bullshit, I Doubt It και Liar.
 
 # Περιεχόμενα
-### To site του παιχνιδιού : [Bluff-Game](https://bluff-game.com/)
 - [Εργαλεία και τεχνολογίες](#εργαλεία-και-τεχνολογίες-που-χρησιμοποιήθηκαν)
     - [Back End](#back-end)
     - [Front End](#front-end)

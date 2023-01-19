@@ -20,13 +20,13 @@ export default function Player({Position,Enemy,onSubmit,handlePlay,handlePass,ha
     const height = (viewport_height < 500) ? (isEnemy ? 'h-auto' : 'h-25') : 'h-25',
         margin = (viewport_height < 500 && !isEnemy) ? ' ' : '',
         buttonColSize = (viewport_height < 500 ) ? '2' : '1';
-    console.log('Player',viewport_height);
+    // console.log('Player',viewport_height);
     return (
         <div className={'row text-center text justify-content-center '
-        + position + height + margin}>
+        + position + height + margin} style={{marginBottom: (viewport_height>500 && viewport_height<800) ? -27 : 0}}>
             <strong style={{fontSize:20}}>{isEnemy ? 'Enemy ' : ''} Cards Remaining : {myCards ? myCards.length : enemyCards.length}</strong>
             {!isEnemy &&
-                <div className={'col h-auto col-' + buttonColSize}>
+                <div className={'col h-auto col-' + buttonColSize} >
                     { myTurn &&
                         <form onSubmit={onSubmit}>
                             {children}

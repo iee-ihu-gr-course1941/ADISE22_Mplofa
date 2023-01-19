@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/inertia-react';
-import TextInput from "@/Components/TextInput";
 import {FormFloatingTextInput} from "../../Components/FormFloatingTextInput";
 
 export default function Register() {

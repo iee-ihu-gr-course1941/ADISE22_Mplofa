@@ -1,5 +1,5 @@
 import {Link, useForm} from "@inertiajs/inertia-react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import StarRating from "../../Components/StarRating";
 
 export default function WinningScreen(props) {
@@ -13,15 +13,22 @@ export default function WinningScreen(props) {
                 user_id: User.id,
                 bug_text : '',
                 bug_found_at : '',
-            }
+            },[viewport_height,setViewport_Height] = useState(window.innerHeight),
+    Height = (viewport_height < 800) ? 'h-100' : 'vh-100';
 
-    console.log(data)
+    useEffect(() => {
+        function handleResize() {
+            setViewport_Height(window.innerHeight);
+        }
+
+        window.addEventListener('resize', handleResize)
+    });
     return(
-        <div className='container-fluid vh-100 vw-100 position-relative py-2 pt-sm-3 px-3 px-sm-5 ' style={{background:"#EEEEEE"}}>
+        <div className={'container-fluid vw-100 position-relative py-2 pt-sm-3 px-3 px-sm-5 ' + Height} style={{background:"#EEEEEE"}}>
             {/*<div className={'row'}>*/}
             {/*<h2 className={'text-center'}>{props.Room.name}</h2>*/}
             {/*</div>*/}
-            <div className='row p-0 mx-0 align-items-center text-center h-75'>
+            <div className='row p-0 mx-0 align-items-center text-center h-75 justify-content-center'>
                 <div className={'row vw-100'}>
                     {Winner.id === User.id ? <h1 className={'text-success'}>You WIN</h1> : <h1 className={'text-danger'}>You Lose</h1>}
                 </div>
@@ -51,6 +58,10 @@ export default function WinningScreen(props) {
                         </div>
                     </div>
                 </div>
+                <Link href={route('home')} method={'get'} as={'button'}
+                      className={"btn btn-outline-danger mt-4 w-25" } type="button" onSuccess={()=>{}}>
+                    Leave Game
+                </Link>
             </div>
         </div>
     )

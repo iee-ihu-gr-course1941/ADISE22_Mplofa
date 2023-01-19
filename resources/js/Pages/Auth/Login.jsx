@@ -4,6 +4,9 @@ import InputError from "@/Components/InputError";
 import {FormFloatingTextInput} from "../../Components/FormFloatingTextInput";
 
 export default function Login({ status, canResetPassword}) {
+    useEffect(() => {
+        document.title = 'Login';
+    }, []);
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',

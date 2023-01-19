@@ -6,6 +6,7 @@ import {Inertia} from "@inertiajs/inertia";
 import {useEffect, useState} from "react";
 import {Room} from "../Game Components/Room";
 import {UserContext} from "../Contexts/UserContext";
+import {BeforeYouPlay} from "../Profile/BeforeYouPlay";
 
 export default function Dashboard(props) {
     const  { data, setData, post, processing, errors, reset } = useForm({
@@ -27,6 +28,10 @@ export default function Dashboard(props) {
         return ()=>clearTimeout(AlertVisible);
     },[props.errors]);
 
+    useEffect(()=>  {
+        document.title = 'Home';
+    });
+
     return (
         <Authenticated>
             <Head title="Dashboard" ><title>Dashboard</title></Head>
@@ -37,7 +42,13 @@ export default function Dashboard(props) {
 
                         {/*    </PersonalInfo>*/}
                         {/*</div>*/}
-                        <div className={'col-12'}>
+                        <div className={'col-12 text-center'}>
+                            <button type="button" className="btn btn-outline-danger mb-3" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">
+                                Before you play!
+                            </button>
+
+                            {/*<h4 className={'text-danger'}>This is a Notification with a Priority of 1</h4>*/}
                             <UserContext.Provider value={props.auth.user}>
                                 <Rooms rooms={RoomsList} onSubmit={submit} Data={{data, setData, errors}}>
                                     <Link href={route('home')} data={{RoomId:Room.id}} as={'button'}
@@ -55,6 +66,7 @@ export default function Dashboard(props) {
                         </div>
                     </div>
                 </div>
+            <BeforeYouPlay></BeforeYouPlay>
         </Authenticated>
     )
 }

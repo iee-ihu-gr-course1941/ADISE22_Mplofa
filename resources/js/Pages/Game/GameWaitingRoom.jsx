@@ -6,14 +6,16 @@ export default function GameWaitingRoom(props) {
     const [Room,setRoom] = useState(props.Room),
         User = props.auth.user,
         [userLeft,setUserLeft] = useState(false),
-        // [cantClickReady,setCantClickReady] = useState(true),
+        [canClickReady,setCanClickReady] = useState(false),
     MINUTE_MS = 5000;
     // useEffect(()=> {
     //     const timer = setTimeout(() => {
-    //         setCantClickReady(false);
-    //     }, 7500);
+    //         setCanClickReady(true);
+    //         clearTimeout(timer)
+    //     }, 5000);
     //     return () => clearTimeout(timer);
-    // },[])
+    // },[1])
+
     useEffect(() => {
         const timer = (!userLeft && !Room.Game_Active) && setTimeout(() => {
             if(!userLeft) {
@@ -30,7 +32,7 @@ export default function GameWaitingRoom(props) {
                                         }
                                 });
                             }
-                        }});
+                        },onFinish:()=>{setCanClickReady(true);}});
             }
         }, MINUTE_MS);
         return () => clearTimeout(timer);

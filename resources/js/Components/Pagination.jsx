@@ -28,7 +28,6 @@ export function Pagination(props) {
             onPageChange(currentPage + 1);
         else
             onPageChange(paginationRange[0]);
-        console.log('Clicked The Pagination Cards');
     };
 
     // const onPrevious = () => {

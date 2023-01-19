@@ -1,21 +1,23 @@
 import {useEffect, useState} from "react";
 import {Link} from "@inertiajs/inertia-react";
 
-export default function StarRating({className,readOnly,numberOfStars,onSetRating,User}) {
-    const [rating, setRating] = useState(0),
+export default function StarRating({className,readOnly,numberOfStars,onSetRating,User,Rating,Placeholder}) {
+    const [rating, setRating] = useState(Rating ? Rating : 0),
     [hover, setHover] = useState(0),
     NoOfStars = numberOfStars ? numberOfStars : 5,
     ReadOnly = readOnly ? readOnly : false,
     classes = className ? className : '',
     onRatingSet = !ReadOnly && onSetRating ? onSetRating : ()=>{},
     data = {
-        user_id:User.id,
+        user_id:User ? User.id : '',
         text:"",
         rating:0,
     },
+        placeholder = Placeholder ? Placeholder : 'How did your game go? Did you face any problems?',
     [submitted,setSubmitted] = useState(false),
         [viewport_height,setViewport_Height] = useState(window.innerHeight),
-        buttonSize = (viewport_height < 800) ? ' w-100' : ' w-25';
+        [viewport_width,setViewport_Width] = useState(window.innerWidth),
+        buttonSize = (viewport_height < 1000 || viewport_width < 1000) ? ' w-100' : ' w-25';
     console.log(viewport_height)
     useEffect(() => {
         function handleResize() {
@@ -29,7 +31,7 @@ export default function StarRating({className,readOnly,numberOfStars,onSetRating
         <>
             {!submitted ? <div className={"text-center " + classes}>
                 <div>
-                    <h4>How would you rate your game experience?</h4>
+                    {!readOnly && <h4>How would you rate your game experience?</h4>}
                     {
                         [...Array(NoOfStars)].map((star, index) => {
                             index += 1;
@@ -47,6 +49,7 @@ export default function StarRating({className,readOnly,numberOfStars,onSetRating
                                             }
                                         }
                                     }
+                                    disabled={readOnly}
                                     style={index <= (hover || rating) ? {color:'#ffea00'} : {color:'#ccc'}}
                                     onMouseEnter={() => {
                                         !ReadOnly && setHover(index)
@@ -68,17 +71,21 @@ export default function StarRating({className,readOnly,numberOfStars,onSetRating
                         })
                     }
                 </div>
-                <div className={'row w-75 mx-auto my-3 text-center justify-content-center'}>
+                {
+                    !readOnly && (
+                        <div className={'row w-75 mx-auto my-3 text-center justify-content-center'}>
                 <textarea className={'border-2 text-center'}
-                          placeholder={'What do you think, would make the game better?'}
+                          placeholder={placeholder}
                           style={{resize:'none',backgroundColor:'#eeeeee'}} onChange={(event)=>
                 {data.text = event.target.value;console.log(data)}}>
                 </textarea>
-                    <Link href={route('Submit_Review')} method={'post'} as={'button'} data={data}
-                          className={"btn btn-outline-primary mt-4" + buttonSize} type="button" onSuccess={()=>{setSubmitted(true)}}>
-                        Submit
-                    </Link>
-                </div>
+                            <Link href={route('Submit_Review')} method={'post'} as={'button'} data={data}
+                                  className={"btn btn-outline-primary mt-4 " + buttonSize} type="button" onSuccess={()=>{setSubmitted(true)}}>
+                                Submit
+                            </Link>
+                        </div>
+                    )
+                }
             </div> : <h4 className={'text-success'}>Thank you for your review.</h4>}
         </>
     );

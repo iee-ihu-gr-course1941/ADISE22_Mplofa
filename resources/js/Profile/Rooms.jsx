@@ -49,7 +49,7 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                     {/*<div className={"row m-2 text-center justify-content-center gx-0"}>*/}
                         <button className="btn btn-outline-primary w-25 text-center" type="button" data-bs-toggle="offcanvas"
                                 data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                            Create
+                            Create Room
                         </button>
                     {/*</div>*/}
                 </div>
