@@ -50,7 +50,7 @@ export default function Dashboard(props) {
                                 <div className={'col'}>
                                     <button type="button btn-sm w-25" className="btn btn-outline-danger mb-3" data-bs-toggle="modal"
                                             data-bs-target="#exampleModal">
-                                        Before you play!
+                                        Please read before you play!
                                     </button>
                                 </div>
                             </div>
