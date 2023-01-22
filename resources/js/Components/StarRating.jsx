@@ -11,17 +11,15 @@ export default function StarRating({className,readOnly,numberOfStars,onSetRating
     data = {
         user_id:User ? User.id : '',
         text:"",
-        rating:0,
+        rating:rating,
     },
         placeholder = Placeholder ? Placeholder : 'How did your game go? Did you face any problems?',
     [submitted,setSubmitted] = useState(false),
         [viewport_height,setViewport_Height] = useState(window.innerHeight),
         [viewport_width,setViewport_Width] = useState(window.innerWidth),
         buttonSize = (viewport_height < 1000 || viewport_width < 1000) ? ' w-100' : ' w-25';
-    console.log(viewport_height)
     useEffect(() => {
         function handleResize() {
-            console.log('resized to: ', window.innerWidth, 'x', window.innerHeight);
             setViewport_Height(window.innerHeight);
         }
 

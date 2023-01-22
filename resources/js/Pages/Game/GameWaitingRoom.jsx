@@ -15,13 +15,14 @@ export default function GameWaitingRoom(props) {
     //     }, 5000);
     //     return () => clearTimeout(timer);
     // },[1])
-
+console.log('Can click Ready',canClickReady)
     useEffect(() => {
         const timer = (!userLeft && !Room.Game_Active) && setTimeout(() => {
             if(!userLeft) {
                 Inertia.get(route('Check_For_New_Player'),{RoomId:Room.id},
                     {onSuccess:(res)=> {
                             setRoom(res.props.Room);
+                            setCanClickReady(!canClickReady);
                             if(res.props.Room.OwnerReady && res.props.Room.PlayerReady) {
                             // if(res.props.Room.Game_Active) {
                                 Inertia.post(route('Activate_Room'),{RoomId:res.props.Room.id,GameId:res.props.Room.GameId},{
@@ -32,7 +33,7 @@ export default function GameWaitingRoom(props) {
                                         }
                                 });
                             }
-                        },onFinish:()=>{setCanClickReady(true);}});
+                        },preserveState:true});
             }
         }, MINUTE_MS);
         return () => clearTimeout(timer);
@@ -61,7 +62,7 @@ export default function GameWaitingRoom(props) {
                                 <div className={'row justify-content-center'}>
                                     {User.id === Room.Owner.id &&
                                         <Link href={route('Ready')} method={'post'} data={{RoomId:Room.id}} as={'button'}
-                                              className="btn btn-outline-success w-25 mt-4" type="button" disabled={Room.OwnerReady}>
+                                              className="btn btn-outline-success w-25 mt-4" type="button" disabled={!canClickReady ||  Room.OwnerReady}>
                                             Ready
                                         </Link>}
                                 </div>
@@ -106,7 +107,7 @@ export default function GameWaitingRoom(props) {
                                 <div className={'row justify-content-center'}>
                                     {Room.Player && User.id === Room.Player.id &&
                                         <Link href={route('Ready')} method={'post'} data={{RoomId:Room.id}} as={'button'}
-                                              className="btn btn-outline-success w-25 mt-4" type="button" disabled={Room.PlayerReady}>
+                                              className="btn btn-outline-success w-25 mt-4" type="button" disabled={!canClickReady || Room.PlayerReady}>
                                             Ready
                                         </Link>}
                                 </div>

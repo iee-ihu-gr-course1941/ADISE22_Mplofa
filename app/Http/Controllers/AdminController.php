@@ -13,16 +13,16 @@ class AdminController extends Controller {
 
     public function show(Request $request) {
         $input = $request->only(['rating']);
-        $Users = UserResource::collection(User::paginate(1));
+        $Users = UserResource::collection(User::paginate(2,['*'],'UsersPage')->appends(request()->except('UsersPage')));
         $Reviews = ReviewResource::collection((
             isset($input['rating'])
                 ?
-                ($input['rating'] === 0 || is_null($input['rating']))
+                ($input['rating'] === 'All')
                     ?
-                Review::all()
+                Review::paginate(2,['*'],'ReviewsPage')->appends(request()->except('ReviewsPage'))
                     :
-                Review::where('rating',$input['rating'])->get()
-        : Review::all()));
+                Review::where('rating',$input['rating'])->paginate(2,['*'],'ReviewsPage')->appends(request()->except('ReviewsPage'))
+        : Review::paginate(2,['*'],'ReviewsPage')->appends(request()->except('ReviewsPage'))));
         return Inertia::render('AdminPanel',['Users'=>$Users,'Reviews' => fn ()=>$Reviews]);
     }
 }

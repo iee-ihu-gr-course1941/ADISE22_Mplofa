@@ -78,6 +78,9 @@ export default function Register() {
                     />
                     {errors.password_confirmation}
                     <button className='btn btn-outline-success border-3'>Sign Up</button>
+                    <div className={'align-self-bottom p-2 mt-1'}>
+                        <p className={'text-success'}>Your passwords are hashed and salted before being stored in the database.</p>
+                    </div>
                 </form>
             </div>
     );
