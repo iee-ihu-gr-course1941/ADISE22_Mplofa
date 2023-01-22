@@ -1,7 +1,6 @@
 import {Pagination} from "./Pagination";
 
 export function Users({Users}) {
-    console.log(Users)
     const UserList = Users.data.map((User)=>{
         return <li  key={User.email} className="list-group-item d-flex justify-content-between align-items-start pb-0 pt-2">
             <div className="mx-auto">
@@ -23,7 +22,6 @@ export function Users({Users}) {
             <span className="badge bg-primary rounded-pill">{User.points}</span>
         </li>
     });
-    console.log(Users)
     return (
         <div className={'card h-50'}>
             <div className={'card-header text-center'}>

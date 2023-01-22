@@ -15,6 +15,7 @@ class ReviewResource extends JsonResource   {
     public function toArray($request)   {
         $user = User::find($this->user);
         return [
+            'id' => $this->id,
             'user' => $user->name,
             'rating' => $this->rating,
             'comment' => $this->comment,

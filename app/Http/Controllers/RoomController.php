@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RoomCollection;
 use App\Http\Resources\RoomResource;
 use App\Models\Room;
 use Illuminate\Http\RedirectResponse;
@@ -95,11 +96,15 @@ class RoomController extends Controller {
     /**
      * Remove the specified resource from storage.
      * @param Room $room
-     * @return Response
+     * @return Response|\Inertia\Response
      */
-    public function destroy(Request $request) {
-        $input = $request->only(['room_id']);
+    public function destroy(Request $request)   {
+        $input = $request->only(['room_id','home']);
         Room::destroy($input['room_id']);
+        if(isset($input['home']))   {
+            return Inertia::render('Dashboard',
+                ['Rooms'=>fn ()=> new RoomCollection(Room::where('GameActive',0)->get())]);
+        }
     }
 
     public function pollRoom(Request $request) {
@@ -136,7 +141,7 @@ class RoomController extends Controller {
             $Room->PlayerReady = true;
             $Room->save();
         }
-//        return Redirect::route('Check_For_New_Player',['RoomId'=>$Room->id]);
+        return Inertia::render('Game/GameWaitingRoom',['Room'=>new RoomResource($Room)]);
     }
 
     public function Join(Request $request) {

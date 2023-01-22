@@ -7,6 +7,7 @@ import {useEffect, useState} from "react";
 import {Room} from "../Game Components/Room";
 import {UserContext} from "../Contexts/UserContext";
 import {BeforeYouPlay} from "../Profile/BeforeYouPlay";
+import {BugSubmissionForm} from "../Bugs/BugSubmissionForm";
 
 export default function Dashboard(props) {
     const  { data, setData, post, processing, errors, reset } = useForm({
@@ -34,39 +35,59 @@ export default function Dashboard(props) {
 
     return (
         <Authenticated>
-            <Head title="Dashboard" ><title>Dashboard</title></Head>
-                <div className='container p-3'>
+            <Head title="Dashboard" >
+                <title>Dashboard</title>
+            </Head>
+                <div className='container p-3 h-100 vw-100'>
                     <div className={'row gx-0'}>
                         {/*<div className={'col-6'}>*/}
                         {/*    <PersonalInfo User={props.auth.user}>*/}
 
                         {/*    </PersonalInfo>*/}
                         {/*</div>*/}
-                        <div className={'col-12 text-center'}>
-                            <button type="button" className="btn btn-outline-danger mb-3" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal">
-                                Before you play!
-                            </button>
-
-                            {/*<h4 className={'text-danger'}>This is a Notification with a Priority of 1</h4>*/}
-                            <UserContext.Provider value={props.auth.user}>
-                                <Rooms rooms={RoomsList} onSubmit={submit} Data={{data, setData, errors}}>
-                                    <Link href={route('home')} data={{RoomId:Room.id}} as={'button'}
-                                          className="btn btn-outline-dark text-center mt-4" type="button" only={['Rooms']}>
-                                        Reload
-                                    </Link>
-                                </Rooms>
-                            </UserContext.Provider>
-                            {
-                                roomDoesntExistErrorVisible &&
-                                <div className="alert alert-danger text-center" role="alert">
-                                    This Room doesn't exist anymore.
+                        <div className={'col-12 text-center h-auto'}>
+                            <div className={'row'}>
+                                <div className={'col'}>
+                                    <button type="button btn-sm w-25" className="btn btn-outline-danger mb-3" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal">
+                                        Before you play!
+                                    </button>
                                 </div>
-                            }
+                            </div>
+                            <div className={'row'}>
+                                <div className={'col'}>
+                                    <UserContext.Provider value={props.auth.user}>
+                                        <Rooms rooms={RoomsList} onSubmit={submit} Data={{data, setData, errors}}>
+                                            <Link href={route('home')} data={{RoomId:Room.id}} as={'button'}
+                                                  className="btn btn-outline-dark text-center mt-4" type="button" only={['Rooms']}>
+                                                Reload
+                                            </Link>
+                                        </Rooms>
+                                    </UserContext.Provider>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    {/*<div className={'row align-self-end text-center'}>*/}
+                    {/*    <div className={'col'}>*/}
+                    {/*        <div className={'col-12 mt-5'}>*/}
+                    {/*            <BugSubmissionForm>*/}
+
+                    {/*            </BugSubmissionForm>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </div>
-            <BeforeYouPlay></BeforeYouPlay>
+            <BeforeYouPlay>
+
+            </BeforeYouPlay>
         </Authenticated>
     )
 }
+//
+// <h5>
+//     Submit Bugs
+// </h5>
+// <button type="button" className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#BugSubmission">
+//     <img src={'Images/BugIcon.png'} alt={'Submit a Bug'}></img>
+// </button>
