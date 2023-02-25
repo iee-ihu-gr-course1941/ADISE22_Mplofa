@@ -8,11 +8,6 @@ export function Users({Users}) {
                     {User.name}
                 </div>
                 <div className={'row pb-0 pt-2'}>
-                    {/*<div className={'col-12 col-md-6 col-lg-8 px-1'}>*/}
-                    {/*    <strong>Email</strong>*/}
-                    {/*    <p>{User.email}</p>*/}
-                    {/*</div>*/}
-                    {/*col-md-6 col-lg-4*/}
                     <div className={'col-12  px-1'}>
                         <strong>Joined</strong>
                         <p>{User.joined}</p>
@@ -38,3 +33,9 @@ export function Users({Users}) {
         </div>
     )
 }
+
+{/*<div className={'col-12 col-md-6 col-lg-8 px-1'}>*/}
+{/*    <strong>Email</strong>*/}
+{/*    <p>{User.email}</p>*/}
+{/*</div>*/}
+{/*col-md-6 col-lg-4*/}

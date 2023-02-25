@@ -2,15 +2,34 @@ import {Room} from "../Game Components/Room";
 import {FormFloatingTextInput} from "../Components/FormFloatingTextInput";
 import InputError from "../Components/InputError";
 import {useState} from "react";
-import {Link} from "@inertiajs/inertia-react";
+import {Link, useForm} from "@inertiajs/inertia-react";
+import {Inertia} from "@inertiajs/inertia";
 
 
 export function Rooms({rooms,onSubmit,Data,children}) {
     const Rooms = rooms.map((RoomObj)=> {
         return <Room key={RoomObj.id} Room={RoomObj}></Room>
     }), [hasPassword,setHasPassword] = useState(false),
-        {data,setData,errors} = Data;
-
+        [password,setPassword] = useState(''),
+    { data, setData, post, processing, errors, reset } = useForm({
+        Name: "",
+        Password: password,
+        Capacity: 2,
+    }),submit = (e) => {
+        e.preventDefault();
+        Inertia.post(route('New_Room'),{Name:data.Name,Password:hasPassword && password,Capacity:data.Capacity});
+    },
+    RandomPassword = (length)=>{
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            counter += 1;
+        }
+        setPassword(result);
+    }
     const onHandleChange = (event) => {
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
@@ -61,7 +80,7 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                                 aria-label="Close"></button>
                     </div>
                     <div className="offcanvas-body">
-                        <form onSubmit={onSubmit} className='p-4'>
+                        <form onSubmit={submit} className='p-4'>
                             <div className="row justify-content-center">
                                 <FormFloatingTextInput
                                     type='text'
@@ -70,6 +89,7 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                                     required={true}
                                     handleChange={onHandleChange}
                                     placeHolder='Name'
+                                    className={'mb-4'}
                                 ></FormFloatingTextInput>
                                 <InputError message={errors.Name} className="mt-2" />
                                 <FormFloatingTextInput
@@ -80,20 +100,27 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                                     handleChange={onHandleChange}
                                     placeHolder='Capacity'
                                     disabled={true}
+                                    className={'mb-4'}
                                 ></FormFloatingTextInput>
                                 <InputError message={errors.Capacity} className="mt-2" />
                                 <h6 className='ps-3 text-center'>Password</h6>
                                         <input className="form-check-input my-3" type="checkbox" value="" checked={hasPassword}
                                                onChange={()=>setHasPassword(!hasPassword)} aria-label="Checkbox for following text input"/>
-                                {hasPassword && <> <FormFloatingTextInput
-                                    type='text'
-                                    name='Password'
-                                    value={data.Password}
-                                    required={false}
-                                    handleChange={onHandleChange}
-                                    placeHolder='Password'
-                                ></FormFloatingTextInput>
-                                    <InputError message={errors.Password} className="mt-2" /></>}
+                                {hasPassword && <>
+                                    <div className="input-group mb-1 h-25">
+                                        <button className="btn btn-outline-secondary btn-sm h-auto" type="button"
+                                                onClick={()=>RandomPassword(10)}>Random</button>
+                                        <input type={'text'} name={'Password'} value={password} required={hasPassword}
+                                           onChange={(e)=>setPassword(e.target.value)}
+                                               placeholder='Password' className={'form-control'}/>
+                                    </div>
+                                    <p className={'text-danger'}>
+                                        <strong>
+                                            Only people who know the password will be able to join the Room!
+                                        </strong>
+                                    </p>
+                                    <InputError message={errors.Password} className="mt-2" />
+                                </>}
                                 <button className='btn btn-primary btn-sm'>Create Room</button>
                             </div>
                         </form>

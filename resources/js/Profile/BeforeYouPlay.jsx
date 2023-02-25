@@ -1,3 +1,5 @@
+import {Link} from "@inertiajs/inertia-react";
+
 export function BeforeYouPlay() {
     return (
         <div className="modal fade w-100 mx-auto" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
@@ -27,6 +29,7 @@ export function BeforeYouPlay() {
                                         <p>
                                             <strong>
                                                 When using your mobile, you might face visual bugs due to scaling.
+                                                During gameplay, always use landscape mode on mobiles.
                                             </strong>
                                         </p>
                                         <p>
@@ -37,8 +40,8 @@ export function BeforeYouPlay() {
                                         </p>
                                         <p>
                                             <strong>
-                                                If for whatever reason you are using Incognito Mode, please reload the page when the game begins
-                                                and it should render the screen correctly.
+                                                If for whatever reason you are using Incognito Mode, when you first log in, please reload the page
+                                                to mitigate such problems.
                                             </strong>
                                         </p>
                                         {/*<p>*/}
@@ -62,6 +65,10 @@ export function BeforeYouPlay() {
                                         <p>
                                             You will need a second person to play against, so be sure to
                                             <strong> let your friends know about this game so you can enjoy it together.</strong>
+                                        </p>
+                                        <p>
+                                            <input className={'form-control text-center text-success'} type={'text'} disabled={true} readOnly={true}
+                                               value={'https://bluff-game.com/'}/>
                                         </p>
                                         <p>
                                             You can either create a new Room, or join an existing one!
@@ -115,9 +122,10 @@ export function BeforeYouPlay() {
                                             Passing Turn
                                         </h5>
                                         <p>
-                                            If you do not want play on top of the cards your opponent played,
-                                            you can simply pass your turn. The next player can either choose to pass his turn as well,
-                                            clearing the stack, or even play more cards on top of his own.
+                                            If you do not want play any cards, you can simply pass your turn.
+                                            ( You can only pass your turn when there are cards in the stack. )
+                                            The next player can either choose to pass his turn as well,
+                                            clearing the stack, or play more cards.
                                         </p>
                                     </div>
                                 </div>

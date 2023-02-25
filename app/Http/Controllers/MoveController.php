@@ -36,23 +36,23 @@ class MoveController extends Controller {
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Inertia\Response
+     * @return \Illuminate\Http\RedirectResponse|\Inertia\Response
      */
     public function store(Request $request) {
-        $input = $request->only('user_id','game_id','status','cards_played');
+        $input = $request->only('user_id','game_id','status','cards_played','game_status');
         $Game = Game::find($input['game_id']);
         if($Game->hasEnded())
-            Redirect::route('Winner',['game_id'=>$Game->id]);
+           return Redirect::route('Winner',['game_id'=>$Game->id]);
 //      Create and save the new Move into the database.
         $New_Move = new Move;
-
+        $GameStatus = $input['game_status'];
         $New_Move->user_id = $request->user()->id;
         $New_Move->game_id = $input['game_id'];
         $New_Move->status = $input['status'];
         $New_Move->cards_played = json_encode($input['cards_played']);
         $New_Move->save();
 
-        return $this->handleMove($New_Move);
+        return $this->handleMove($New_Move,$GameStatus);
     }
 
     /**
@@ -142,7 +142,7 @@ class MoveController extends Controller {
         return $New_State;
     }
 
-    protected function handleMove(Move $move) {
+    protected function handleMove(Move $move,$GameStatus) {
 //      Game Variables
         $GamePlayers = $this->getGamePlayers($move->game());
         $Last_Move = Move::where('game_id',$move->game())->orderByDesc('created_at')->get()->reject(function ($value, $key) use ($move) {
@@ -159,6 +159,15 @@ class MoveController extends Controller {
         $previous_cards_played = json_decode($Last_State->cards_played());
         $cards_down = json_decode($Last_State->cards_down);
         $Room = Room::where('GameId',$Game->id)->get();
+        if($GameStatus === 3) {
+            $this->newState($move->game(),$Last_State->sequence(),false,
+                false,$move->cards(), $this->nextTurn($GamePlayers,$move->user()),'3',
+                ['cards_down'=>[]],$player_cards);
+            $Game->winner = $this->nextTurn($GamePlayers,$move->user());
+            $Game->save();
+            return Redirect::route('home');
+        }
+
         switch ($move->status()) {
 //      Played
             case '1': {
@@ -167,7 +176,7 @@ class MoveController extends Controller {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
                         $this->checkBluff($cards_played),$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'2'
                         ,['cards_down'=>[]],
-                        $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')));
+                        $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')),$move);
                     $Game->winner = $this->findWinner($player_cards);
                     $Game->save();
                     $Room[0]->delete();
@@ -176,7 +185,7 @@ class MoveController extends Controller {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
                         $this->checkBluff($cards_played),$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'1'
                         ,['cards_down'=>$this->getCardsDown($cards_down->cards_down,$cards_played)],
-                        $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')));
+                        $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')),$move);
                 }
                 break;
             }
@@ -188,7 +197,7 @@ class MoveController extends Controller {
                     $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
                         true,$move->cards(),$move->user(),'1',['cards_down'=>[]],
                         $this->assignCards($player_cards,$this->nextTurn($GamePlayers,$move->user()),
-                            $cards_down->cards_down,'add')));
+                            $cards_down->cards_down,'add')),$move);
                 }
                 else {
                     if($this->checkVictory($player1_cards,$player2_cards,false,$Last_State->is_bluffed)){
@@ -196,13 +205,13 @@ class MoveController extends Controller {
                         $Game->save();
                         $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
                             false,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'2',['cards_down'=>[]],
-                            $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')));
+                            $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')),$move);
                         $Room[0]->delete();
                     }
                     else {
                         $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
                             false,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'1',['cards_down'=>[]],
-                            $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')));
+                            $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')),$move);
                     }
                 }
                 break;
@@ -212,7 +221,7 @@ class MoveController extends Controller {
                 if($this->checkVictory($player1_cards,$player2_cards,false,false)) {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
                         false,$move->cards(),$this->nextTurn($GamePlayers,
-                            $move->user()),'2',['cards_down'=>[]],$player_cards));
+                            $move->user()),'2',['cards_down'=>[]],$player_cards),$move);
                     $Game->winner = $this->findWinner($player_cards);
                     $Game->save();
                     $Room[0]->delete();
@@ -221,12 +230,12 @@ class MoveController extends Controller {
                     if($Last_Move->status() === 3) {
                         $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
                             false,$move->cards(),$this->nextTurn($GamePlayers,
-                                $move->user()),'1',['cards_down'=>[]],$player_cards));
+                                $move->user()),'1',['cards_down'=>[]],$player_cards),$move);
                     }
                     else {
                         $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
                             false,$move->cards(),$this->nextTurn($GamePlayers,
-                                $move->user()),'1',$cards_down,$player_cards));
+                                $move->user()),'1',$cards_down,$player_cards),$move);
                     }
                 }
                 break;
