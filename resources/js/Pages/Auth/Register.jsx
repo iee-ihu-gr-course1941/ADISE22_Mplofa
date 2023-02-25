@@ -27,15 +27,8 @@ export default function Register() {
 
     return (
             <div className="form-container sign-up-container">
-                <form onSubmit={submit}>
+                <form className={'w-100'} onSubmit={submit}>
                     <h1 className='my-3'>Create Account</h1>
-                    {/*<div className="social-container">*/}
-                    {/*    <a href="resources/js/Pages/Auth/Register#" className="social"><i className="fab fa-facebook-f"></i></a>*/}
-                    {/*    <a href="resources/js/Pages/Auth/Register#" className="social"><i className="fab fa-google-plus-g"></i></a>*/}
-                    {/*    <a href="resources/js/Pages/Auth/Register#" className="social"><i className="fab fa-linkedin-in"></i></a>*/}
-                    {/*</div>*/}
-                    {/*<span>or use your email for registration</span>*/}
-                    {/*<input type="text" placeholder="Name"/>*/}
                     <FormFloatingTextInput
                         type="text"
                         name="name"
@@ -47,7 +40,6 @@ export default function Register() {
                         placeHolder={'Name'}
                         className={''}
                     />
-                    {errors.name}
                     <FormFloatingTextInput
                         type="email"
                         name="email"
@@ -57,7 +49,6 @@ export default function Register() {
                         required={true}
                         placeHolder={'Email'}
                     />
-                    {errors.email}
                     <FormFloatingTextInput
                         type="password"
                         name="password"
@@ -67,7 +58,6 @@ export default function Register() {
                         required={true}
                         placeHolder={'Password'}
                     />
-                    {errors.password}
                     <FormFloatingTextInput
                         type="password"
                         name="password_confirmation"
@@ -76,11 +66,14 @@ export default function Register() {
                         required={true}
                         placeHolder={'Confirm Password'}
                     />
-                    {errors.password_confirmation}
+                    {errors.name && <p className={'text-danger'}>{errors.name}</p>}
+                    {errors.email && <p className={'text-danger'}>{errors.email}</p>}
+                    {errors.password && <p className={'text-danger'}>{errors.password}</p>}
+                    {errors.password_confirmation && <p className={'text-danger'}>{errors.password_confirmation}</p>}
                     <button className='btn btn-outline-success border-3'>Sign Up</button>
-                    <div className={'align-self-bottom p-2 mt-1'}>
-                        <p className={'text-success'}>Your passwords are hashed and salted before being stored in the database.</p>
-                    </div>
+                    {/*<div className={'align-self-bottom p-2 mt-1'}>*/}
+                    {/*    <p className={'text-success'}>Your passwords are hashed before being stored in the database.</p>*/}
+                    {/*</div>*/}
                 </form>
             </div>
     );

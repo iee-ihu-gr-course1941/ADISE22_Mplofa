@@ -9,7 +9,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\In;
 use Inertia\Inertia;
+use function PHPUnit\Framework\isEmpty;
 
 class RoomController extends Controller {
     /**
@@ -110,13 +112,15 @@ class RoomController extends Controller {
     public function pollRoom(Request $request) {
         $input = $request->only('RoomId');
         $Room = Room::find($input['RoomId']);
-//        ,'NRoom'=>Inertia::lazy(fn()=>new RoomResource(Room::find($Room->id)))
+        if(is_null($Room))
+            return Redirect::route('home');
+        if(!self::BelongsInGame($Room,$request->user()))
+            return Redirect::route('home');
         return Inertia::render('Game/GameWaitingRoom',['Room'=>new RoomResource($Room)]);
     }
 
     public function setReady(Request $request, Room $room) {
-       $User = $request->user()->id;
-
+        $User = $request->user()->id;
        if($User === $room->Player1()) {
            $room->Player1Ready = !$room->Player1Ready();
 //           if($room->Player1Ready() && $room->Player2Ready()) {
@@ -133,6 +137,8 @@ class RoomController extends Controller {
     public function Ready(Request $request) {
         $input = $request->only(['RoomId']);
         $Room = Room::find($input['RoomId']);
+        if(!self::BelongsInGame($Room,$request->user()))
+            return Redirect::route('home');
         if($request->user()->id === $Room->Owner()->id) {
             $Room->OwnerReady = true;
             $Room->save();
@@ -145,10 +151,17 @@ class RoomController extends Controller {
     }
 
     public function Join(Request $request) {
-        $input = $request->only(['RoomId']);
+        $input = $request->only(['RoomId','Password']);
         $Room = Room::find($input['RoomId']);
         if(is_null($Room))
-            return Redirect::route('home')->withErrors(['Room_Doesnt_Exist'=>true]);
+            return Redirect::route('home');
+        if(!is_null($Room->Password)){
+            if(is_null($input['Password']))
+                return redirect()->back()->withErrors(['Password'=>'Password is Required']);
+            else
+                if($Room->Password !== $input['Password'])
+                    return redirect()->back()->withErrors(['Password'=>'Incorrect Password !']);
+        }
         $Room->PlayerId = $request->user()->id;
         $Room->save();
         return Inertia::render('Game/GameWaitingRoom',['Room'=>new RoomResource($Room)]);
@@ -198,5 +211,20 @@ class RoomController extends Controller {
             }
         return Redirect::route('Play',['Room'=>$Room->id]);
 //            ->with('Room',$Room);
+    }
+
+    public function RedirectIfRoomDoesntExist(Request $request) {
+        $input = $request->only(['Room_Id']);
+        $Room = Room::find($input['Room_Id']);
+        if(is_null($Room))
+            return Redirect::route('home');
+        else
+            return Inertia::render('Game/GameWaitingRoom',['Room'=>new RoomResource($Room)]);
+    }
+
+    public function BelongsInGame($Room,$User) {
+        if((!is_null($Room->Player()) && $Room->Player()->id === $User->id) || ((!is_null($Room->Owner()) && $Room->Owner()->id === $User->id)))
+            return true;
+        return false;
     }
 }

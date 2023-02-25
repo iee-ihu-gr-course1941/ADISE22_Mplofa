@@ -34,18 +34,18 @@ export const MobileHand = styled.div`
 `;
 
 export default function CardContainer(props) {
-    const { compare } = Intl.Collator('en-US');
-    const { myCards , setMyCards } = useContext(CardsContext);
-    const { enemyCards , setEnemyCards } = useContext(CardsContext);
-    const { selectedCards, onSelectCard } = !props.Enemy && useContext(SelectedCardsContext);
-    const sortedCards = myCards ? myCards.sort((a, b) => compare(a.id, b.id)) : enemyCards.sort((a, b) => compare(a.id, b.id));
-    const [changed,setChanged] = useState(false);
-    const height = useContext(HeightContext),
+    const { compare } = Intl.Collator('en-US'),
+    {myCards}  = useContext(CardsContext),
+    { enemyCards , setEnemyCards } = useContext(CardsContext),
+    { selectedCards, onSelectCard } = !props.Enemy && useContext(SelectedCardsContext),
+    sortedCards = myCards ? myCards.sort((a, b) => compare(a.id, b.id)) : enemyCards.sort((a, b) => compare(a.id, b.id)),
+    [changed,setChanged] = useState(false),
+    height = useContext(HeightContext),
         width = useContext(WidthContext),
         [currentPage, setCurrentPage] = useState(1),
         [pageSize,setPageSize] = useState((height > 500) ? 10 : 7),
         [totalCount, setTotalCount] = useState(myCards ? myCards.length : enemyCards.length),
-         currentTableData = useMemo(() => {
+     currentTableData = useMemo(() => {
         const firstPageIndex = (currentPage - 1) * pageSize;
         const lastPageIndex = firstPageIndex + pageSize;
         return sortedCards.slice(firstPageIndex, lastPageIndex);

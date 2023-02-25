@@ -13,7 +13,7 @@ class AdminController extends Controller {
 
     public function show(Request $request) {
         $input = $request->only(['rating']);
-        $Users = UserResource::collection(User::paginate(2,['*'],'UsersPage')->appends(request()->except('UsersPage')));
+        $Users = UserResource::collection(User::paginate(4,['*'],'UsersPage')->appends(request()->except('UsersPage')));
         $Reviews = ReviewResource::collection((
             isset($input['rating'])
                 ?

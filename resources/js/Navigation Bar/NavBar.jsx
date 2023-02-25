@@ -6,7 +6,7 @@ import {BugSubmissionForm} from "../Bugs/BugSubmissionForm";
 export function NavBar({Guest,InGame,GameId}) {
     const inGame = InGame ? InGame : false;
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light text-center">
             <div className={"container-fluid " + (inGame ? ' w-100 text-center' : '')}>
                 <Link href={route('home')}>
                     <img src={'Images/card-game.png'} alt={'Bluffing'} className={'position-static'} width={64}></img>
@@ -18,6 +18,7 @@ export function NavBar({Guest,InGame,GameId}) {
                 </button>
                 <div className="collapse navbar-collapse justify-content-end mt-3 mt-lg-0 text-center"
                      id="navbarSupportedContent">
+                    <h4 className={'p-2 me-lg-5 mx-lg-0 mx-auto'}>Created by Giorgos Tsourdiou</h4>
                     <Link href={route('logout')} method={'post'} as={'button'}
                           className="btn btn-outline-danger text-center nav-item" type="button" only={['Rooms']}>
                         Logout

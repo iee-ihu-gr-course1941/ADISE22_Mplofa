@@ -24,6 +24,8 @@ class RoomResource extends JsonResource {
             'PlayerReady' => $this->PlayerReadyBool(),
             'Game_Active' => $this->Active(),
             'GameId' => $this->GameId,
+            'HasPassword' => !is_null($this->Password),
+            'Password' => $this->when($request->user()->id === $this->Owner()->id,$this->Password)
         ];
     }
 }

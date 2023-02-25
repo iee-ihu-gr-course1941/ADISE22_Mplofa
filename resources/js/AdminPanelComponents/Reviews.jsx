@@ -16,9 +16,7 @@ export function Reviews({Reviews}) {
     const RatingOptions = [1,2,3,4,5].map((number)=> {
         return <Link key={number} href={route('AdminPanel')}  as={'button'} only={['Reviews']} name="btnradio" data={{rating:number}}
                      className={"btn btn-outline-secondary mt-4 btn-sm"} type="button" onClick={()=>setSearching(true)} preserveState={true}>
-            {Array(number).fill(1).map((num)=>{
-                return <span key={uuid()} className="star" style={{fontSize:"medium",color:'#ffea00'}}>&#9733;</span>
-            })}
+            {number} <span key={uuid()} className="star" style={{fontSize:"medium",color:'#ffea00'}}>&#9733;</span>
         </Link>
     });
     // <label className="btn btn-outline-primary btn-check" htmlFor="btnradio3">Radio 3</label>

@@ -8,6 +8,7 @@ export default function WinningScreen(props) {
         Winner = props.Winner,
         Player1 = props.Player1,
         Player2 = props.Player2,
+        has_fled = props.has_fled,
         User = props.auth.user,
         data = {
                 user_id: User.id,
@@ -38,7 +39,17 @@ export default function WinningScreen(props) {
                             <div className='card-title p-1 text-center mt-5'><h4>{Player1.name}</h4></div>
                             <div className='card-body'>
                                 <div className={'row'}>
-                                    {Winner.id === Player1.id ? <h4 className={'text-success'}>Victory</h4> : <h4 className={'text-danger'}>Defeat</h4>}
+                                    {
+                                        (has_fled && has_fled === Player1.id) ? <h4 className={'text-danger'}>Left the Game</h4> :
+                                        (Winner.id === Player1.id ?
+                                            <h4 className={'text-success'}>
+                                                Victory
+                                            </h4>
+                                            :
+                                            <h4 className={'text-danger'}>
+                                                Defeat
+                                            </h4>)
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -52,7 +63,17 @@ export default function WinningScreen(props) {
                             <div className='card-title p-1 text-center mt-5'><h4>{Player2.name}</h4></div>
                             <div className='card-body'>
                                 <div className={'row'}>
-                                    {Winner.id === Player2.id ? <h4 className={'text-success'}>Victory</h4> : <h4 className={'text-danger'}>Defeat</h4>}
+                                    {
+                                        (has_fled && has_fled === Player2.id) ? <h4 className={'text-danger'}>Left the Game</h4> :
+                                        (Winner.id === Player2.id ?
+                                            <h4 className={'text-success'}>
+                                                Victory
+                                            </h4>
+                                            :
+                                            <h4 className={'text-danger'}>
+                                                Defeat
+                                            </h4>)
+                                    }
                                 </div>
                             </div>
                         </div>

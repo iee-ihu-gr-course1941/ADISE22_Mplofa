@@ -30,7 +30,7 @@ export default function Login({ status, canResetPassword}) {
 
     return (
         <div className="form-container sign-in-container">
-            <form onSubmit={submit} className=' p-4'>
+            <form onSubmit={submit}>
                 <h1  className='my-3'>Sign in</h1>
                     <FormFloatingTextInput
                         type="email"
@@ -50,10 +50,10 @@ export default function Login({ status, canResetPassword}) {
                         placeHolder={"Password"}
                     />
                 <div>
-                    <InputError message={errors.email} className="mt-2" />
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.email} className="mt-2 text-danger" />
+                    <InputError message={errors.password} className="mt-2 text-danger" />
                 </div>
-                <a className={'link-info text-decoration-none my-2'} href={route('password.request')}>Forgot your password?</a>
+                {/*<a className={'link-info text-decoration-none my-2'} href={route('password.request')}>Forgot your password?</a>*/}
                 <button className='btn btn-outline-success border-3'>Sign In</button>
             </form>
         </div>
