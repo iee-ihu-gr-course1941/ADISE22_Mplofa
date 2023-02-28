@@ -25,6 +25,7 @@ export default function Dashboard(props) {
     useEffect(()=>  {
         document.title = 'Home';
     });
+    console.log(props)
     return (
         <ErrorContext.Provider value={props.errors}>
             <UserContext.Provider value={props.auth.user}>

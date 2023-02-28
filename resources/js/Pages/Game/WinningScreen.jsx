@@ -24,6 +24,8 @@ export default function WinningScreen(props) {
 
         window.addEventListener('resize', handleResize)
     });
+    document.title = Winner.id === User.id ? 'Victory' : 'Defeat';
+
     return(
         <div className={'container-fluid vw-100 position-relative py-2 pt-sm-3 px-3 px-sm-5 ' + Height} style={{background:"#EEEEEE"}}>
             {/*<div className={'row'}>*/}
