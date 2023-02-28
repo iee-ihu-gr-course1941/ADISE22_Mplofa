@@ -91,7 +91,7 @@ export function Bugs({Bugs}) {
                                 ?
                                 BugList
                                 :
-                                <li>No Bugs have been submitted yet!</li>
+                                <li className={'list-group-item'}>No Bugs have been submitted yet!</li>
                                 // <li key={'none'} className="list-group-item">
                                 //     {
                                 //         searching
