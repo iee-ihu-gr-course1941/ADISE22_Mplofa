@@ -24,7 +24,10 @@ export default function Player({Position,Enemy,onSubmit,children}) {
     return (
         <div className={'row text-center text justify-content-center px-3 '
         + position + height + margin} style={{marginBottom: (viewport_height>500 && viewport_height<800) ? -27 : 0}}>
-            <strong className={isEnemy ? 'mt-1 mt-md-2' : 'mt-3 mt-sm-0' } style={{fontSize:15}}>{isEnemy ? 'Enemy ' : ''} Cards Remaining : {myCards ? myCards.length : enemyCards.length}</strong>
+            <strong className={isEnemy ? ('mt-1 mt-md-2 ' + (!myTurn && 'text-info')) : ('mt-3 mt-sm-0 ' + (myTurn && 'text-info'))}
+                    style={{fontSize:17}}>
+                {isEnemy ? 'Enemy ' : ''} Cards Remaining : {myCards ? myCards.length : enemyCards.length} {!myTurn && isEnemy && '( Currently Playing )'}
+            </strong>
             {!isEnemy &&
                 <div className={'col h-auto col-2' }>
                     { myTurn &&

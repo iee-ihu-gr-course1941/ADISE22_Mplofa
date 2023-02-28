@@ -20,7 +20,7 @@ export default function CardStack({selected,cardStack,handleAs,children}) {
     nextPlayer = useContext(NextPlayerContext);
     const height = (viewport_height < 395) ? (viewport_height < 361 ? '29%' : '45%') : '45%',
     margin = (viewport_height < 500) ? ' my-2' : '';
-    previousMove && console.log(previousMove)
+    // previousMove && console.log(previousMove)
     return (
         <div className={'row text-center justify-content-center align-items-center my-4  my-md-0 cardstack px-2 '  + margin}
         style={{height:height}}>

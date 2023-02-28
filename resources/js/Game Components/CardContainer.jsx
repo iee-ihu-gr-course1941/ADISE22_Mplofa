@@ -113,10 +113,10 @@ export default function CardContainer(props) {
             return <Card cardObject={card} key={card.id} card={IsEnemy ? CardMap.get(53): CardMap.get(card.id)} size={'1'} Enemy={props.Enemy}
             color={card.color} cardId={card.id} handleClick={props.onSelectCard} selectedCards={selectedCards}></Card>;
     });
-    console.log("Card Container",props.onSelectCard)
+    // console.log("Card Container",props.onSelectCard)
     return (
         <>
-            <div className={'col ' + (IsEnemy ? 'col-5 col-md-5 col-lg-7 col-xxl-5 ps-xxl-5' : 'col-6 col-lg-8 col-xxl-5 mb-2') + mobileEnemyCardsPadding} style={{fontSize:'125'}}>
+            <div className={'col ' + (IsEnemy ? 'col-6 col-md-5 col-lg-7 col-xxl-5 ps-xxl-5' : 'col-6  col-lg-8 col-xxl-5 mb-2') + mobileEnemyCardsPadding} style={{fontSize:'125'}}>
                 {
                     ( height > 500)
                         ?
@@ -130,7 +130,7 @@ export default function CardContainer(props) {
                 }
             </div>
             {
-                !IsEnemy &&  <div className={'col text-center ' + paginationPadding}>
+                !IsEnemy &&  <div className={'col text-center me-2 me-sm-0 me-lg-5' + paginationPadding}>
                     {pagination}
                 </div>
             }

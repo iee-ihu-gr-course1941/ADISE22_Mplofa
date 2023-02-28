@@ -36,7 +36,9 @@ export function Pagination(props) {
     // };
     let lastPage = paginationRange[paginationRange.length - 1];
     return (<>
-        <Card key={uuid()} card={"🂠"} size={'1'} Enemy={true} isPagination={true} handleClick={onNext} color={'white'}></Card>
+        <Card key={uuid()} card={"🂠"} size={'1'} Enemy={true} isPagination={true}
+            handleClick={onNext} color={'white'}>
+        </Card>
     </>)
 
 }

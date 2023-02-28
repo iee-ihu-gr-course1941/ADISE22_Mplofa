@@ -4,7 +4,7 @@ import {SelectedCardsContext} from "../Contexts/SelectedCardsContext";
 import {HeightContext} from "../Contexts/HeightContext";
 import {TurnContext} from "../Contexts/TurnContext";
 
-export default function Card({cardObject,Enemy,Stacked,color,isPagination,card,handleClick}) {
+export default function Card({cardObject,Enemy,Stacked,color,isPagination,card,handleClick,className}) {
     const cardObj = cardObject,
     isEnemy = Enemy,
     isStacked = Stacked,
@@ -16,7 +16,6 @@ export default function Card({cardObject,Enemy,Stacked,color,isPagination,card,h
     FontSize = (height < 500) ? 70 : 160,
     Width = (height < 500) ? 52 : 120,
     Height = (height < 500) ? 85 : 'auto';
-    console.log("Turn",myTurn);
     function addToSelected() {
         if(!selected) {
             handleClickCard(prevSelected => {
@@ -29,14 +28,12 @@ export default function Card({cardObject,Enemy,Stacked,color,isPagination,card,h
             });
         }
         setSelected(!selected);
-        console.log(selectedCards);
     }
     const select = ()=>{
         !isEnemy && !isStacked && myTurn && addToSelected();
     },
-    isPaginationBool = isPagination,
-    Card = isPaginationBool ?
-        <div className={'cardContainer'} style={{backgroundColor:"white",fontSize:FontSize,width:Width,height:Height}}
+    Card = isPagination ?
+        <div className={'cardContainer ' + className} style={{backgroundColor:"white",fontSize:FontSize,width:Width,height:Height}}
              onClick={handleClick}>
             {card}
         </div>
