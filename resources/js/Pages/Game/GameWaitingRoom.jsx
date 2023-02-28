@@ -15,7 +15,6 @@ export default function GameWaitingRoom(props) {
             Inertia.post(route('Leave_Room'),{RoomId:Room.id});
         });
     }, []);
-    console.log(User)
     useEffect(() => {
         const timer = setTimeout(() => {
                 Inertia.get(route('Check_For_New_Player'),{RoomId:Room.id},
@@ -47,7 +46,19 @@ export default function GameWaitingRoom(props) {
         }, 3500);
         return () => clearTimeout(timer);
     },[copied]);
-
+    useEffect(()=>{
+        document.title = Room.Player
+            ?
+            (
+                props.Room.OwnerReady && props.Room.PlayerReady
+                    ?
+                    'Both Players are ready, the Game will commence shortly!'
+                    :
+                    'Waiting for both players to be Ready!'
+            )
+            :
+            'Waiting on Another Player . . .';
+    },[props.Room])
     return (
         <div className='container-fluid vh-100 vw-100 position-relative py-3 px-5 align-items-center overflow-auto' style={{background:"#EEEEEE"}}>
             <div className={'row align-items-center h-100 gx-0'}>
