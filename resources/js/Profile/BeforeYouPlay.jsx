@@ -28,22 +28,36 @@ export function BeforeYouPlay() {
                                         </p>
                                         <p>
                                             <strong>
-                                                When using your mobile, you might face visual bugs due to scaling.
-                                                During gameplay, always use landscape mode on mobiles.
+                                                When using your mobile, be advised that the responsiveness of the game to different devices
+                                                is under heavy development.
+                                                <br></br>
+                                                <br></br>
+                                                Devices with known responsiveness issues :
+                                                <br></br>
+                                                ( during gameplay only )
+                                                <br></br>
+                                                <br></br>
+                                                - Galaxy Fold
+                                                <br></br>
+                                                - Surface Duo
                                             </strong>
+                                            <p className={'fst-italic mt-2'}>
+                                                * Please report any responsiveness abnormalities you come across using the Bug Submission Form.
+                                                ( No matter which device you're playing on! )
+                                            </p>
                                         </p>
-                                        <p>
-                                            <strong>
-                                                Using Incognito Mode might cause some issues while loading the css files.
-                                                It is recommended that you do not use incognito mode.
-                                            </strong>
-                                        </p>
-                                        <p>
-                                            <strong>
-                                                If for whatever reason you are using Incognito Mode, when you first log in, please reload the page
-                                                to mitigate such problems.
-                                            </strong>
-                                        </p>
+                                        {/*<p>*/}
+                                        {/*    <strong>*/}
+                                        {/*        Using Incognito Mode might cause some issues while loading the css files.*/}
+                                        {/*        It is recommended that you do not use incognito mode.*/}
+                                        {/*    </strong>*/}
+                                        {/*</p>*/}
+                                        {/*<p>*/}
+                                        {/*    <strong>*/}
+                                        {/*        If for whatever reason you are using Incognito Mode, when you first log in, please reload the page*/}
+                                        {/*        to mitigate such problems.*/}
+                                        {/*    </strong>*/}
+                                        {/*</p>*/}
                                         {/*<p>*/}
                                         {/*    <strong>*/}
                                         {/*        If you happen to come across such issues, please report them using the bug submission form,*/}

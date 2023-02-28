@@ -18,7 +18,7 @@ export function Users({Users}) {
         </li>
     });
     return (
-        <div className={'card h-50'}>
+        <div className={'card h-50 mt-md-5 mt-4 mt-sm-5 mt-lg-0'}>
             <div className={'card-header text-center'}>
                 <h5>Users</h5>
             </div>

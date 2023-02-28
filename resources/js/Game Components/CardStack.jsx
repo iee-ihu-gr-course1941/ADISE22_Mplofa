@@ -18,20 +18,21 @@ export default function CardStack({selected,cardStack,handleAs,children}) {
     Room = useContext(RoomContext),cardsPlayed = useContext(CardsPlayedContext),
     User = useContext(UserContext),viewport_height = useContext(HeightContext),
     nextPlayer = useContext(NextPlayerContext);
-    const height = (viewport_height < 500) ? ' h-25' : ' h-50',
+    const height = (viewport_height < 395) ? (viewport_height < 361 ? '29%' : '45%') : '45%',
     margin = (viewport_height < 500) ? ' my-2' : '';
     previousMove && console.log(previousMove)
     return (
-        <div className={'row text-center justify-content-center align-items-center ' + height + margin}>
+        <div className={'row text-center justify-content-center align-items-center my-4  my-md-0 cardstack px-2 '  + margin}
+        style={{height:height}}>
             <div className='col-4 align-self-center'>
                 {selectedCards.length>0 ? <AsCardBar key={uuid()} handleAs={handleAs} selected={selectedCards}></AsCardBar>:''}
             </div>
-            <div className='col-2 display-1 align-self-center'>
+            <div className={'col-2 h5 align-self-center my-0'}>
+                {CardStack.length!==0 ? 'Cards in the Stack : ' + CardStack.length : ''}
+            </div>
+            <div className='col-2 display-1 align-self-center my-0'>
                 {(CardStack.length!==0 ) ? <Card card={Cards.get(1)} Stacked={true} ></Card>
                     : ''}
-            </div>
-            <div className={'col-2 h5 align-self-center '}>
-                {CardStack.length!==0 ? 'Cards in the Stack : ' + CardStack.length : ''}
             </div>
             <div className='col-4 align-self-center'>
                 {
@@ -41,17 +42,17 @@ export default function CardStack({selected,cardStack,handleAs,children}) {
                         {
                             cardsPlayed.count === 1 ?
                             <div className={'ms-3'}>
-                                <h4 className={'me-1'}>
+                                <h5 className={'me-1'}>
                                     { previousMove &&  ((User.id === previousMove.User.id ? ' You ' : previousMove.User.name) +
                                         ' played ' + cardsPlayed.count + ' ' + cardsPlayed.number)}
-                                </h4>
+                                </h5>
                             </div>
                             :
                             <div className={'ms-3'}>
-                                <h4 className={'me-1'}>
+                                <h5 className={'me-1'}>
                                     {previousMove && ((User.id === previousMove.User.id ? ' You ' : previousMove.User.name) +
                                         ' played ' + cardsPlayed.count + ' ' + cardsPlayed.number + "'s")}
-                                </h4>
+                                </h5>
                             </div>
                         }
                     </div>
@@ -66,15 +67,15 @@ export default function CardStack({selected,cardStack,handleAs,children}) {
                         {
                             cardsPlayed === 'Passed' ?
                                 <div className={'ms-3'}>
-                                    <h4>{previousMove && ((previousMove && User.id === previousMove.User.id ? 'You' : previousMove.User.name)
-                                        + ' passed the turn.')}</h4>
+                                    <h5>{previousMove && ((previousMove && User.id === previousMove.User.id ? 'You' : previousMove.User.name)
+                                        + ' passed the turn.')}</h5>
                                 </div>
                                 : cardsPlayed === 'Bluff_Called' &&
                                 <div className={'ms-3'}>
-                                    <h4>{previousMove && ((previousMove && User.id === previousMove.User.id ? 'You' : previousMove.User.name)
+                                    <h5>{previousMove && ((previousMove && User.id === previousMove.User.id ? 'You' : previousMove.User.name)
                                         + ' called a bluff.')}
                                         {/*+ 'on ' + (User.id === previousMove.User.id ? 'you.' : previousMove.User.name))}*/}
-                                    </h4>
+                                    </h5>
                                 </div>
                         }
                     </div>

@@ -26,9 +26,9 @@ export default function Register() {
     };
 
     return (
-            <div className="form-container sign-up-container">
-                <form className={'w-100'} onSubmit={submit}>
-                    <h1 className='my-3'>Create Account</h1>
+            <div className="form-container sign-up-container overflow-scroll">
+                <form onSubmit={submit}>
+                    <h1 className='mt-5'>Create Account</h1>
                     <FormFloatingTextInput
                         type="text"
                         name="name"

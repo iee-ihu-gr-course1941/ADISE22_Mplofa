@@ -158,7 +158,7 @@ class MoveController extends Controller {
         $cards_played = json_decode($move->cards());
         $previous_cards_played = json_decode($Last_State->cards_played());
         $cards_down = json_decode($Last_State->cards_down);
-        $Room = Room::where('GameId',$Game->id)->get();
+        $Room = Room::find($Game->id);
         if($GameStatus === 3) {
             $this->newState($move->game(),$Last_State->sequence(),false,
                 false,$move->cards(), $this->nextTurn($GamePlayers,$move->user()),'3',
@@ -179,7 +179,7 @@ class MoveController extends Controller {
                         $this->assignCards($player_cards,$move->user(),$cards_played->cards_played,'remove')),$move);
                     $Game->winner = $this->findWinner($player_cards);
                     $Game->save();
-                    $Room[0]->delete();
+                    $Room->delete();
                 }
                 else {
                     $State =  new GameStateResource($this->newState($move->game(),$Last_State->sequence(),false,
@@ -206,7 +206,7 @@ class MoveController extends Controller {
                         $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
                             false,$move->cards(),$this->nextTurn($GamePlayers,$move->user()),'2',['cards_down'=>[]],
                             $this->assignCards($player_cards,$move->user(),$cards_down->cards_down,'add')),$move);
-                        $Room[0]->delete();
+                        $Room->delete();
                     }
                     else {
                         $State = new GameStateResource($this->newState($move->game(),$Last_State->sequence(),true,
@@ -224,7 +224,7 @@ class MoveController extends Controller {
                             $move->user()),'2',['cards_down'=>[]],$player_cards),$move);
                     $Game->winner = $this->findWinner($player_cards);
                     $Game->save();
-                    $Room[0]->delete();
+                    $Room->delete();
                 }
                 else {
                     if($Last_Move->status() === 3) {

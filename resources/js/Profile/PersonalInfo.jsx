@@ -35,7 +35,7 @@ export function PersonalInfo(props) {
     };
 
     return (
-        <div className='card border-0 p-2 shadow'>
+        <div className='card border-0 p-2 shadow my-3'>
             <div className='card-title p-2 text-center'><h2>Personal Information</h2></div>
             <div className='card-body'>
                 <form onSubmit={submit}>

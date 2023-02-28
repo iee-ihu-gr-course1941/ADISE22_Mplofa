@@ -15,4 +15,10 @@ class BugController extends Controller {
         $Bug->description = $input['bug_description'];
         $Bug->save();
     }
+    public function resolve(Request $request) {
+        $input = $request->only(['BugID']);
+        $Bug = Bug::find($input['BugID']);
+        $Bug->resolved = !$Bug->resolved;
+        $Bug->save();
+    }
 }

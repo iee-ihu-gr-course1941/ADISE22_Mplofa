@@ -155,7 +155,7 @@ class RoomController extends Controller {
         $Room = Room::find($input['RoomId']);
         if(is_null($Room))
             return Redirect::route('home');
-        if(!is_null($Room->Password)){
+        if(!is_null($Room->Password)) {
             if(is_null($input['Password']))
                 return redirect()->back()->withErrors(['Password'=>'Password is Required']);
             else

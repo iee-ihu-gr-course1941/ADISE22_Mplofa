@@ -54,7 +54,7 @@ export function Reviews({Reviews}) {
         </li>
     });
     return (
-            <div className={'p-2 text-center'}>
+            <div className={'text-center mt-md-5 mt-4 mt-sm-5 mt-lg-0'}>
                 <div className={'card h-50'}>
                     <div className={'card-header text-center'}>
                         <h5>Reviews</h5>

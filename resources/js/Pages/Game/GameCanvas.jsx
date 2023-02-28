@@ -18,6 +18,7 @@ import {Room} from "../../Game Components/Room";
 import {WidthContext} from "../../Contexts/WidthContext";
 
 export default function GameCanvas(props) {
+    document.title = 'Game in Session';
     console.log(props)
     const Players = props.GameObject && JSON.parse(props.GameObject.players),
         OwnerHasRendered = props.GameObject.OwnerCanvasRendered,
@@ -51,74 +52,46 @@ export default function GameCanvas(props) {
         cards_played : {'cards_played':'','as':{'count':'','number':''}},
         game_status:1,
     });
-    console.log(Players)
+    console.log(Game)
     const MINUTE_MS = 4000;
-
-    // useEffect(()=>{
-    //     switch (User.id){
-    //         case Players.player1: {
-    //             !OwnerHasRendered &&
-    //                 Inertia.post(route('Set_Canvas_Rendered'),{game_id:props.Game.game_id},{
-    //                     onFinish:()=>{
-    //                         console.log(User.name,"Successfully set Canvas Rendered");
-    //                     }
-    //                 });
-    //             break;
-    //         }
-    //         case Players.player2:{
-    //             !PlayerHasRendered &&
-    //             Inertia.post(route('Set_Canvas_Rendered'),{game_id:props.Game.game_id},{
-    //                 onFinish:()=>{
-    //                     console.log(User.name,"Successfully set Canvas Rendered");
-    //                 }
-    //             });
-    //             break;
-    //         }
-    //     }
-    // },[]);
-
+    window.addEventListener('beforeunload', ()=> {
+        handleLeave();
+    });
     useEffect(()=>{
-        console.log("This is the first and last time i will appear.")
-        Inertia.get(route('Check_Enemy_Move'),{GameId:props.Game.game_id},{
-            preserveScroll:true,
-            preserveState:true,
-            onSuccess:
-                (res)=> {
-                    if(res.props.GameObject.winner)
-                        Inertia.get(route('Winner'),{game_id:data.game_id});
-                }
-        });
-
-    },[])
+        selectedCards.length === 0 && setAsSelected(false);
+    },[selectedCards])
 
     useEffect(() => {
         function handleResize() {
             setViewport_Height(window.innerHeight);
             setViewport_Width(window.innerWidth);
+            console.log("handled resize");
         }
 
         window.addEventListener('resize', handleResize)
     });
 
-    useEffect(() => {
-        window.addEventListener('beforeunload', ()=>{
-            handleLeave();
-        });
-    }, []);
+    // useEffect(() => {
+    //     console.log("handling leave");
+    //
+    // }, []);
 
     useEffect(() => {
         const interval = !myTurn && setInterval(() => {
+            console.log("Interval")
             if(!myTurn && !document.getElementById('leaveWindow').classList.contains('show')) {
                 Inertia.get(route('Check_Enemy_Move'),{GameId:props.Game.game_id},{
                     preserveScroll:true,
+                    // preserveState:true,
                     onSuccess:
                         (res)=> {
-                            if(!res.props.GameObject.winner) {
+                            if(!res.props.GameObject.winner && Game.sequence_number !== res.props.Game.sequence_number) {
                                 res.props.Game && setNewState(res.props.Game);
                                 res.props.Game && clearInterval(interval);
                                 res.props.Game && setMyTurn(true);
+                                console.log("lemao")
                             }
-                            else {
+                            else if(res.props.GameObject.winner) {
                                 Inertia.get(route('Winner'),{game_id:data.game_id});
                             }
                         }
@@ -127,7 +100,7 @@ export default function GameCanvas(props) {
         }, MINUTE_MS);
 
         return () => clearInterval(interval);
-    }, [Game]);
+    });
 
 
 
@@ -145,6 +118,8 @@ export default function GameCanvas(props) {
                         Inertia.get(route('Winner'),{game_id:data.game_id});
                     }
                 }});
+        else
+            console.log("You haven't declared the cards you are about to play");
     }
 
     function handleBluff() {
@@ -212,11 +187,11 @@ export default function GameCanvas(props) {
     return (
         <HeightContext.Provider value={viewport_height}>
             <WidthContext.Provider value={viewport_width}>
-                <div className='container-fluid vh-100 w-100 position-relative p-2'>
+                <div className='container-fluid vh-100 w-100 position-relative px-0 overflow-scroll' style={{background:"#295f48"}}>
                     <div className='row h-100 p-0 mx-0'>
                         <div className='col-12 px-0'>
-                            <div className='card h-100'>
-                                <div className='card-body  text-center' style={{background:"#295f48"}}>
+                            <div className='card h-100 border-0' style={{background:"#295f48"}}>
+                                <div className='card-body p-0 text-center' style={{background:"#295f48"}}>
                                     <SelectedCardsContext.Provider value={{selectedCards,setSelectedCards}}>
                                         <TurnContext.Provider value={{myTurn,setMyTurn}}>
                                             <CardsContext.Provider value={{enemyCards}}>
@@ -242,13 +217,18 @@ export default function GameCanvas(props) {
                                                     <Player Position='Bottom' Enemy={false} onSubmit={submit} reset={reset}>
                                                         { selectedCards.length!==0 ?
                                                             <>
-                                                                <button className={'btn btn-info w-auto mx-3 my-1'} onClick={handlePlay}>{selectedCards.length  > 1 ? 'Play Cards' : 'Play Card'}</button>
+                                                                { asSelected === false && <p className={'text-danger my-0'}
+                                                                 style={{fontSize:(viewport_height < 450 ? 13 : 20)}}>
+                                                                    {'You should declare you card' +
+                                                                    (selectedCards.length>1 ? 's !':' !')}</p>}
+                                                                <button className={'btn btn-info w-auto mx-3 mt-1 mb-2'} onClick={handlePlay}
+                                                                disabled={asSelected === false}>{selectedCards.length  > 1 ? 'Play Cards' : 'Play Card'}</button>
                                                             </>
                                                             :
                                                             <>
                                                                 {cardsInStack.length === 0 && viewport_height > 500 && <h6>Play at least 1 card.</h6>}
-                                                                <button className={'btn btn-danger ' + buttonSize + buttonWidth + passMargin}  onClick={handlePass} disabled={cardsInStack.length === 0}>Pass</button>
-                                                                <button className={'btn btn-warning ' + buttonSize + buttonWidth} onClick={handleBluff} disabled={cardsInStack.length === 0 || (previousMove && previousMove.Status === 3)}>Call Bluff</button>
+                                                                <button className={'btn btn-danger mb-2 ' + buttonSize + buttonWidth }  onClick={handlePass} disabled={cardsInStack.length === 0}>Pass</button>
+                                                                <button className={'btn btn-warning mb-2  mb-xl-0 ' + buttonSize + buttonWidth} onClick={handleBluff} disabled={cardsInStack.length === 0 || (previousMove && previousMove.Status === 3)}>Call Bluff</button>
                                                             </>}
                                                     </Player>
                                                 </StackContext.Provider>
