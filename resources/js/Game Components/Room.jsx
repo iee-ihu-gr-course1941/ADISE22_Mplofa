@@ -2,8 +2,9 @@ import {Link} from "@inertiajs/inertia-react";
 import {UserContext} from "../Contexts/UserContext";
 import {useContext, useState} from "react";
 import {RoomPasswordModal} from "../Modals/RoomPasswordModal";
+import {Inertia} from "@inertiajs/inertia";
 
-export function Room({Room,auth}) {
+export function Room({Room,children}) {
     const User = useContext(UserContext),
     [enterPassword,setEnterPassword] = useState(false);
     console.log(Room)
@@ -18,7 +19,21 @@ export function Room({Room,auth}) {
                             </button>
                         </div>
                     }
-                    <div className={enterPassword === false ? 'col-12 ' : 'col-lg-10 col-12'}><strong><h5>{Room.Name}</h5></strong></div>
+                    <div className={enterPassword === false ? 'col-12 ' : 'col-lg-10 col-12'}>
+                        <strong>
+                            <h5>
+                                {Room.Name}
+                            </h5>
+                            {User.ca
+                                &&
+                                <Link href={route('Delete_Room')} method={'post'} data={{room_id:Room.id}} as={'button'}
+                                className="btn btn-danger text-center " type="button" only={['Rooms']}
+                                onSuccess={()=>{Inertia.get(route('home'),{},{only:['Rooms']});}} disabled={!User.ca}>
+                                    Delete
+                                </Link>
+                            }
+                        </strong>
+                    </div>
                 </div>
                 <div className='card-body'>
                     <div className="row text-center gx-0">

@@ -22,7 +22,6 @@ export default function Dashboard(props) {
 
         return ()=>clearTimeout(AlertVisible);
     },[props.errors]);
-
     useEffect(()=>  {
         document.title = 'Home';
     });
@@ -56,7 +55,7 @@ export default function Dashboard(props) {
                                     <div className={'col'}>
                                         <UserContext.Provider value={props.auth.user}>
                                             <Rooms rooms={RoomsList}>
-                                                <Link href={route('home')} data={{RoomId:Room.id}} as={'button'}
+                                                <Link href={route('home')} as={'button'}
                                                       className="btn btn-outline-dark text-center mt-4" type="button" only={['Rooms']}>
                                                     Reload Rooms
                                                 </Link>

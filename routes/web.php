@@ -39,6 +39,7 @@ Route::post('Room/Join',[RoomController::class,'Join'])->name('Join_Room');
 Route::post('Room/Leave',[RoomController::class,'Leave'])->name('Leave_Room');
 Route::post('Room/Ready',[RoomController::class,'Ready'])->name('Ready');
 Route::post('Room/Activate',[RoomController::class,'Activate'])->name('Activate_Room');
+Route::post('Room/Delete',[RoomController::class,'destroy'])->middleware(['admin'])->name('Delete_Room');
 Route::get('Room/Initialize_Game',[GameController::class,'create'])->name('Initialize_Game');
 Route::get('Room/Poll_Room',[RoomController::class,'pollRoom'])->name('Check_For_New_Player');
 Route::post('Reviews/Submit',[ReviewController::class,'store'])->name('Submit_Review');
