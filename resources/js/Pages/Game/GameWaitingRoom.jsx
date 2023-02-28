@@ -3,7 +3,6 @@ import {Inertia} from "@inertiajs/inertia";
 import {Link} from "@inertiajs/inertia-react";
 
 export default function GameWaitingRoom(props) {
-    console.log(props.Room)
     const [Room,setRoom] = useState(props.Room),
         User = props.auth.user,
         [canClickReady,setCanClickReady] = useState(),MINUTE_MS = 5000,
@@ -21,7 +20,7 @@ export default function GameWaitingRoom(props) {
                 Inertia.get(route('Check_For_New_Player'),{RoomId:Room.id},
                     {onSuccess:(res)=> {
                             setRoom(res.props.Room);
-                            console.log(res.props)
+                            // console.log(res.props)
                             if(!canClickReady)
                                 setCanClickReady(true);
                             if(res.props.Room.OwnerReady && res.props.Room.PlayerReady && !hasInitiatedGame) {

@@ -41,10 +41,10 @@ export function BeforeYouPlay() {
                                                 <br></br>
                                                 - Surface Duo
                                             </strong>
-                                            <p className={'fst-italic mt-2'}>
-                                                * Please report any responsiveness abnormalities you come across using the Bug Submission Form.
-                                                ( No matter which device you're playing on! )
-                                            </p>
+                                        </p>
+                                        <p className={'fst-italic mt-2'}>
+                                            * Please report any responsiveness abnormalities you come across using the Bug Submission Form.
+                                            ( No matter which device you're playing on! )
                                         </p>
                                         {/*<p>*/}
                                         {/*    <strong>*/}

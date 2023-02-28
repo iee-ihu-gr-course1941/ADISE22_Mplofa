@@ -24,6 +24,6 @@ class HomeController extends Controller {
      * @return \Inertia\Response
      */
     public function index() {
-        return Inertia::render('Dashboard',['Rooms'=>fn ()=> new RoomCollection(Room::where('GameActive',0)->get())]);
+        return Inertia::render('Dashboard',['Rooms'=> fn ()=> new RoomCollection(Room::where('GameActive',0)->get())]);
     }
 }

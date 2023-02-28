@@ -8,9 +8,7 @@ import {Button, FormControl, InputGroup} from "react-bootstrap";
 
 
 export function Rooms({rooms,onSubmit,Data,children}) {
-    const Rooms = rooms.map((RoomObj)=> {
-        return <Room key={RoomObj.id} Room={RoomObj}></Room>
-    }), [hasPassword,setHasPassword] = useState(false),
+    const [hasPassword,setHasPassword] = useState(false),
         [password,setPassword] = useState(''),
         [name,setName] = useState(''),
     { data, setData, post, processing, errors, reset } = useForm({
@@ -32,7 +30,6 @@ export function Rooms({rooms,onSubmit,Data,children}) {
         }
         setPassword(result);
     }
-    console.log(name)
     const onHandleChange = (event) => {
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
@@ -45,7 +42,8 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                 <div className="row gx-0 justify-content-center">
                     <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="false">
                         <div className="carousel-inner justify-items-center">
-                            {Rooms.length === 0 ?
+                            {
+                                rooms.length === 0 ?
                                 <div className={'text-center my-4'}>
                                     <h4 className={'mb-5'}>No Active Rooms found.</h4>
                                     <p className={'fst-italic'}>
@@ -54,7 +52,12 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                                         Try "Reload Rooms" or create your own room!
                                     </p>
                                 </div>
-                                : Rooms}
+                                : (rooms.map((RoomObj)=> {
+                                    return <Room key={RoomObj.id} Room={RoomObj}>
+                                        {children}
+                                    </Room>
+                                }))
+                            }
                             <div className="carousel-indicators">
                                 {rooms.map((room,index)=>{
                                     return <button key={index} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={index}
