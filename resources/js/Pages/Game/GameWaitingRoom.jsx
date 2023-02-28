@@ -15,6 +15,7 @@ export default function GameWaitingRoom(props) {
             Inertia.post(route('Leave_Room'),{RoomId:Room.id});
         });
     }, []);
+    console.log(User)
     useEffect(() => {
         const timer = setTimeout(() => {
                 Inertia.get(route('Check_For_New_Player'),{RoomId:Room.id},

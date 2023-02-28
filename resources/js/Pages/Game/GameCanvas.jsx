@@ -19,7 +19,7 @@ import {WidthContext} from "../../Contexts/WidthContext";
 
 export default function GameCanvas(props) {
     document.title = 'Game in Session';
-    console.log(props)
+    // console.log(props)
     const Players = props.GameObject && JSON.parse(props.GameObject.players),
         OwnerHasRendered = props.GameObject.OwnerCanvasRendered,
         PlayerHasRendered = props.GameObject.PlayerCanvasRendered,
@@ -52,7 +52,7 @@ export default function GameCanvas(props) {
         cards_played : {'cards_played':'','as':{'count':'','number':''}},
         game_status:1,
     });
-    console.log(Game)
+    // console.log(Game)
     const MINUTE_MS = 4000;
     window.addEventListener('beforeunload', ()=> {
         handleLeave();
@@ -65,7 +65,7 @@ export default function GameCanvas(props) {
         function handleResize() {
             setViewport_Height(window.innerHeight);
             setViewport_Width(window.innerWidth);
-            console.log("handled resize");
+            // console.log("handled resize");
         }
 
         window.addEventListener('resize', handleResize)
@@ -78,7 +78,7 @@ export default function GameCanvas(props) {
 
     useEffect(() => {
         const interval = !myTurn && setInterval(() => {
-            console.log("Interval")
+            // console.log("Interval")
             if(!myTurn && !document.getElementById('leaveWindow').classList.contains('show')) {
                 Inertia.get(route('Check_Enemy_Move'),{GameId:props.Game.game_id},{
                     preserveScroll:true,
@@ -89,7 +89,6 @@ export default function GameCanvas(props) {
                                 res.props.Game && setNewState(res.props.Game);
                                 res.props.Game && clearInterval(interval);
                                 res.props.Game && setMyTurn(true);
-                                console.log("lemao")
                             }
                             else if(res.props.GameObject.winner) {
                                 Inertia.get(route('Winner'),{game_id:data.game_id});
@@ -118,8 +117,6 @@ export default function GameCanvas(props) {
                         Inertia.get(route('Winner'),{game_id:data.game_id});
                     }
                 }});
-        else
-            console.log("You haven't declared the cards you are about to play");
     }
 
     function handleBluff() {
@@ -226,9 +223,9 @@ export default function GameCanvas(props) {
                                                             </>
                                                             :
                                                             <>
-                                                                {cardsInStack.length === 0 && viewport_height > 500 && <h6>Play at least 1 card.</h6>}
-                                                                <button className={'btn btn-danger mb-2 ' + buttonSize + buttonWidth }  onClick={handlePass} disabled={cardsInStack.length === 0}>Pass</button>
-                                                                <button className={'btn btn-warning mb-2  mb-xl-0 ' + buttonSize + buttonWidth} onClick={handleBluff} disabled={cardsInStack.length === 0 || (previousMove && previousMove.Status === 3)}>Call Bluff</button>
+                                                                {cardsInStack.length === 0  && <h6>Play at least 1 card.</h6>}
+                                                                <button className={'btn btn-danger mb-2 w-100 ' + (viewport_height < 420 && ' me-2')}  onClick={handlePass} disabled={cardsInStack.length === 0}>Pass</button>
+                                                                <button className={'btn btn-warning mb-2  mb-xl-0 w-100'  } onClick={handleBluff} disabled={cardsInStack.length === 0 || (previousMove && previousMove.Status === 3)}>Call Bluff</button>
                                                             </>}
                                                     </Player>
                                                 </StackContext.Provider>
