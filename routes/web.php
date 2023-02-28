@@ -44,6 +44,8 @@ Route::get('Room/Poll_Room',[RoomController::class,'pollRoom'])->name('Check_For
 Route::post('Reviews/Submit',[ReviewController::class,'store'])->name('Submit_Review');
 Route::get('Room/RedirectIfRoomDoesntExist',[RoomController::class,'RedirectIfRoomDoesntExist'])->name('Room_Exists');
 Route::post('Bug/New_Bug',[BugController::class,'store'])->name('New_Bug');
+Route::post('Bug/Resolve',[BugController::class,'resolve'])->name('Resolve_Bug');
+
 
 Route::get('Game/Play/Make_Move',function (){});
 require __DIR__.'/auth.php';

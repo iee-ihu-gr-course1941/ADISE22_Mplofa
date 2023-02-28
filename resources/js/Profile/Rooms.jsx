@@ -4,6 +4,7 @@ import InputError from "../Components/InputError";
 import {useState} from "react";
 import {Link, useForm} from "@inertiajs/inertia-react";
 import {Inertia} from "@inertiajs/inertia";
+import {Button, FormControl, InputGroup} from "react-bootstrap";
 
 
 export function Rooms({rooms,onSubmit,Data,children}) {
@@ -11,13 +12,14 @@ export function Rooms({rooms,onSubmit,Data,children}) {
         return <Room key={RoomObj.id} Room={RoomObj}></Room>
     }), [hasPassword,setHasPassword] = useState(false),
         [password,setPassword] = useState(''),
+        [name,setName] = useState(''),
     { data, setData, post, processing, errors, reset } = useForm({
-        Name: "",
+        Name: name,
         Password: password,
         Capacity: 2,
     }),submit = (e) => {
         e.preventDefault();
-        Inertia.post(route('New_Room'),{Name:data.Name,Password:hasPassword && password,Capacity:data.Capacity});
+        Inertia.post(route('New_Room'),{Name:name,Password:(hasPassword ? password : ''),Capacity:data.Capacity});
     },
     RandomPassword = (length)=>{
         let result = '';
@@ -30,6 +32,7 @@ export function Rooms({rooms,onSubmit,Data,children}) {
         }
         setPassword(result);
     }
+    console.log(name)
     const onHandleChange = (event) => {
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
@@ -42,7 +45,16 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                 <div className="row gx-0 justify-content-center">
                     <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="false">
                         <div className="carousel-inner justify-items-center">
-                            {Rooms.length === 0 ? <div className={'text-center my-4'}><h4>There are no active Rooms!</h4></div> : Rooms}
+                            {Rooms.length === 0 ?
+                                <div className={'text-center my-4'}>
+                                    <h4 className={'mb-5'}>No Active Rooms found.</h4>
+                                    <p className={'fst-italic'}>
+                                        Can't see any active rooms?
+                                        <br></br>
+                                        Try "Reload Rooms" or create your own room!
+                                    </p>
+                                </div>
+                                : Rooms}
                             <div className="carousel-indicators">
                                 {rooms.map((room,index)=>{
                                     return <button key={index} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={index}
@@ -87,8 +99,8 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                                     name='Name'
                                     value={data.Name}
                                     required={true}
-                                    handleChange={onHandleChange}
-                                    placeHolder='Name'
+                                    handleChange={(e)=>{setName(e.target.value)}}
+                                    placeHolder='Name*'
                                     className={'mb-4'}
                                 ></FormFloatingTextInput>
                                 <InputError message={errors.Name} className="mt-2" />
@@ -98,22 +110,31 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                                     value={2}
                                     required={true}
                                     handleChange={onHandleChange}
-                                    placeHolder='Capacity'
+                                    // placeHolder='Capacity'
                                     disabled={true}
-                                    className={'mb-4'}
+                                    className={'mb-4 d-none'}
                                 ></FormFloatingTextInput>
                                 <InputError message={errors.Capacity} className="mt-2" />
                                 <h6 className='ps-3 text-center'>Password</h6>
-                                        <input className="form-check-input my-3" type="checkbox" value="" checked={hasPassword}
+                                        <input className="form-check-input my-3" type="checkbox" checked={hasPassword}
                                                onChange={()=>setHasPassword(!hasPassword)} aria-label="Checkbox for following text input"/>
                                 {hasPassword && <>
-                                    <div className="input-group mb-1 h-25">
-                                        <button className="btn btn-outline-secondary btn-sm h-auto" type="button"
-                                                onClick={()=>RandomPassword(10)}>Random</button>
+                                    <div className="input-group">
+                                        <button className="btn btn-outline-secondary btn-sm py-0 " type="button" onClick={()=>RandomPassword(10)}>Random</button>
                                         <input type={'text'} name={'Password'} value={password} required={hasPassword}
                                            onChange={(e)=>setPassword(e.target.value)}
-                                               placeholder='Password' className={'form-control'}/>
+                                               placeholder='Password' className={'form-control my-0'}/>
                                     </div>
+
+                                    {/*<InputGroup className="mb-1">*/}
+                                    {/*    <Button variant="outline-secondary" id="button-addon1">*/}
+                                    {/*        Button*/}
+                                    {/*    </Button>*/}
+                                    {/*    <FormControl*/}
+                                    {/*        aria-label="Example text with button addon"*/}
+                                    {/*        aria-describedby="basic-addon1"*/}
+                                    {/*    />*/}
+                                    {/*</InputGroup>*/}
                                     <p className={'text-danger'}>
                                         <strong>
                                             Only people who know the password will be able to join the Room!
@@ -121,7 +142,7 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                                     </p>
                                     <InputError message={errors.Password} className="mt-2" />
                                 </>}
-                                <button className='btn btn-primary btn-sm'>Create Room</button>
+                                <button className='btn btn-primary btn-sm' disabled={name===''}>Create Room</button>
                             </div>
                         </form>
                     </div>

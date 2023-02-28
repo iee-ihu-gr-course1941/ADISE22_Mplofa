@@ -10,7 +10,7 @@ export default function Overlay({setVisibility}) {
                 </div>
                 <div className="overlay-panel overlay-right">
                     <h1>Hello, Friend!</h1>
-                    <h6 className='p-3'>Create an account, start bluffing right away.</h6>
+                    <h6 className='p-3'>Create an account, start BLUFFING right away.</h6>
                     <button className="btn btn-info" id="signUp" onClick={()=>{setVisibility('Register');
                         document.title = 'Register';}}>Create Account</button>
                 </div>

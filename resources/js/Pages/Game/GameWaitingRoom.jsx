@@ -8,8 +8,9 @@ export default function GameWaitingRoom(props) {
         User = props.auth.user,
         [canClickReady,setCanClickReady] = useState(),MINUTE_MS = 5000,
         [hasInitiatedGame,setHasInitiatedGame] = useState(false),
-        [copied,setCopied] = useState(false);
-
+        [copied,setCopied] = useState(false),
+        [graded,setGraded] = useState(false),
+        [timed,setTimed] = useState(false);
     useEffect(() => {
         window.addEventListener('beforeunload', ()=>{
             Inertia.post(route('Leave_Room'),{RoomId:Room.id});
@@ -62,7 +63,27 @@ export default function GameWaitingRoom(props) {
                             {copied ? 'Copied' :'Copy Room Password'}
                         </button>}
                 </div>
-                <div className='row px-0 gx-0 mb-sm-5 py-sm-5'>
+                <div className={'row mx-auto'}>
+                    <div className="form-check px-0">
+                        <div className={'row  mx-0 text-center'}>
+                            <label className={"form-check-label " + ( timed === true ? 'text-success' : 'text-danger')} htmlFor="flexCheckDisabled">
+                                Timed Game <strong> ( Coming Soon ) </strong>
+                            </label>
+                            <input className="form-check-input mx-auto btn-lg" type="checkbox" value=""
+                                   disabled onChange={()=>{setTimed(!timed)}}/>
+                        </div>
+                    </div>
+                    <div className="form-check px-0 mt-3">
+                        <div className={'row  mx-0 text-center '}>
+                            <label className={"form-check-label " + ( graded === true ? 'text-success' : 'text-danger')} htmlFor="flexCheckDisabled">
+                                Graded Game <strong> ( Coming Soon ) </strong>
+                            </label>
+                            <input className="form-check-input mx-auto btn-lg my-2" type="checkbox" value=""
+                                   disabled onChange={()=>{setGraded(!timed)}}/>
+                        </div>
+                    </div>
+                </div>
+                <div className='row px-0 gx-0 mb-sm-5 py-sm-2'>
                     <div className='col-12 col-sm-4 text-center align-items-center my-3 order-0'>
                         <div className='card border-1 p-2 h-100 shadow-lg' style={{background:"#e6e6e6"}}>
                             <div className='card-title p-1 text-center mt-5'>
@@ -104,7 +125,6 @@ export default function GameWaitingRoom(props) {
                                     <h4 className={'mb-1 mb-sm-5  text-danger mt-3 mt-sm-5'}>Waiting on Another Player . . .</h4>
                             )
                         }
-                        {/*</div>*/}
                         <Link href={route('Leave_Room')} method={'post'} data={{RoomId:Room.id}} as={'button'}
                               className="btn btn-outline-danger mt-2 mt-sm-4" type="button" disabled={Room.Game_Active}>
                             Leave Room

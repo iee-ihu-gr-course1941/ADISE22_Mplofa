@@ -59,7 +59,7 @@ export default function CardContainer(props) {
     stackSize = useContext(StackContext),
     IsEnemy = props.Enemy,
     mobileEnemyCardsPadding = IsEnemy ? ' me-5 pe-5 ' : '',
-    paginationPadding = (height < 500) ? ' col-2 ms-5 ms-md-1' : ' col-1 ms-5 ms-md-1';
+    paginationPadding = (height < 500) ? ' col-2 ms-5 ms-md-1 mb-2' : ' col-1 ms-5 ms-md-1';
     let cardsPadding;
     if (window.innerWidth>1000 && window.innerWidth <1100)  {
         cardsPadding =  120;
@@ -113,9 +113,10 @@ export default function CardContainer(props) {
             return <Card cardObject={card} key={card.id} card={IsEnemy ? CardMap.get(53): CardMap.get(card.id)} size={'1'} Enemy={props.Enemy}
             color={card.color} cardId={card.id} handleClick={props.onSelectCard} selectedCards={selectedCards}></Card>;
     });
+    console.log("Card Container",props.onSelectCard)
     return (
         <>
-            <div className={'col ' + (IsEnemy ? 'col-5 col-md-5 col-lg-7 col-xxl-5 ps-xxl-5' : 'col-6 col-lg-8 col-xxl-5') + mobileEnemyCardsPadding} style={{fontSize:'125'}}>
+            <div className={'col ' + (IsEnemy ? 'col-5 col-md-5 col-lg-7 col-xxl-5 ps-xxl-5' : 'col-6 col-lg-8 col-xxl-5 mb-2') + mobileEnemyCardsPadding} style={{fontSize:'125'}}>
                 {
                     ( height > 500)
                         ?

@@ -18,17 +18,17 @@ export default function Player({Position,Enemy,onSubmit,children}) {
     User = useContext(UserContext),
     { selectedCards,onSelectCard} = !isEnemy &&  useContext(SelectedCardsContext),
     viewport_height = useContext(HeightContext),
-    height = (viewport_height < 500) ? (isEnemy ? ' h-auto' : ' h-25') : ' h-25',
-    margin = (viewport_height < 500 && !isEnemy) ? ' ' : '',
-    buttonColSize = (viewport_height < 500 ) ? '2' : '1';
+    height = (viewport_height < 500) ? (isEnemy ? ' h-25' : ' h-25') : ' h-25',
+    margin = (viewport_height < 500 && !isEnemy) ? ' ' : '';
+    // buttonColSize = (viewport_height < 500 ) ? '2' : '1';
     return (
-        <div className={'row text-center text justify-content-center '
+        <div className={'row text-center text justify-content-center px-3 '
         + position + height + margin} style={{marginBottom: (viewport_height>500 && viewport_height<800) ? -27 : 0}}>
-            <strong style={{fontSize:20}}>{isEnemy ? 'Enemy ' : ''} Cards Remaining : {myCards ? myCards.length : enemyCards.length}</strong>
+            <strong className={isEnemy ? 'mt-1 mt-md-2' : 'mt-3 mt-sm-0' } style={{fontSize:15}}>{isEnemy ? 'Enemy ' : ''} Cards Remaining : {myCards ? myCards.length : enemyCards.length}</strong>
             {!isEnemy &&
-                <div className={'col h-auto col-' + buttonColSize} >
+                <div className={'col h-auto col-2' }>
                     { myTurn &&
-                        <form onSubmit={onSubmit}>
+                        <form onSubmit={onSubmit} style={{background:"#295f48"}}>
                             {children}
                         </form>
                     }

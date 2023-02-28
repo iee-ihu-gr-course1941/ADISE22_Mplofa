@@ -55,6 +55,11 @@ export default function Login({ status, canResetPassword}) {
                 </div>
                 {/*<a className={'link-info text-decoration-none my-2'} href={route('password.request')}>Forgot your password?</a>*/}
                 <button className='btn btn-outline-success border-3'>Sign In</button>
+                <p className={'my-3'}>
+                    OR
+                </p>
+                <button className='btn btn-outline-secondary border-3 disabled' disabled={true}>Log in as Guest</button>
+                <p>( Coming Soon ) </p>
             </form>
         </div>
     );

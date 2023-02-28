@@ -42,9 +42,9 @@ export default function Dashboard(props) {
                             {/*</div>*/}
                             <div className={'col-12 text-center h-auto'}>
                                 <div className={'row'}>
-                                    <h6 className={'text-danger'}>&#9888; If this is your first time playing on a new device or a new browser, please refresh the page once.</h6>
-                                    <h6 className={'text-danger'}>There is a known bug that causes some buttons to sometimes not render properly, I am still working on a fix. &#9888;</h6>
-                                    <h6 className={'text-success'}>Thank you for your understanding!</h6>
+                                    {/*<h6 className={'text-danger'}>&#9888; If this is your first time playing on a new device or a new browser, please refresh the page once.</h6>*/}
+                                    {/*<h6 className={'text-danger'}>There is a known bug that causes some buttons to sometimes not render properly, I am still working on a fix. &#9888;</h6>*/}
+                                    {/*<h6 className={'text-success'}>Thank you for your understanding!</h6>*/}
                                     <div className={'col'}>
                                         <button type="button btn-sm w-25" className="btn btn-outline-danger mb-3" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal">
@@ -58,7 +58,7 @@ export default function Dashboard(props) {
                                             <Rooms rooms={RoomsList}>
                                                 <Link href={route('home')} data={{RoomId:Room.id}} as={'button'}
                                                       className="btn btn-outline-dark text-center mt-4" type="button" only={['Rooms']}>
-                                                    Reload
+                                                    Reload Rooms
                                                 </Link>
                                             </Rooms>
                                         </UserContext.Provider>

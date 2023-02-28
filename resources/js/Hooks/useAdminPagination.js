@@ -9,7 +9,7 @@ export const useAdminPagination = ({
                               }) => {
     return useMemo(() => {
         const totalPageCount = Math.ceil(totalCount / pageSize);
-        console.log(totalPageCount)
+        // console.log(totalPageCount)
         // Pages count is determined as siblingCount + firstPage + lastPage + currentPage + 2*DOTS
         const totalPageNumbers = siblingCount + 5;
 
@@ -19,7 +19,7 @@ export const useAdminPagination = ({
           paginationComponent, we return the range [1..totalPageCount]
         */
         if (totalPageNumbers >= totalPageCount) {
-            return range(1, totalPageCount);
+            return range(1, totalPageCount+1);
         }
 
         /*
@@ -47,7 +47,7 @@ export const useAdminPagination = ({
         */
         if (!shouldShowLeftDots && shouldShowRightDots) {
             let leftItemCount = 1 + siblingCount;
-            let leftRange = range(1, leftItemCount);
+            let leftRange = range(1, currentPage+1);
             return [...leftRange ,'...', totalPageCount];
         }
 

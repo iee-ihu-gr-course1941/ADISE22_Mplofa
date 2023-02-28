@@ -32,7 +32,7 @@ export function BugSubmissionForm() {
                         </div>
                     </div>
                 </div>
-                 <div className="modal fade p-0" id="BugSubmission" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                 <div className="modal fade p-0" id="BugSubmission" tabIndex="-1" aria-labelledby="Bug Submission" aria-hidden="true">
                      <div className="modal-dialog ">
                          <div className="modal-content">
                              <div className="modal-header ">

@@ -14,7 +14,7 @@ export function AsCardBar(props) {
             return (
                 <Fragment key={card[1]}>
                     <input type="radio" className="btn-check" name='as' id={card[1]} value={card[1]}/>
-                    <label className="btn btn-outline-primary btn-sm" htmlFor={card[1]}>
+                    <label className={"btn btn-outline-primary btn-sm " + (viewport_height < 500 && 'mb-2')} htmlFor={card[1]} style={{fontSize:(viewport_height<400 ? 11 : 15)}}>
                         {selected.length>1 ? card[0] + "'s" : card[0]}
                     </label>
                 </Fragment>
@@ -23,7 +23,7 @@ export function AsCardBar(props) {
             return (
                 <Fragment key={card[1]}>
                     <input type="radio" className="btn-check" name='as' id={card[1]} value={card[1]}/>
-                    <label className="btn btn-outline-primary btn-sm" htmlFor={card[1]}>
+                    <label className="btn btn-outline-primary btn-sm" htmlFor={card[1]} style={{fontSize:(viewport_height<400 ? 11 : 15)}}>
                         {selected.length>1 ? card[0] + "'s" : card[0]}
                     </label>
                 </Fragment>
@@ -31,6 +31,7 @@ export function AsCardBar(props) {
         });
     return (
         <>
+            <p className={'my-0 mb-md-3'} style={{fontSize:(viewport_height < 450 ? 13 : 19)}}>Declare your Cards</p>
             <div className="btn-group" role="group" aria-label="Basic example">
                 {
                     (viewport_height < 500)
@@ -45,10 +46,10 @@ export function AsCardBar(props) {
                         </div>
                         :
                         <>
-                            <div className={(viewport_height < 500) ? "btn-group me-2" : "btn-group-vertical me-2"} role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
+                            <div className={(viewport_height < 500) ? "btn-group me-2 " : "btn-group-vertical me-2"} role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
                                 {Buttons1}
                             </div>
-                            <div className={(viewport_height < 500) ? "btn-group me-2" : "btn-group-vertical me-2"} role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
+                            <div className={(viewport_height < 500) ? "btn-group me-2 " : "btn-group-vertical me-2"} role="group" aria-label="First group" onChange={props.handleAs.bind(this)}>
                                 {Buttons2}
                             </div>
                         </>

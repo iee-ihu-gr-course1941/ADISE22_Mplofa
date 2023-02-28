@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import '../../../css/Login._Register.css';
 import Register from "./Register";
@@ -9,17 +9,17 @@ import Overlay from "./Overlay";
 export default function Login_Register(Data) {
 
     const [IsVisible, setIsVisible] = useState(Data.Active);
-    let container = $("#container");
+    const container = useRef(null);
     const active = IsVisible  === 'Register' ?  'container right-panel-active' : 'container';
     useEffect(()=> {
         if (IsVisible === 'Register')
-            container.addClass("right-panel-active");
+            container.current && container.current.classList.add("right-panel-active");
         else if(IsVisible === 'Login')
-            container.removeClass("right-panel-active");
+            container.current && container.current.classList.remove("right-panel-active");
     },[IsVisible]);
-
+    console.log(container.current)
     return (
-        <div className={active + 'container'} id="container" >
+        <div className={active} id="container" ref={container}>
             {/*<div className='row'><h1>Hi</h1></div>*/}
             <div className='row'>
                 <div className='col-md-6'><Register></Register></div>

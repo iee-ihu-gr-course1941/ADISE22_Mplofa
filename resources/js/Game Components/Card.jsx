@@ -2,6 +2,7 @@ import '../../css/GameCss/CardCss.css';
 import { useContext, useState } from "react";
 import {SelectedCardsContext} from "../Contexts/SelectedCardsContext";
 import {HeightContext} from "../Contexts/HeightContext";
+import {TurnContext} from "../Contexts/TurnContext";
 
 export default function Card({cardObject,Enemy,Stacked,color,isPagination,card,handleClick}) {
     const cardObj = cardObject,
@@ -9,12 +10,13 @@ export default function Card({cardObject,Enemy,Stacked,color,isPagination,card,h
     isStacked = Stacked,
     { selectedCards,setSelectedCards } = !isEnemy && useContext(SelectedCardsContext),
     [selected,setSelected] = (!isEnemy && !isStacked) ? useState(selectedCards.includes(cardObj)) : '',
+    {myTurn,setMyTurn} = useContext(TurnContext)    ,
     cardColor = isEnemy ? 'black' : color,
     handleClickCard = setSelectedCards,height = useContext(HeightContext),
     FontSize = (height < 500) ? 70 : 160,
-    Width = (height < 500) ? 65 : 120,
+    Width = (height < 500) ? 52 : 120,
     Height = (height < 500) ? 85 : 'auto';
-
+    console.log("Turn",myTurn);
     function addToSelected() {
         if(!selected) {
             handleClickCard(prevSelected => {
@@ -30,7 +32,7 @@ export default function Card({cardObject,Enemy,Stacked,color,isPagination,card,h
         console.log(selectedCards);
     }
     const select = ()=>{
-        !isEnemy && !isStacked && addToSelected();
+        !isEnemy && !isStacked && myTurn && addToSelected();
     },
     isPaginationBool = isPagination,
     Card = isPaginationBool ?
