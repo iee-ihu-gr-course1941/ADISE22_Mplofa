@@ -12,7 +12,6 @@ export function Pagination({ links,className }) {
         currentPage = Meta.current_page,
     paginationRange = useAdminPagination({totalCount,pageSize,
     siblingCount,currentPage});
-    console.log("Pagination Range",paginationRange,"links",links)
 
 
     // If there are less than 2 times in pagination range we shall not render the component

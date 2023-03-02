@@ -1,13 +1,18 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Head, Link, useForm } from '@inertiajs/inertia-react';
 import {FormFloatingTextInput} from "../../Components/FormFloatingTextInput";
+import {FormCheck} from "react-bootstrap";
 
-export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+export default function Register({refUser}) {
+    const [iEE, setIEE] = useState(false),
+        [showingPasswordStored,setShowingPasswordStored] = useState(false),
+        { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
+        iee:false,
+        refUserID : refUser,
     });
 
     useEffect(() => {
@@ -24,11 +29,20 @@ export default function Register() {
         e.preventDefault();
         post(route('register'));
     };
-
     return (
             <div className="form-container sign-up-container overflow-scroll">
                 <form onSubmit={submit}>
-                    <h1 className='mt-5'>Create Account</h1>
+                    <h1 className='my-3'>Create Account</h1>
+                    <div className="form-check form-switch my-2">
+                        <input className="form-check-input p-2" type="checkbox" role="switch" id="flexSwitchCheckDefault" name={'iee'}
+                        onChange={(e)=>{setIEE(e.target.checked);onHandleChange(e)}}/>
+                        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
+                            <h6>
+                                I am IEE ( Information and Electronic Engineer )
+                            </h6>
+                        </label>
+                    </div>
+                    {iEE && <p className={'text-info'}>Only used for statistical purposes.</p>}
                     <FormFloatingTextInput
                         type="text"
                         name="name"
@@ -66,14 +80,17 @@ export default function Register() {
                         required={true}
                         placeHolder={'Confirm Password'}
                     />
+                    {/*<input name={'refUser'} type={'text'} value={refUser ? refUser : ''} hidden={true} readOnly={true}/>*/}
                     {errors.name && <p className={'text-danger'}>{errors.name}</p>}
                     {errors.email && <p className={'text-danger'}>{errors.email}</p>}
                     {errors.password && <p className={'text-danger'}>{errors.password}</p>}
                     {errors.password_confirmation && <p className={'text-danger'}>{errors.password_confirmation}</p>}
                     <button className='btn btn-outline-success border-3'>Sign Up</button>
-                    {/*<div className={'align-self-bottom p-2 mt-1'}>*/}
-                    {/*    <p className={'text-success'}>Your passwords are hashed before being stored in the database.</p>*/}
-                    {/*</div>*/}
+                    <span className={'my-3 text-info'} onClick={()=>{setShowingPasswordStored(!showingPasswordStored)}}>
+                        <h3>&#9432;</h3>
+                        <h6>How is my password stored?</h6>
+                    </span>
+                    {showingPasswordStored && <p className={'text-danger'}>Your passwords are hashed using Bcrypt hashing function.</p>}
                 </form>
             </div>
     );

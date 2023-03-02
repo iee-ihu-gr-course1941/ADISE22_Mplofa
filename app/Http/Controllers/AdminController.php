@@ -15,8 +15,12 @@ class AdminController extends Controller {
 
     public function show(Request $request) {
         $input = $request->only(['rating']);
+        $IEE = User::where('isIEE',true)->count();
         $Bugs = BugResource::collection(Bug::paginate(2,['*'],'BugsPage')->appends(request()->except('BugsPage')));
-        $Users = UserResource::collection(User::paginate(4,['*'],'UsersPage')->appends(request()->except('UsersPage')));
+        $Users = UserResource::collection(isset($input['IEE']) ?
+            User::where('isIEE',true)->paginate(4,['*'],'UsersPage')->appends(request()->except('UsersPage'))
+            :
+            User::paginate(4,['*'],'UsersPage')->appends(request()->except('UsersPage')));
         $Reviews = ReviewResource::collection((
             isset($input['rating'])
                 ?
@@ -26,6 +30,6 @@ class AdminController extends Controller {
                     :
                 Review::where('rating',$input['rating'])->paginate(2,['*'],'ReviewsPage')->appends(request()->except('ReviewsPage'))
         : Review::paginate(2,['*'],'ReviewsPage')->appends(request()->except('ReviewsPage'))));
-        return Inertia::render('AdminPanel',['Users'=>$Users,'Reviews' => fn ()=>$Reviews,'Bugs'=>$Bugs]);
+        return Inertia::render('AdminPanel',['Users'=>$Users,'Reviews' => fn ()=>$Reviews,'Bugs'=>$Bugs,'IEEs'=>$IEE]);
     }
 }

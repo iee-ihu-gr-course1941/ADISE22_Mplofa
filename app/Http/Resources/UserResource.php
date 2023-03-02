@@ -19,7 +19,9 @@ class UserResource extends JsonResource {
                 'email' => $this->email,
                 'points' => $this->points,
                 'joined' => $this->when($request->user()->isAdmin(),date_format($this->created_at,"d/m/Y H:i:s")),
-                'ca' => $this->when($request->user()->isAdmin(),$request->user()->isAdmin()),
+                'ca' => $this->when($this->isAdmin(),$this->isAdmin()),
+                'isIEE' => $this->when($this->isIEE,$this->isIEE),
+                'refUser' => $this->when(!is_null($this->refUser()),$this->refUser())
             ];
         }
     }
