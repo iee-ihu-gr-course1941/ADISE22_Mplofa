@@ -1,8 +1,13 @@
 import {Pagination} from "./Pagination";
+import {useEffect, useState} from "react";
+import {Inertia} from "@inertiajs/inertia";
 
-export function Users({Users}) {
-    const UserList = Users.data.map((User)=>{
+export function Users({Users,IEEs}) {
+    const
+        // [showingIEES,setShowingIEES] = useState(false),
+    UserList = Users.data.map((User)=>{
         return <li  key={User.email} className="list-group-item d-flex justify-content-between align-items-start pb-0 pt-2">
+            {User.isIEE && <span className="badge bg-success rounded-pill">IEE</span>}
             <div className="mx-auto">
                 <div className="fw-bold border-bottom border-1 pb-1">
                     {User.name}
@@ -11,16 +16,23 @@ export function Users({Users}) {
                     <div className={'col-12  px-1'}>
                         <strong>Joined</strong>
                         <p>{User.joined}</p>
+                        <p className={'fw-bold'}>Ref : {User.refUser ? User.refUser.name : 'None'}</p>
                     </div>
                 </div>
             </div>
             <span className="badge bg-primary rounded-pill">{User.points}</span>
         </li>
     });
+    // useEffect(()=>{
+    //     Inertia.get(route('AdminPanel'),{IEE:showingIEES},{only:['Users']});
+    // },[showingIEES]);
     return (
         <div className={'card h-50 mt-md-5 mt-4 mt-sm-5 mt-lg-0'}>
             <div className={'card-header text-center'}>
                 <h5>Users</h5>
+                {<span className="badge bg-success rounded-pill"
+                       // onClick={()=>{setShowingIEES(!showingIEES);}}
+                >IEE's : {IEEs}</span>}
             </div>
             <div className={'card-body'} style={{overflowX:'hidden',overflowY:'auto'}}>
                 <ul className="list-group list-group-flush text-center">

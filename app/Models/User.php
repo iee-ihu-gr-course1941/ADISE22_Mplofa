@@ -20,7 +20,9 @@ class User extends Authenticatable {
         'name',
         'email',
         'password',
-        'points'
+        'points',
+        'isIEE',
+        'refUser'
     ];
 
     /**
@@ -47,5 +49,16 @@ class User extends Authenticatable {
 
     public function isAdmin() {
         return $this->canAdministrate;
+    }
+    public function isIEE() {
+        return $this->isIEE;
+    }
+
+    public function refUserID() {
+        return $this->refUser;
+    }
+    public function refUser() {
+        $User = User::find($this->refUser);
+        return $User ?: null;
     }
 }

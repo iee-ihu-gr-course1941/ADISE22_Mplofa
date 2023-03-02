@@ -17,16 +17,13 @@ export default function Login_Register(Data) {
         else if(IsVisible === 'Login')
             container.current && container.current.classList.remove("right-panel-active");
     },[IsVisible]);
-    console.log(container.current)
     return (
         <div className={active} id="container" ref={container}>
-            {/*<div className='row'><h1>Hi</h1></div>*/}
             <div className='row'>
-                <div className='col-md-6'><Register></Register></div>
+                <div className='col-md-6'><Register refUser={Data.RefId}></Register></div>
                 <div className='col-md-6'><Login></Login></div>
                 <Overlay setVisibility={setIsVisible}></Overlay>
             </div>
-            {/*<div className='row'></div>*/}
         </div>
     );
 

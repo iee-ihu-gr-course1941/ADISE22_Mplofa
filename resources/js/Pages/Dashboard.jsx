@@ -9,6 +9,7 @@ import {UserContext} from "../Contexts/UserContext";
 import {BeforeYouPlay} from "../Profile/BeforeYouPlay";
 import {BugSubmissionForm} from "../Bugs/BugSubmissionForm";
 import {ErrorContext} from "../Contexts/ErrorContext";
+import {InviteFriends} from "../Modals/InviteFriends";
 
 export default function Dashboard(props) {
     const [roomDoesntExistErrorVisible,setRoomDoesntExistErrorVisible] = useState(!!props.errors.Room_Doesnt_Exist),
@@ -25,7 +26,6 @@ export default function Dashboard(props) {
     useEffect(()=>  {
         document.title = 'Home';
     });
-    console.log(props)
     return (
         <ErrorContext.Provider value={props.errors}>
             <UserContext.Provider value={props.auth.user}>
@@ -35,11 +35,6 @@ export default function Dashboard(props) {
                     </Head>
                     <div className='container p-3 h-100 vw-100'>
                         <div className={'row gx-0'}>
-                            {/*<div className={'col-6'}>*/}
-                            {/*    <PersonalInfo User={props.auth.user}>*/}
-
-                            {/*    </PersonalInfo>*/}
-                            {/*</div>*/}
                             <div className={'col-12 text-center h-auto'}>
                                 <div className={'row'}>
                                     {/*<h6 className={'text-danger'}>&#9888; If this is your first time playing on a new device or a new browser, please refresh the page once.</h6>*/}
@@ -52,16 +47,17 @@ export default function Dashboard(props) {
                                         </button>
                                     </div>
                                 </div>
+                                <InviteFriends InviteLink={props.InviteLink}></InviteFriends>
                                 <div className={'row'}>
                                     <div className={'col'}>
-                                        <UserContext.Provider value={props.auth.user}>
+                                        {/*<UserContext.Provider value={props.auth.user}>*/}
                                             <Rooms rooms={RoomsList}>
                                                 <Link href={route('home')} as={'button'}
                                                       className="btn btn-outline-dark text-center mt-4" type="button" only={['Rooms']}>
                                                     Reload Rooms
                                                 </Link>
                                             </Rooms>
-                                        </UserContext.Provider>
+                                        {/*</UserContext.Provider>*/}
                                     </div>
                                 </div>
                             </div>

@@ -4,7 +4,6 @@ import StarRating from "../Components/StarRating";
 
 export function Bugs({Bugs}) {
     const Links = Bugs.links;
-    console.log(Bugs)
     const BugList = Bugs.data.map((Bug)=>{
         return <li key={Bug.id} className="list-group-item d-flex justify-content-between align-items-start pb-2 pt-2 w-100">
             <div className={'card w-100'}>

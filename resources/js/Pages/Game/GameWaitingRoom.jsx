@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {Inertia} from "@inertiajs/inertia";
 import {Link} from "@inertiajs/inertia-react";
+import {GameRules} from "../../Modals/GameRules";
 
 export default function GameWaitingRoom(props) {
     const [Room,setRoom] = useState(props.Room),
@@ -66,6 +67,7 @@ export default function GameWaitingRoom(props) {
                     <h1 className={'text-center'}>
                         {props.Room.Name}
                     </h1>
+                    <GameRules></GameRules>
                         {User.id === Room.Owner.id && Room.Password && <button className={'btn btn-sm btn-outline-secondary w-50 mx-auto mt-2'}
                                                                                onClick={() => {
                                                                                    navigator.clipboard.writeText(Room.Password && Room.Password)

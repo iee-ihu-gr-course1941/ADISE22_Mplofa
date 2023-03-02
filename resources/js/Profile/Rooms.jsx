@@ -4,7 +4,7 @@ import InputError from "../Components/InputError";
 import {useState} from "react";
 import {Link, useForm} from "@inertiajs/inertia-react";
 import {Inertia} from "@inertiajs/inertia";
-import {Button, FormControl, InputGroup} from "react-bootstrap";
+import {Button, FormControl, InputGroup, Offcanvas} from "react-bootstrap";
 
 
 export function Rooms({rooms,onSubmit,Data,children}) {
@@ -29,7 +29,11 @@ export function Rooms({rooms,onSubmit,Data,children}) {
             counter += 1;
         }
         setPassword(result);
-    }
+    };
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     const onHandleChange = (event) => {
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
@@ -81,20 +85,18 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                         </div>
                     </div>
                     {/*<div className={"row m-2 text-center justify-content-center gx-0"}>*/}
-                        <button className="btn btn-outline-primary w-25 text-center" type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                        <button className="btn btn-outline-primary w-25 text-center" type="button" onClick={handleShow}>
                             Create Room
                         </button>
                     {/*</div>*/}
                 </div>
-                <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasExample"
-                     aria-labelledby="offcanvasExampleLabel">
-                    <div className="offcanvas-header">
-                        <h3 className="offcanvas-title" id="offcanvasExampleLabel">Create New Room</h3>
-                        <button type="button" className="btn-close" data-bs-dismiss="offcanvas"
-                                aria-label="Close"></button>
-                    </div>
-                    <div className="offcanvas-body">
+                <Offcanvas show={show} onHide={handleClose} backdrop="static" placement={'end'}>
+                    <Offcanvas.Header closeButton>
+                        <Offcanvas.Title>
+                            <h3 className="offcanvas-title" id="offcanvasExampleLabel">Create New Room</h3>
+                        </Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
                         <form onSubmit={submit} className='p-4'>
                             <div className="row justify-content-center">
                                 <FormFloatingTextInput
@@ -119,13 +121,13 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                                 ></FormFloatingTextInput>
                                 <InputError message={errors.Capacity} className="mt-2" />
                                 <h6 className='ps-3 text-center'>Password</h6>
-                                        <input className="form-check-input my-3" type="checkbox" checked={hasPassword}
-                                               onChange={()=>setHasPassword(!hasPassword)} aria-label="Checkbox for following text input"/>
+                                <input className="form-check-input my-3" type="checkbox" checked={hasPassword}
+                                       onChange={()=>setHasPassword(!hasPassword)} aria-label="Checkbox for following text input"/>
                                 {hasPassword && <>
                                     <div className="input-group">
                                         <button className="btn btn-outline-secondary btn-sm py-0 " type="button" onClick={()=>RandomPassword(10)}>Random</button>
                                         <input type={'text'} name={'Password'} value={password} required={hasPassword}
-                                           onChange={(e)=>setPassword(e.target.value)}
+                                               onChange={(e)=>setPassword(e.target.value)}
                                                placeholder='Password' className={'form-control my-0'}/>
                                     </div>
 
@@ -148,8 +150,8 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                                 <button className='btn btn-primary btn-sm' disabled={name===''}>Create Room</button>
                             </div>
                         </form>
-                    </div>
-                </div>
+                    </Offcanvas.Body>
+                </Offcanvas>
             </div>
         </div>
     )

@@ -7,7 +7,7 @@ export function BugSubmissionForm() {
     const [whyModel,setWhyModel] = useState(false),
         User = useContext(UserContext),
         [device,setDevice] = useState(''),
-        [bugDesc,setBugDesc]=useState(''),
+        [bugDesc,setBugDesc] = useState(''),
         [submitted,setSubmitted] = useState(false);
     return (
         <>
@@ -21,7 +21,7 @@ export function BugSubmissionForm() {
                             <h5 className="card-title text-danger">Submit Bugs</h5>
                             <p className="card-text">
                                 <strong>
-                                    If you come across something that doesn't work as intended, I would appreciate it,
+                                    If you come across something that you think doesn't work as intended, I would appreciate it,
                                     <br></br>
                                     if you could report it using this form.
                                 </strong>

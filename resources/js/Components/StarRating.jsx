@@ -13,7 +13,8 @@ export default function StarRating({className,readOnly,numberOfStars,onSetRating
         text:"",
         rating:rating,
     },
-        placeholder = Placeholder ? Placeholder : 'How did your game go? Did you face any problems?',
+        placeholder = Placeholder ? Placeholder : 'How did your game go? Did you face any problems? ' +
+            'Do you have any recommendations that would make the game better?',
     [submitted,setSubmitted] = useState(false),
         [viewport_height,setViewport_Height] = useState(window.innerHeight),
         [viewport_width,setViewport_Width] = useState(window.innerWidth),
@@ -74,7 +75,7 @@ export default function StarRating({className,readOnly,numberOfStars,onSetRating
                         <div className={'row w-75 mx-auto my-3 text-center justify-content-center'}>
                 <textarea className={'border-2 text-center'}
                           placeholder={placeholder}
-                          style={{resize:'none',backgroundColor:'#eeeeee'}} onChange={(event)=>
+                          style={{resize:'none',backgroundColor:'#eeeeee',height:150}} onChange={(event)=>
                 {data.text = event.target.value;console.log(data)}}>
                 </textarea>
                             <Link href={route('Submit_Review')} method={'post'} as={'button'} data={data}
