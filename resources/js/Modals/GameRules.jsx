@@ -31,12 +31,12 @@ export function GameRules() {
                         If what you declared, doesn't match all the cards you actually played, that means you bluffed.
                     </p>
                     <p>
-                        The other player can either choose to pass his turn, or call a bluff on you revealing the cards.
+                        The other player can either choose to pass the turn, or call a bluff on you revealing the cards.
                         In that case you take your cards back and it's the other player's turn to play.
                     </p>
                     <p>
                         If you haven't bluffed and the other player calls a bluff on you,
-                        he gets all the cards from the stack and it is your turn to play.
+                        the other player gets all the cards from the stack and it is your turn to play.
                     </p>
                     <h5 id={'Passing_Turn'}>
                         Passing Turn
@@ -44,7 +44,7 @@ export function GameRules() {
                     <p>
                         If you do not want play any cards, you can simply pass your turn.
                         ( You can only pass your turn when there are cards in the stack. )
-                        The next player can either choose to pass his turn as well,
+                        The next player can either choose to pass the turn as well,
                         clearing the stack, or play more cards.
                     </p>
                 </Modal.Body>
