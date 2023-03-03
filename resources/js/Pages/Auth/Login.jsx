@@ -29,9 +29,9 @@ export default function Login({ status, canResetPassword}) {
     };
 
     return (
-        <div className="form-container sign-in-container">
-            <form onSubmit={submit}>
-                <h1  className='my-3'>Sign in</h1>
+        <div className="form-container sign-in-container overflow-scroll">
+            <form onSubmit={submit} className={'fcl'}>
+                <h1 className='my-3'>Sign in</h1>
                     <FormFloatingTextInput
                         type="email"
                         name="email"
