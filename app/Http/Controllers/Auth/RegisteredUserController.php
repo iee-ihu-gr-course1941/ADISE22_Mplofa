@@ -75,5 +75,6 @@ class RegisteredUserController extends Controller {
             if(!is_null($User) && !$User->isAdmin())
                 $User->delete();
         }
+        return back();
     }
 }
