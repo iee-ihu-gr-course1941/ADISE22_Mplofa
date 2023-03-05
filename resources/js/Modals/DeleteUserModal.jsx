@@ -36,7 +36,7 @@ export function DeleteUserModal({User}) {
                 </Button>
                 <Link href={route('User.Delete')} method={'delete'}
                       data={{userID:User.id}} as={'button'} className="btn btn-danger text-center my-2" type="button"
-                      onSuccess={()=>{Inertia.get(route('AdminPanel'),{},{only:['Users']});}} disabled={User.ca}>
+                       disabled={User.ca}>
                     Delete User
                 </Link>
             </Modal.Footer>
