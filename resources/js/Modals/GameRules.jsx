@@ -8,7 +8,7 @@ export function GameRules() {
     const handleShow = () => setShow(true);
     return (
         <>
-            <Button variant="outline-secondary" onClick={handleShow} className={'w-auto mx-auto my-3 my-xl-0 mt-4 mt-xl-4'}>
+            <Button variant="outline-info" onClick={handleShow} className={'w-auto mx-auto my-3 my-xl-0 mt-4 mt-xl-4'}>
             Game Rules
             </Button>
             <Modal show={show} onHide={handleClose} className={'text-center'}>
@@ -54,16 +54,6 @@ export function GameRules() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            {/*<div className="card" id={'Rules'}>*/}
-            {/*    <div className={'card-header bg-transparent'}>*/}
-            {/*        <h5 className={'text-info'}>*/}
-            {/*            Rules*/}
-            {/*        </h5>*/}
-            {/*    </div>*/}
-            {/*    <div className="card-body">*/}
-            {/*        */}
-            {/*    </div>*/}
-            {/*</div>*/}
         </>
     )
 }

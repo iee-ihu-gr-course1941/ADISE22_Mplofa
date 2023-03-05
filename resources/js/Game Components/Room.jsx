@@ -7,7 +7,6 @@ import {Inertia} from "@inertiajs/inertia";
 export function Room({Room,children}) {
     const User = useContext(UserContext),
     [enterPassword,setEnterPassword] = useState(false);
-    console.log(Room)
     return (
         <div className="carousel-item active p-4 w-100">
             <div className='card border-0 p-3 shadow h-100 my-3 w-75 mx-auto'>
@@ -26,8 +25,8 @@ export function Room({Room,children}) {
                             </h5>
                             {User.ca
                                 &&
-                                <Link href={route('Delete_Room')} method={'post'} data={{room_id:Room.id}} as={'button'}
-                                className="btn btn-danger text-center " type="button" only={['Rooms']}
+                                <Link href={route('Delete_Room')} method={'delete'} data={{room_id:Room.id}} as={'button'}
+                                className="btn btn-danger text-center" type="button" only={['Rooms']}
                                 onSuccess={()=>{Inertia.get(route('home'),{},{only:['Rooms']});}} disabled={!User.ca}>
                                     Delete
                                 </Link>

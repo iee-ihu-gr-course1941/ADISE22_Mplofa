@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\KickedResource;
 use App\Http\Resources\RoomCollection;
 use App\Http\Resources\RoomResource;
+use App\Models\Kicked;
 use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rules\In;
 use Inertia\Inertia;
 use function PHPUnit\Framework\isEmpty;
@@ -45,13 +49,16 @@ class RoomController extends Controller {
      */
 
     public function store(Request $request): \Inertia\Response|RedirectResponse {
-        $input = $request->only(['Name','Capacity','Password']);
+        $input = $request->only(['Name','Capacity','Password','InviteOnly']);
         $Room = new Room;
         $Room->OwnerId = $request->user()->id;
         $Room->Name = $input['Name'];
         $Room->Capacity = $input['Capacity'];
         $Room->Password = $input['Password'] === '' ? null : $input['Password'];
-        $Room->Invitation_Link = self::generateUniqueInvitationLink();
+        $Room->Invitation_Link = '';
+        $Room->InviteOnly = $input['InviteOnly'] ?? false;
+        $Room->save();
+        $Room->Invitation_Link = '/' . $Room->id.'/' . $Room->Password ?: null;
         $Room->save();
         return Redirect::route('Initialize_Game',['RoomId'=>$Room->id])->with('Room',$Room);
     }
@@ -62,15 +69,20 @@ class RoomController extends Controller {
      * @param Room $room
      * @return RedirectResponse|\Inertia\Response
      */
-    public function JoinByLink(Request $request) {
-        $input = $request->only(['room_id','Link']);
-        $Room = Room::find($input['room_id']);
+    public function Join_By_Link(Request $request) {
+        $input = ['RoomId'=>$request->RoomId,'Password'=>$request->Password];
+        $Room = Room::find($input['RoomId']);
         if(!is_null($Room))
-            if(!strcmp($Room->Invitation_Link,$input['Link'])) {
-                return Redirect::route('Join_Room',['RoomId'=>$Room->id]);
+            if(!strcmp($Room->Password,$input['Password'])) {
+                return self::Join($request,true,$input);
             }
-        return Inertia::render('Dashboard',
-            ['RoomDoesntExistError'=>'This link does not correspond to any active Rooms']);
+            else
+                if(strlen($Room->Password) !== 0 && !isset($input['Password']))
+                    return Redirect::route('home')->withErrors(['RoomLinkError'=>"This room requires a password and it is not contained in this link!
+                    Please make sure the link is correct."]);
+                else
+                    return Redirect::route('home')->withErrors(['RoomLinkError'=>"The password contained in the link isn't correct !"]);
+        return Redirect::route('home')->withErrors(['RoomLinkError'=>"The room is no longer active or it doesn't exist!"]);
     }
 
     /**
@@ -94,7 +106,22 @@ class RoomController extends Controller {
     public function update(Request $request, Room $room) {
         //
     }
-
+    public function Kick_Player(Request $request) {
+        $input = $request->only(['player_to_kick_id','room_id','reason_to_kick']);
+        $Room = Room::find($input['room_id']);
+        $player_to_kick = User::find($input['player_to_kick_id']);
+        if($request->user()->id !== $Room->Owner()->id) {
+            return back()->withErrors(['Authorization'=>'You do not have the right to kick this player.']);
+        }
+        $Room->PlayerId = null;
+        $Kicked = new Kicked();
+        $Kicked->user_id = $input['player_to_kick_id'];
+        $Kicked->room_id = $input['room_id'];
+        $Kicked->reason = $input['reason_to_kick'];
+        $Kicked->save();
+        $Room->save();
+        return back();
+    }
     /**
      * Remove the specified resource from storage.
      * @param Room $room
@@ -114,8 +141,11 @@ class RoomController extends Controller {
         $Room = Room::find($input['RoomId']);
         if(is_null($Room))
             return Redirect::route('home');
-        if(!self::BelongsInGame($Room,$request->user()))
-            return Redirect::route('home');
+        if(!self::BelongsInGame($Room,$request->user())){
+            $Was_Kicked = new KickedResource(Kicked::where('user_id',$request->user()->id)->where('room_id',$input['RoomId'])
+                ->orderByDesc('created_at')->first());
+            return Redirect::route('home')->with(['Kicked'=>$Was_Kicked]);
+        }
         return Inertia::render('Game/GameWaitingRoom',['Room'=>new RoomResource($Room)]);
     }
 
@@ -137,8 +167,10 @@ class RoomController extends Controller {
     public function Ready(Request $request) {
         $input = $request->only(['RoomId']);
         $Room = Room::find($input['RoomId']);
-        if(!self::BelongsInGame($Room,$request->user()))
+        if(!self::BelongsInGame($Room,$request->user())) {
+            $Was_Kicked = Kicked::where('user_id',$request->user()->id)->where('room_id',$input['RoomId'])->get();
             return Redirect::route('home');
+        }
         if($request->user()->id === $Room->Owner()->id) {
             $Room->OwnerReady = true;
             $Room->save();
@@ -150,8 +182,11 @@ class RoomController extends Controller {
         return Inertia::render('Game/GameWaitingRoom',['Room'=>new RoomResource($Room)]);
     }
 
-    public function Join(Request $request) {
-        $input = $request->only(['RoomId','Password']);
+    public function Join(Request $request,$By_Link = false,$Link_Input=[]) {
+        if(!$By_Link)
+            $input = $request->only(['RoomId','Password']);
+        else
+            $input = $Link_Input;
         $Room = Room::find($input['RoomId']);
         if(is_null($Room))
             return Redirect::route('home');

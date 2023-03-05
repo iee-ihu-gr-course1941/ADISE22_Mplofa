@@ -16,7 +16,7 @@ class ReviewResource extends JsonResource   {
         $user = User::find($this->user);
         return [
             'id' => $this->id,
-            'user' => $user->name,
+            'user' => !is_null($user) ? $user->name : 'User is Inactive !',
             'rating' => $this->rating,
             'comment' => $this->comment,
             'placed' => date_format($this->created_at,"d/m/Y H:i:s"),
