@@ -36,10 +36,13 @@ Route::post('Game/Play/Make_Move',[MoveController::class,'store'])->middleware([
 Route::get('Game/Play/checkEnemyMove',[GameController::class, 'checkEnemyMove'])->name('Check_Enemy_Move');
 Route::post('Room/New',[RoomController::class,'store'])->name('New_Room');
 Route::post('Room/Join',[RoomController::class,'Join'])->name('Join_Room');
+Route::post('Room/Link_Join/{RoomId?}/{Password?}',[RoomController::class,'Join_By_Link'])->middleware(['auth'])
+    ->defaults('RoomId',null)->defaults('Password',null)->name('Join_Room_By_Link');
 Route::post('Room/Leave',[RoomController::class,'Leave'])->name('Leave_Room');
 Route::post('Room/Ready',[RoomController::class,'Ready'])->name('Ready');
 Route::post('Room/Activate',[RoomController::class,'Activate'])->name('Activate_Room');
-Route::post('Room/Delete',[RoomController::class,'destroy'])->middleware(['admin'])->name('Delete_Room');
+Route::delete('Room/Delete',[RoomController::class,'destroy'])->middleware(['admin'])->name('Delete_Room');
+Route::patch('Room/Kick_Player',[RoomController::class,'Kick_Player'])->name('Room_Kick_Player');
 Route::get('Room/Initialize_Game',[GameController::class,'create'])->name('Initialize_Game');
 Route::get('Room/Poll_Room',[RoomController::class,'pollRoom'])->name('Check_For_New_Player');
 Route::post('Reviews/Submit',[ReviewController::class,'store'])->name('Submit_Review');

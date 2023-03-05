@@ -1,20 +1,19 @@
 import {Head, Link, useForm} from "@inertiajs/inertia-react";
 import Authenticated from "../Layouts/AuthenticatedLayout";
-import {PersonalInfo} from "../Profile/PersonalInfo";
 import {Rooms} from "../Profile/Rooms";
 import {Inertia} from "@inertiajs/inertia";
 import {useEffect, useState} from "react";
-import {Room} from "../Game Components/Room";
 import {UserContext} from "../Contexts/UserContext";
 import {BeforeYouPlay} from "../Profile/BeforeYouPlay";
 import {BugSubmissionForm} from "../Bugs/BugSubmissionForm";
 import {ErrorContext} from "../Contexts/ErrorContext";
 import {InviteFriends} from "../Modals/InviteFriends";
+import {GotKickedModal} from "../Modals/GotKickedModal";
 
 export default function Dashboard(props) {
     const [roomDoesntExistErrorVisible,setRoomDoesntExistErrorVisible] = useState(!!props.errors.Room_Doesnt_Exist),
-    [RoomsList,setRooms] = useState(props.Rooms.Rooms);
-
+    [RoomsList,setRooms] = useState(props.Rooms.Rooms),
+    [kicked,setKicked] = useState(props.Kicked !== null);
     useEffect(()=> {
         const AlertVisible = roomDoesntExistErrorVisible && setTimeout(() => {
             setRoomDoesntExistErrorVisible(false);
@@ -37,9 +36,6 @@ export default function Dashboard(props) {
                         <div className={'row gx-0'}>
                             <div className={'col-12 text-center h-auto'}>
                                 <div className={'row'}>
-                                    {/*<h6 className={'text-danger'}>&#9888; If this is your first time playing on a new device or a new browser, please refresh the page once.</h6>*/}
-                                    {/*<h6 className={'text-danger'}>There is a known bug that causes some buttons to sometimes not render properly, I am still working on a fix. &#9888;</h6>*/}
-                                    {/*<h6 className={'text-success'}>Thank you for your understanding!</h6>*/}
                                     <div className={'col'}>
                                         <button type="button btn-sm w-25" className="btn btn-outline-danger mb-3" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal">
@@ -75,6 +71,7 @@ export default function Dashboard(props) {
                     <BeforeYouPlay>
 
                     </BeforeYouPlay>
+                    {props.Kicked !== null && <GotKickedModal state={{kicked,setKicked}} report={props.Kicked}></GotKickedModal>}
                 </Authenticated>
             </UserContext.Provider>
         </ErrorContext.Provider>

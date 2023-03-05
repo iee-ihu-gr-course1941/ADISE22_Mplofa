@@ -14,13 +14,18 @@ use Inertia\Inertia;
 class AdminController extends Controller {
 
     public function show(Request $request) {
-        $input = $request->only(['rating']);
+        $input = $request->only(['rating','iees']);
         $IEE = User::where('isIEE',true)->count();
         $Bugs = BugResource::collection(Bug::paginate(2,['*'],'BugsPage')->appends(request()->except('BugsPage')));
-        $Users = UserResource::collection(isset($input['IEE']) ?
-            User::where('isIEE',true)->paginate(4,['*'],'UsersPage')->appends(request()->except('UsersPage'))
+
+        $Users = UserResource::collection((isset($input['iees']) && $input['iees']==="true")
+            ?
+//            Showing only Users that are IEEs if $input['iees'] is set and true.
+                User::where('isIEE',true)->paginate(3,['*'],'UsersPage')->appends(request()->except('UsersPage'))
             :
-            User::paginate(4,['*'],'UsersPage')->appends(request()->except('UsersPage')));
+//            Showing all Users if $input['iees'] is not set or if it is set and is false.
+                User::paginate(3,['*'],'UsersPage')->appends(request()->except('UsersPage')));
+
         $Reviews = ReviewResource::collection((
             isset($input['rating'])
                 ?

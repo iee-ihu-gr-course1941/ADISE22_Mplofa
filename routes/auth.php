@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
                 ->name('logout');
 
     Route::patch('User/UpdateInfo',[RegisteredUserController::class,'edit'])->name('User.Update');
+    Route::delete('User/Delete',[RegisteredUserController::class,'destroy'])->middleware(['admin'])->name('User.Delete');
 
     Route::get('/AdminPanel',[AdminController::class,'show'])->middleware(['admin'])->name('AdminPanel');
 });

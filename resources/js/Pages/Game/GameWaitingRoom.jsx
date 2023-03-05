@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {Inertia} from "@inertiajs/inertia";
 import {Link} from "@inertiajs/inertia-react";
 import {GameRules} from "../../Modals/GameRules";
+import {KickPlayerModal} from "../../Modals/KickPlayerModal";
 
 export default function GameWaitingRoom(props) {
     const [Room,setRoom] = useState(props.Room),
@@ -9,6 +10,7 @@ export default function GameWaitingRoom(props) {
         [canClickReady,setCanClickReady] = useState(),MINUTE_MS = 5000,
         [hasInitiatedGame,setHasInitiatedGame] = useState(false),
         [copied,setCopied] = useState(false),
+        [invitationLinkCopied,setInvitationLinkCopied] = useState(false),
         [graded,setGraded] = useState(false),
         [timed,setTimed] = useState(false);
     useEffect(() => {
@@ -24,7 +26,7 @@ export default function GameWaitingRoom(props) {
                             // console.log(res.props)
                             if(!canClickReady)
                                 setCanClickReady(true);
-                            if(res.props.Room.OwnerReady && res.props.Room.PlayerReady && !hasInitiatedGame) {
+                            if((res.props.Room && res.props.Room.OwnerReady) && (res.props.Room && res.props.Room.PlayerReady) && !hasInitiatedGame) {
                             // if(res.props.Room.Game_Active) {
                                 Inertia.post(route('Activate_Room'),{ RoomId:res.props.Room.id,
                                     GameId:res.props.Room.GameId},{
@@ -42,11 +44,18 @@ export default function GameWaitingRoom(props) {
         return () => clearTimeout(timer);
     });
     useEffect(() => {
-        const timer = copied && setTimeout(() => {
+        const timer1 = copied && setTimeout(() => {
             setCopied(!copied);
-        }, 3500);
-        return () => clearTimeout(timer);
-    },[copied]);
+        }, 2500);
+        const timer2 = invitationLinkCopied && setTimeout(() => {
+            setInvitationLinkCopied(!invitationLinkCopied);
+        }, 2500);
+
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+        };
+    },[copied,invitationLinkCopied]);
     useEffect(()=>{
         document.title = Room.Player
             ?
@@ -64,17 +73,21 @@ export default function GameWaitingRoom(props) {
         <div className='container-fluid vh-100 vw-100 position-relative py-3 px-5 align-items-center overflow-auto' style={{background:"#EEEEEE"}}>
             <div className={'row align-items-center h-100 gx-0'}>
                 <div className={'row align-items-center gx-0'}>
-                    <h1 className={'text-center'}>
-                        {props.Room.Name}
-                    </h1>
-                    <GameRules></GameRules>
-                        {User.id === Room.Owner.id && Room.Password && <button className={'btn btn-sm btn-outline-secondary w-50 mx-auto mt-2'}
-                                                                               onClick={() => {
-                                                                                   navigator.clipboard.writeText(Room.Password && Room.Password)
-                                                                                   setCopied(true);
-                                                                               }}>
-                            {copied ? 'Copied' :'Copy Room Password'}
-                        </button>}
+                    <div className={'col-12'}>
+                        <h1 className={'text-center'}>
+                            {props.Room.Name}
+                        </h1>
+                        <div className={'btn-group-vertical w-100'}>
+                            <GameRules></GameRules>
+                            {User.id === Room.Owner.id && Room.Password && <button className={'btn btn-sm btn-outline-secondary w-auto mx-auto my-2 p-3'}
+                                                                                   onClick={() => {
+                                                                                       navigator.clipboard.writeText(Room.Password && Room.Password);
+                                                                                       setCopied(true);
+                                                                                   }}>
+                                {copied ? 'Copied' :'Copy Room Password'}
+                            </button>}
+                        </div>
+                    </div>
                 </div>
                 <div className={'row mx-auto'}>
                     <div className="form-check px-0">
@@ -153,8 +166,24 @@ export default function GameWaitingRoom(props) {
                             <div className='card-body'>
                                 <div className={'row'}>
                                     {Room.Player ? (Room.PlayerReady ? <h5 className={'mt-5 text-success'}>Player is Ready</h5> : <h5 className={'mt-5 text-warning'}>Player is not Ready</h5>)
-                                        : <h5 className={'mt-5 text-danger'}>No player has joined yet!</h5>}
+                                        :
+                                        <div className={'col-12'}>
+                                            <h5 className={'mt-5 text-danger'}>
+                                                No player has joined yet!
+                                            </h5>
+                                            {User.id === Room.Owner.id && <button className={'btn btn-outline-success my-3'} onClick={() => {
+                                                navigator.clipboard.writeText(Room.Invitation_Link && Room.Invitation_Link);
+                                                setInvitationLinkCopied(true)
+                                            }}>
+                                                {invitationLinkCopied ? 'Copied ! ' : 'Copy Invitation Link'}
+                                            </button>}
+                                        </div>
+                                    }
                                 </div>
+                                {(Room.Player && User.id === Room.Owner.id) && <KickPlayerModal
+                                    User={Room.Player} Room={Room}>
+                                </KickPlayerModal>
+                                    }
                                 <div className={'row justify-content-center'}>
                                     {Room.Player && User.id === Room.Player.id &&
                                     <div className={'col-12 col-lg-10'}>

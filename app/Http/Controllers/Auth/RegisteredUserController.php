@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
+use function PHPUnit\Framework\isNull;
 
 class RegisteredUserController extends Controller {
     /**
@@ -65,5 +66,14 @@ class RegisteredUserController extends Controller {
             $User->name = $input['Email'];
 
         $User->save();
+    }
+
+    public function destroy(Request $request) {
+        $input = $request->only(['userID']);
+        if(isset($input['userID'])){
+            $User = User::find($input['userID']);
+            if(!is_null($User) && !$User->isAdmin())
+                $User->delete();
+        }
     }
 }
