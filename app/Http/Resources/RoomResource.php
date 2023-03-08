@@ -14,6 +14,7 @@ class RoomResource extends JsonResource {
      */
 
     public function toArray($request): array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable {
+        $time = date_diff(now(),$this->created_at);
         return [
             'id' => $this->id,
             'Name' => $this->Name(),
@@ -28,6 +29,7 @@ class RoomResource extends JsonResource {
             'Password' => $this->when($request->user()->id === $this->Owner()->id,$this->Password),
             'Invitation_Link' => $this->Invitation_Link,
             'InviteOnly' => $this->when($this->isInviteOnly(),$this->isInviteOnly()),
+            'Created' => ["Days"=>$time->d,"Hours"=>$time->h,"Minutes"=>$time->i,"Seconds"=>$time->s],
         ];
     }
 }

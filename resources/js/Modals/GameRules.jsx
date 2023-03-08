@@ -8,7 +8,7 @@ export function GameRules() {
     const handleShow = () => setShow(true);
     return (
         <>
-            <Button variant="outline-info" onClick={handleShow} className={'w-auto mx-auto my-3 my-xl-0 mt-4 mt-xl-4'}>
+            <Button variant="outline-info" onClick={handleShow} className={'w-auto mx-auto my-3 my-xl-2 mt-4 mt-xl-3'}>
             Game Rules
             </Button>
             <Modal show={show} onHide={handleClose} className={'text-center'}>

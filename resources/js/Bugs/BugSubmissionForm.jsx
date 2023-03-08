@@ -21,13 +21,12 @@ export function BugSubmissionForm() {
                             <h5 className="card-title text-danger">Submit Bugs</h5>
                             <p className="card-text">
                                 <strong>
-                                    If you come across something that you think doesn't work as intended, I would appreciate it,
-                                    <br></br>
+                                    If you come across something that you think, doesn't work as intended, I would appreciate it,
                                     if you could report it using this form.
                                 </strong>
                             </p>
                             <button type="button" className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#BugSubmission">
-                                Report a Bug!
+                                Report a Bug !
                             </button>
                         </div>
                     </div>

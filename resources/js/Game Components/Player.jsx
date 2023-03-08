@@ -22,14 +22,10 @@ export default function Player({Position,Enemy,onSubmit,children}) {
     margin = (viewport_height < 500 && !isEnemy) ? ' ' : '';
     // buttonColSize = (viewport_height < 500 ) ? '2' : '1';
     return (
-        <div className={'row text-center text justify-content-center px-3 '
-        + position + height + margin} style={{marginBottom: (viewport_height>500 && viewport_height<800) ? -27 : 0}}>
-            <strong className={isEnemy ? ('mt-1 mt-md-2 ' + (!myTurn && 'text-info')) : ('mt-3 mt-sm-0 ' + (myTurn && 'text-info'))}
-                    style={{fontSize:17}}>
-                {isEnemy ? 'Enemy ' : ''} Cards Remaining : {myCards ? myCards.length : enemyCards.length} {!myTurn && isEnemy && '( Currently Playing )'}
-            </strong>
+        <div className={'row text-center text justify-content-center w-100 '
+        + position + height + margin} style={{marginBottom: (viewport_height>500 && viewport_height<800) ? -27 : -3}}>
             {!isEnemy &&
-                <div className={'col h-auto col-2' }>
+                <div className={'h-auto col-2 mb-2'}>
                     { myTurn &&
                         <form onSubmit={onSubmit} style={{background:"#295f48"}}>
                             {children}
@@ -37,7 +33,10 @@ export default function Player({Position,Enemy,onSubmit,children}) {
                     }
                 </div>}
             <CardContainer Enemy={isEnemy}>
-
+                <strong className={isEnemy ? ('mt-1 mt-md-2 ' + (!myTurn && 'text-info')) : ('mt-3 mt-sm-0 ' + (myTurn && 'text-info'))}
+                        style={{fontSize:17}}>
+                    {isEnemy ? 'Enemy ' : ''} Cards Remaining : {myCards ? myCards.length : enemyCards.length}
+                </strong>
             </CardContainer>
         </div>
     )

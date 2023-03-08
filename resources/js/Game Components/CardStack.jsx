@@ -14,13 +14,11 @@ export default function CardStack({selected,cardStack,handleAs,children}) {
         selectedCards = selected;
     const CardStack = cardStack.map((card) => {
         return <Card card={Cards.get(1)}></Card>
-    }), previousMove = useContext(PreviousMoveContext),
-    Room = useContext(RoomContext),cardsPlayed = useContext(CardsPlayedContext),
+    }), previousMove = useContext(PreviousMoveContext),cardsPlayed = useContext(CardsPlayedContext),
     User = useContext(UserContext),viewport_height = useContext(HeightContext),
     nextPlayer = useContext(NextPlayerContext);
-    const height = (viewport_height < 395) ? (viewport_height < 361 ? '29%' : '45%') : '45%',
+    const height = (viewport_height < 395) ? (viewport_height < 361 ? '29%' : '47%') : '47%',
     margin = (viewport_height < 500) ? ' my-2' : '';
-    // previousMove && console.log(previousMove)
     return (
         <div className={'row text-center justify-content-center align-items-center my-4  my-md-0 cardstack px-2 '  + margin}
         style={{height:height}}>

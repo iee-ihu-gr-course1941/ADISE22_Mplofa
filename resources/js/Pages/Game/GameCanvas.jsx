@@ -7,14 +7,11 @@ import {TurnContext} from "../../Contexts/TurnContext";
 import {NextPlayerContext} from "../../Contexts/NextPlayerContext";
 import {SelectedCardsContext} from "../../Contexts/SelectedCardsContext";
 import {StackContext} from "../../Contexts/StackContext";
-import {Button, Navbar} from "react-bootstrap";
 import {Inertia} from "@inertiajs/inertia";
 import {CardsPlayedContext} from "../../Contexts/CardsPlayedContext";
 import {UserContext} from "../../Contexts/UserContext";
 import {HeightContext} from "../../Contexts/HeightContext";
 import {PreviousMoveContext} from "../../Contexts/PreviousMoveContext";
-import {NavBar} from "../../Navigation Bar/NavBar";
-import {Room} from "../../Game Components/Room";
 import {WidthContext} from "../../Contexts/WidthContext";
 
 export default function GameCanvas(props) {
@@ -160,14 +157,7 @@ export default function GameCanvas(props) {
 
     function setNewState(NewState) {
         setGame(NewState);
-        // setSelectedCards([]);
         setMyTurn(false);
-        // setNextPlayer(NewState.next_player);
-        // setCardsPlayed(NewState.cards_played);
-        // setPreviousMove(NewState.previous_move);
-        // setMyCards(NewState.player_cards.player1.cards);
-        // setEnemyCards(Array(NewState.player_cards.player2.count).fill('Empty'));
-        // setCardsInStack(Array(NewState.cards_down).fill('Empty'));
     }
     function handleAs(e) {
             data.cards_played.cards_played = selectedCards;
@@ -184,7 +174,7 @@ export default function GameCanvas(props) {
     return (
         <HeightContext.Provider value={viewport_height}>
             <WidthContext.Provider value={viewport_width}>
-                <div className='container-fluid vh-100 w-100 position-relative px-0 overflow-scroll' style={{background:"#295f48"}}>
+                <div className='container-fluid vh-100 w-100 position-relative pt-1 overflow-scroll' style={{background:"#295f48"}}>
                     <div className='row h-100 p-0 mx-0'>
                         <div className='col-12 px-0'>
                             <div className='card h-100 border-0' style={{background:"#295f48"}}>
@@ -216,16 +206,18 @@ export default function GameCanvas(props) {
                                                             <>
                                                                 { asSelected === false && <p className={'text-danger my-0'}
                                                                  style={{fontSize:(viewport_height < 450 ? 13 : 20)}}>
-                                                                    {'You should declare you card' +
+                                                                    {'Declare your card' +
                                                                     (selectedCards.length>1 ? 's !':' !')}</p>}
-                                                                <button className={'btn btn-info w-auto mx-3 mt-1 mb-2'} onClick={handlePlay}
+                                                                <button className={'btn btn-info w-auto mx-3 mt-1 mb-2'} onClick={handlePlay} style={{borderRadius:20}}
                                                                 disabled={asSelected === false}>{selectedCards.length  > 1 ? 'Play Cards' : 'Play Card'}</button>
                                                             </>
                                                             :
                                                             <>
                                                                 {cardsInStack.length === 0  && <h6>Play at least 1 card.</h6>}
-                                                                <button className={'btn btn-danger mb-2 w-100 ' + (viewport_height < 420 && ' me-2')}  onClick={handlePass} disabled={cardsInStack.length === 0}>Pass</button>
-                                                                <button className={'btn btn-warning mb-2  mb-xl-0 w-100'  } onClick={handleBluff} disabled={cardsInStack.length === 0 || (previousMove && previousMove.Status === 3)}>Call Bluff</button>
+                                                                <button className={'btn btn-danger mb-2 w-100 ' + (viewport_height < 420 && ' me-2')}  style={{borderRadius:20}}
+                                                                    onClick={handlePass} disabled={cardsInStack.length === 0}>Pass</button>
+                                                                <button className={'btn btn-warning mb-2  mb-xl-0 w-100'  } style={{borderRadius:20}}
+                                                                    onClick={handleBluff} disabled={cardsInStack.length === 0 || (previousMove && previousMove.Status === 3)}>Call Bluff</button>
                                                             </>}
                                                     </Player>
                                                 </StackContext.Provider>

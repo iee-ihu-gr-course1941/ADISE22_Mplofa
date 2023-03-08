@@ -70,7 +70,7 @@ export default function GameWaitingRoom(props) {
             'Waiting on Another Player . . .';
     },[props.Room])
     return (
-        <div className='container-fluid vh-100 vw-100 position-relative py-3 px-5 align-items-center overflow-auto' style={{background:"#EEEEEE"}}>
+        <div className='container-fluid vh-100 vw-100 position-relative py-3 px-5 align-items-center overflow-auto theContainer'>
             <div className={'row align-items-center h-100 gx-0'}>
                 <div className={'row align-items-center gx-0'}>
                     <div className={'col-12'}>
@@ -111,7 +111,8 @@ export default function GameWaitingRoom(props) {
                 </div>
                 <div className='row px-0 gx-0 mb-sm-5 py-sm-2'>
                     <div className='col-12 col-sm-4 text-center align-items-center my-3 order-0'>
-                        <div className='card border-1 p-2 h-100 shadow-lg' style={{background:"#e6e6e6"}}>
+                        <div className='card border-1 p-2 h-100 shadow-lg bg-transparent'
+                        >
                             <div className='card-title p-1 text-center mt-5'>
                                 <h4>
                                     {props.Room.Owner.name}
@@ -157,7 +158,9 @@ export default function GameWaitingRoom(props) {
                         </Link>
                     </div>
                     <div className='col-12 col-sm-4 text-center align-items-center my-3 order-1 order-sm-2'>
-                        <div className='card border-1 p-2 h-100 shadow-lg' style={{background:"#e6e6e6"}}>
+                        <div className='card border-1 p-2 h-100 shadow-lg bg-transparent'
+                             // style={{background:"#e6e6e6"}}
+                        >
                             <div className='card-title p-1 text-center mt-5'>
                                 <h4>
                                     {props.Room.Player ? props.Room.Player.name : 'Empty Seat'}

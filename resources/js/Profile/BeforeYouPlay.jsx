@@ -34,6 +34,9 @@ export function BeforeYouPlay() {
                                                 is under heavy development ( It should be fine for most devices though ).
                                                 <br></br>
                                                 <br></br>
+                                                Always use landscape mode when playing on mobiles.
+                                                <br></br>
+                                                <br></br>
                                                 Devices with known responsiveness issues :
                                                 <br></br>
                                                 ( during gameplay only )

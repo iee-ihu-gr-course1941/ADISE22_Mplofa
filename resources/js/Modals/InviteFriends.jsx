@@ -1,8 +1,10 @@
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../Contexts/UserContext";
+import {InviteLinkContext} from "../Contexts/InviteLinkContext";
 
-export function InviteFriends({InviteLink}) {
+export function InviteFriends({}) {
     const User = useContext(UserContext),
+        InviteLink = useContext(InviteLinkContext),
         [copied,setCopied] = useState(false),
         [showingInvite,setShowingInvite] = useState(false);
 
@@ -13,7 +15,7 @@ export function InviteFriends({InviteLink}) {
         return () => clearTimeout(timer);
     },[copied]);
     return (
-        <div className="card my-4 text-center" id={'Invite'}>
+        <div className={"card my-4 text-center " + (!showingInvite && 'border-bottom-0')} id={'Invite'}>
             <div className={'card-header bg-transparent'}>
                 <h5 className={'text-info'} onClick={()=>{setShowingInvite(!showingInvite)}}>
                     Invite Your Friends

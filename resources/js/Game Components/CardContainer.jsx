@@ -33,11 +33,11 @@ export const MobileHand = styled.div`
   padding-left:25px;
 `;
 
-export default function CardContainer(props) {
+export default function CardContainer({Enemy,children}) {
     const { compare } = Intl.Collator('en-US'),
     {myCards}  = useContext(CardsContext),
     { enemyCards , setEnemyCards } = useContext(CardsContext),
-    { selectedCards, onSelectCard } = !props.Enemy && useContext(SelectedCardsContext),
+    { selectedCards, onSelectCard } = !Enemy && useContext(SelectedCardsContext),
     sortedCards = myCards ? myCards.sort((a, b) => compare(a.id, b.id)) : enemyCards.sort((a, b) => compare(a.id, b.id)),
     [changed,setChanged] = useState(false),
     height = useContext(HeightContext),
@@ -50,16 +50,16 @@ export default function CardContainer(props) {
         const lastPageIndex = firstPageIndex + pageSize;
         return sortedCards.slice(firstPageIndex, lastPageIndex);
     }, [currentPage]),
-    pagination = props.Enemy ? '' :  <Pagination
+    pagination = Enemy ? '' :  <Pagination
         className="pagination-bar"
         currentPage={currentPage}
         totalCount={totalCount}
         pageSize={pageSize}
         onPageChange={page => setCurrentPage(page)}/>,
     stackSize = useContext(StackContext),
-    IsEnemy = props.Enemy,
+    IsEnemy = Enemy,
     mobileEnemyCardsPadding = IsEnemy ? ' me-5 pe-5 ' : '',
-    paginationPadding = (height < 500) ? ' col-2 ms-5 ms-md-1 mb-2' : ' col-1 ms-5 ms-md-1';
+    paginationPadding = (height < 500) ? ' ms-5 ms-md-1 mb-3' : '  ms-5 ms-md-1';
     let cardsPadding;
     if (window.innerWidth>1000 && window.innerWidth <1100)  {
         cardsPadding =  120;
@@ -107,16 +107,16 @@ export default function CardContainer(props) {
     ]);
     const Cards = currentTableData.map((card)=> {
         if(card==='Empty')
-            return <Card key={uuid()} card={CardMap.get(53)} size={'1'} Enemy={props.Enemy}
+            return <Card key={uuid()} card={CardMap.get(53)} size={'1'} Enemy={Enemy}
                          color={card.color} cardId={card.id}></Card>;
         else
-            return <Card cardObject={card} key={card.id} card={IsEnemy ? CardMap.get(53): CardMap.get(card.id)} size={'1'} Enemy={props.Enemy}
-            color={card.color} cardId={card.id} handleClick={props.onSelectCard} selectedCards={selectedCards}></Card>;
+            return <Card cardObject={card} key={card.id} card={IsEnemy ? CardMap.get(53): CardMap.get(card.id)} size={'1'} Enemy={Enemy}
+            color={card.color} cardId={card.id} handleClick={onSelectCard} selectedCards={selectedCards}></Card>;
     });
-    // console.log("Card Container",props.onSelectCard)
     return (
         <>
-            <div className={'col ' + (IsEnemy ? 'col-6 col-md-5 col-lg-7 col-xxl-5 ps-xxl-5' : 'col-6  col-lg-8 col-xxl-5 mb-2') + mobileEnemyCardsPadding} style={{fontSize:'125'}}>
+            <div className={(IsEnemy ? 'col-6 col-md-6 col-lg-7 col-xxl-5 ps-xxl-5 ms-5 ms-xl-0' : 'col-6 col-md-6 col-lg-8 col-xxl-5 mb-3 ') + mobileEnemyCardsPadding} style={{fontSize:'125'}}>
+                {children}
                 {
                     ( height > 500)
                         ?
@@ -130,7 +130,7 @@ export default function CardContainer(props) {
                 }
             </div>
             {
-                !IsEnemy &&  <div className={'col text-center me-2 me-sm-0 me-lg-5' + paginationPadding}>
+                !IsEnemy &&  <div className={'col-2 col-md-2 col-lg-1 col-xxl-2 text-center ' + paginationPadding}>
                     {pagination}
                 </div>
             }

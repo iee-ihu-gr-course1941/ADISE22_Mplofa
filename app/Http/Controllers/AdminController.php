@@ -9,6 +9,7 @@ use App\Models\Bug;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 
 class AdminController extends Controller {
@@ -17,7 +18,7 @@ class AdminController extends Controller {
         $input = $request->only(['rating','iees']);
         $IEE = User::where('isIEE',true)->count();
         $Bugs = BugResource::collection(Bug::paginate(2,['*'],'BugsPage')->appends(request()->except('BugsPage')));
-
+        $InviteLink = URL::route('register', ['refId' => $request->user()->id]);
         $Users = UserResource::collection((isset($input['iees']) && $input['iees']==="true")
             ?
 //            Showing only Users that are IEEs if $input['iees'] is set and true.
@@ -35,6 +36,7 @@ class AdminController extends Controller {
                     :
                 Review::where('rating',$input['rating'])->paginate(2,['*'],'ReviewsPage')->appends(request()->except('ReviewsPage'))
         : Review::paginate(2,['*'],'ReviewsPage')->appends(request()->except('ReviewsPage'))));
-        return Inertia::render('AdminPanel',['Users'=>$Users,'Reviews' => fn ()=>$Reviews,'Bugs'=>$Bugs,'IEEs'=>$IEE]);
+        return Inertia::render('AdminPanel',['Users'=>$Users,'Reviews' => fn ()=>$Reviews,'Bugs'=>$Bugs,
+            'IEEs'=>$IEE, 'InviteLink'=>$InviteLink]);
     }
 }
