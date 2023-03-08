@@ -9,6 +9,8 @@ import {BugSubmissionForm} from "../Bugs/BugSubmissionForm";
 import {ErrorContext} from "../Contexts/ErrorContext";
 import {InviteFriends} from "../Modals/InviteFriends";
 import {GotKickedModal} from "../Modals/GotKickedModal";
+import {GameRules} from "../Modals/GameRules";
+import {InviteLinkContext} from "../Contexts/InviteLinkContext";
 
 export default function Dashboard(props) {
     const [roomDoesntExistErrorVisible,setRoomDoesntExistErrorVisible] = useState(!!props.errors.Room_Doesnt_Exist),
@@ -26,54 +28,57 @@ export default function Dashboard(props) {
         document.title = 'Home';
     });
     return (
-        <ErrorContext.Provider value={props.errors}>
-            <UserContext.Provider value={props.auth.user}>
-                <Authenticated>
-                    <Head title="Dashboard" >
-                        <title>Dashboard</title>
-                    </Head>
-                    <div className='container p-3 h-100 vw-100'>
-                        <div className={'row gx-0'}>
-                            <div className={'col-12 text-center h-auto'}>
-                                <div className={'row'}>
-                                    <div className={'col'}>
-                                        <button type="button btn-sm w-25" className="btn btn-outline-danger mb-3" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal">
-                                            Please read before you play!
-                                        </button>
+        <InviteLinkContext.Provider value={props.InviteLink}>
+            <ErrorContext.Provider value={props.errors}>
+                <UserContext.Provider value={props.auth.user}>
+                    <Authenticated>
+                        <Head title="Dashboard" >
+                            <title>Dashboard</title>
+                        </Head>
+                        <div className='container p-3 h-100 vw-100'>
+                            <div className={'row gx-0'}>
+                                <div className={'col-12 text-center h-auto'}>
+                                    <div className={'row'}>
+                                        <div className={'col'}>
+                                            <button type="button btn-sm w-25" className="btn btn-outline-danger mb-3" data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal">
+                                                Please read before you play!
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                <InviteFriends InviteLink={props.InviteLink}></InviteFriends>
-                                <div className={'row'}>
-                                    <div className={'col'}>
-                                        {/*<UserContext.Provider value={props.auth.user}>*/}
+                                    <GameRules></GameRules>
+                                    <div className={'row'}>
+                                        <div className={'col'}>
+                                            {/*<UserContext.Provider value={props.auth.user}>*/}
                                             <Rooms rooms={RoomsList}>
                                                 <Link href={route('home')} as={'button'}
-                                                      className="btn btn-outline-dark text-center mt-4" type="button" only={['Rooms']}>
+                                                      className="btn btn-outline-dark text-center mt-4" type="button"
+                                                      only={['Rooms']} preserveScroll={true}>
                                                     Reload Rooms
                                                 </Link>
                                             </Rooms>
-                                        {/*</UserContext.Provider>*/}
+                                            {/*</UserContext.Provider>*/}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={'row align-self-end text-center'}>
+                                <div className={'col'}>
+                                    <div className={'col-12 mt-5'}>
+                                        <BugSubmissionForm>
+
+                                        </BugSubmissionForm>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className={'row align-self-end text-center'}>
-                            <div className={'col'}>
-                                <div className={'col-12 mt-5'}>
-                                    <BugSubmissionForm>
+                        <BeforeYouPlay>
 
-                                    </BugSubmissionForm>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <BeforeYouPlay>
-
-                    </BeforeYouPlay>
-                    {props.Kicked !== null && <GotKickedModal state={{kicked,setKicked}} report={props.Kicked}></GotKickedModal>}
-                </Authenticated>
-            </UserContext.Provider>
-        </ErrorContext.Provider>
+                        </BeforeYouPlay>
+                        {props.Kicked !== null && <GotKickedModal state={{kicked,setKicked}} report={props.Kicked}></GotKickedModal>}
+                    </Authenticated>
+                </UserContext.Provider>
+            </ErrorContext.Provider>
+        </InviteLinkContext.Provider>
     )
 }

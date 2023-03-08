@@ -35,11 +35,12 @@ export function Pagination(props) {
     //         onPageChange(currentPage - 1);
     // };
     let lastPage = paginationRange[paginationRange.length - 1];
-    return (<>
+    return (
+        <>
         <Card key={uuid()} card={"🂠"} size={'1'} Enemy={true} isPagination={true}
-            handleClick={onNext} color={'white'}>
+            handleClick={onNext} color={'white'} className={'pb-2 mb-2 mb-xxl-2'}>
         </Card>
-    </>)
+        </>)
 
 }
 

@@ -27,8 +27,8 @@ class HomeController extends Controller {
     public function index(Request $request) {
         $InviteLink = URL::route('register', ['refId' => $request->user()->id]);
         $Kicked = $request->session()->get('Kicked');
-        return Inertia::render('Dashboard',['Rooms'=> fn ()=> new RoomCollection(Room::where('GameActive',0)
-            ->where('InviteOnly',0)->get()),
+        $Rooms = Room::where('GameActive',0)->where('InviteOnly',0)->get();
+        return Inertia::render('Dashboard',['Rooms'=> fn ()=> new RoomCollection($Rooms),
             'InviteLink'=>$InviteLink,'Kicked' => fn()=>$Kicked]);
     }
 }

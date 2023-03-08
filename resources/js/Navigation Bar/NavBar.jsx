@@ -1,7 +1,4 @@
-import {NavUL} from "./NavUL";
 import {Link} from "@inertiajs/inertia-react";
-import {Room} from "../Game Components/Room";
-import {BugSubmissionForm} from "../Bugs/BugSubmissionForm";
 import {useContext} from "react";
 import {UserContext} from "../Contexts/UserContext";
 import {PersonalInfo} from "../Profile/PersonalInfo";

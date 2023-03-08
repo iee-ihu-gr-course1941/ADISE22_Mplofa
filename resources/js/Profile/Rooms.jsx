@@ -1,17 +1,23 @@
 import {Room} from "../Game Components/Room";
-import {CreateNewRoomOffCanvas} from "../OffCanvases/CreateNewRoomOffCanvas";
-import {JoinByLinkOffCanvas} from "../OffCanvases/JoinByLinkOffCanvas";
+import {CreateNewRoom} from "../Modals/CreateNewRoom";
+import {JoinByLink} from "../Modals/JoinByLink";
+import {useState} from "react";
 
 
-export function Rooms({rooms,onSubmit,Data,children}) {
+export function Rooms({rooms,children}) {
+    const [showingCreate,setShowingCreate] = useState(false),
+    [showingJoin,setShowingJoin] = useState(false),
+    handleCreateClick = () => setShowingCreate(!showingCreate),
+    handleJoinClick = () => setShowingJoin(!showingJoin);
     return (
         <div className='card border-0 p-1 shadow h-100 gx-0' style={{background:"#AFBEC1"}}>
-            <div className='card-title p-1 text-center'><h2>Rooms</h2>
+            <div className='card-title p-1 text-center' hidden={(showingCreate || showingJoin)}>
+                <h2>Rooms</h2>
                 {children}
             </div>
             <div className='card-body p-2'>
                 <div className="row gx-0 justify-content-center">
-                    <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="false">
+                    <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="false" hidden={showingCreate || showingJoin}>
                         <div className="carousel-inner justify-items-center">
                             {
                                 rooms.length === 0 ?
@@ -52,8 +58,8 @@ export function Rooms({rooms,onSubmit,Data,children}) {
                         </div>
                     </div>
                     <div className={"row m-2 text-center justify-content-center gx-0"}>
-                        <CreateNewRoomOffCanvas></CreateNewRoomOffCanvas>
-                        <JoinByLinkOffCanvas></JoinByLinkOffCanvas>
+                        {!showingJoin && <CreateNewRoom handleClick={handleCreateClick}></CreateNewRoom>}
+                        {!showingCreate &&<JoinByLink handleClick={handleJoinClick}></JoinByLink>}
                     </div>
                 </div>
             </div>

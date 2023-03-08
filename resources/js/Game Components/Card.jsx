@@ -33,10 +33,13 @@ export default function Card({cardObject,Enemy,Stacked,color,isPagination,card,h
         !isEnemy && !isStacked && myTurn && addToSelected();
     },
     Card = isPagination ?
-        <div className={'cardContainer ' + className} style={{backgroundColor:"white",fontSize:FontSize,width:Width,height:Height}}
-             onClick={handleClick}>
-            {card}
-        </div>
+        <>
+            <p className={'text-info fw-bold p-0 my-0'}>More cards</p>
+            <div className={'cardContainer ' + className} style={{backgroundColor:"white",fontSize:FontSize,width:Width,height:Height}}
+                 onClick={handleClick}>
+                {card}
+            </div>
+        </>
         :
         <div className={'cardContainer'}
           style={selected ? {backgroundColor:'lightblue',color:cardColor,fontSize:FontSize,width:Width,height:Height}

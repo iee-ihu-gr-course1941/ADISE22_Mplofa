@@ -4,7 +4,6 @@ import {HeightContext} from "../Contexts/HeightContext";
 
 export function AsCardBar(props) {
     const selected = props.selected,viewport_height = useContext(HeightContext);
-    console.log('AsBar',viewport_height);
     const CardMap1 = [
         ['A', "Ace"],['2', "Two"], ['3', "Three"],['4', "Four"],
         ['5', "Five"],['6', "Six"],['7', "Seven"]],

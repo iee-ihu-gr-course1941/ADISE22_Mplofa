@@ -19,10 +19,15 @@ export function Room({Room,children}) {
                         </div>
                     }
                     <div className={enterPassword === false ? 'col-12 ' : 'col-lg-10 col-12'}>
-                        <strong>
                             <h5>
                                 {Room.Name}
                             </h5>
+                            <p className={'text-sm text-info'}>Created :
+                                {Room.Created.Days > 0 && Room.Created.Days} {Room.Created.Days > 0 && (Room.Created.Days !== 1 ? ' Days ' : ' Day ')}
+                                {Room.Created.Hours > 0 && Room.Created.Hours } { Room.Created.Hours > 0 &&(Room.Created.Hours !== 1 ? ' Hours ' : ' Hour ')}
+                                {Room.Created.Minutes > 0 && Room.Created.Minutes } {Room.Created.Minutes > 0 && (Room.Created.Minutes !== 1 ? ' Minutes ' : ' Minute ')}
+                                {Room.Created.Seconds > 0 && Room.Created.Seconds } {Room.Created.Seconds > 0 && (Room.Created.Seconds !== 1 ? ' Seconds ' : ' Second ')}
+                                ago.</p>
                             {User.ca
                                 &&
                                 <Link href={route('Delete_Room')} method={'delete'} data={{room_id:Room.id}} as={'button'}
@@ -31,7 +36,6 @@ export function Room({Room,children}) {
                                     Delete
                                 </Link>
                             }
-                        </strong>
                     </div>
                 </div>
                 <div className='card-body'>
